@@ -1,0 +1,35 @@
+const FootballStack = () => {
+  const { isDark } = useTheme();
+  const { t } = useLanguage();
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: isDark ? '#202124' : 'white',
+        },
+        headerTintColor: isDark ? 'white' : 'black',
+      }}
+    >
+      <Stack.Screen
+        name="FootballMain"
+        component={FootballTrainingScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FootballProgramWorkouts"
+        component={FootballProgramWorkoutsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FootballWorkoutDetail"
+        component={FootballWorkoutDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ActiveWorkout"
+        component={ActiveWorkoutScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};

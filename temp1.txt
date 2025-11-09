@@ -1,0 +1,92 @@
+import React, { useState, useEffect } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { TouchableOpacity, View, Text, StyleSheet, Platform, I18nManager } from 'react-native';
+import { Avatar } from 'react-native-paper';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useTheme } from '../contexts/ThemeContext';
+import { useUserPreferences } from '../contexts/UserPreferencesContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import AuthNavigator from './AuthNavigator';
+import AdminNavigator from './AdminNavigator';
+import CoachNavigator from './CoachNavigator';
+
+// Main screens
+import SimpleWorkoutScreen from '../screens/SimpleWorkoutScreen';
+import WorkoutScreen from '../screens/WorkoutScreen';
+import NutritionScreen from '../screens/nutrition/NutritionScreen';
+import ProgressScreen from '../screens/ProgressScreen';
+import CalendarScreen from '../screens/CalendarScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import StreakScreen from '../screens/StreakScreen';
+import TestingScreen from '../screens/TestingScreen';
+import TryScreen from '../screens/TryScreen';
+
+// Workout screens
+import { WorkoutLogScreen } from '../screens/workout/WorkoutLogScreen';
+import SimpleWorkoutPlansScreen from '../screens/workout/SimpleWorkoutPlansScreen';
+import { ExerciseLibraryScreen } from '../screens/workout/ExerciseLibraryScreen';
+import AIWorkoutGeneratorScreen from '../screens/workout/AIWorkoutGeneratorScreen';
+import FootballTrainingScreen from '../screens/football/FootballTrainingScreen';
+import FootballHomeScreen from '../screens/football/FootballHomeScreen';
+
+// Nutrition screens
+import FoodLogScreen from '../screens/nutrition/FoodLogScreen';
+import FoodSearchScreen from '../screens/nutrition/FoodSearchScreen';
+import ManualFoodEntryScreen from '../screens/nutrition/ManualFoodEntryScreen';
+import CreateCustomFoodScreen from '../screens/nutrition/CreateCustomFoodScreen';
+import CreateCustomMealScreen from '../screens/nutrition/CreateCustomMealScreen';
+import PhotoMealLogScreen from '../screens/nutrition/PhotoMealLogScreen';
+import AINutritionAdvisorScreen from '../screens/nutrition/AINutritionAdvisorScreen';
+import FoodDiaryScreen from '../screens/nutrition/FoodDiaryScreen';
+import FoodDiaryScreenNew from '../screens/nutrition/FoodDiaryScreenNew';
+import MealLogScreen from '../screens/nutrition/MealLogScreen';
+import SimpleMealPlansScreen from '../screens/nutrition/SimpleMealPlansScreen';
+import MealPlanSelectionScreen from '../screens/nutrition/MealPlanSelectionScreen';
+import MealDetailScreen from '../screens/nutrition/MealDetailScreen';
+import WorkoutPlanSelectionScreen from '../screens/workout/WorkoutPlanSelectionScreen';
+import WorkoutDetailScreen from '../screens/workout/WorkoutDetailScreen';
+import EditWeekScreen from '../screens/EditWeekScreen';
+
+// Additional screens
+import { SettingsScreen } from '../screens/SettingsScreen';
+import { SubscriptionScreen } from '../screens/SubscriptionScreen';
+import { AttendanceScreen } from '../screens/AttendanceScreen';
+import { PersonalRecordsScreen } from '../screens/PersonalRecordsScreen';
+import ProgressPhotosScreen from '../screens/progress/ProgressPhotosScreen';
+import ExportDataScreen from '../screens/progress/ExportDataScreen';
+import { NotificationsScreen } from '../screens/NotificationsScreen';
+import MonthlyReportsScreen from '../screens/MonthlyReportsScreen';
+import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
+import MealTrackingScreen from '../screens/MealTrackingScreen';
+import AIAssistantScreen from '../screens/AIAssistantScreen';
+import CalendarSyncScreen from '../screens/CalendarSyncScreen';
+import MyActivityScreen from '../screens/activity/MyActivityScreen';
+
+// Onboarding screens
+import OnboardingWelcomeScreen from '../screens/onboarding/OnboardingWelcomeScreen';
+import OnboardingAppPurposeScreen from '../screens/onboarding/OnboardingAppPurposeScreen';
+import OnboardingInterestsScreen from '../screens/onboarding/OnboardingInterestsScreenV2';
+import OnboardingGenderScreen from '../screens/onboarding/OnboardingGenderScreen';
+import OnboardingBodyStatsScreen from '../screens/onboarding/OnboardingBodyStatsScreen';
+import OnboardingFitnessLevelScreen from '../screens/onboarding/OnboardingFitnessLevelScreen';
+import OnboardingFoodPreferencesScreen from '../screens/onboarding/OnboardingFoodPreferencesScreen';
+import OnboardingTargetWeightScreen from '../screens/onboarding/OnboardingTargetWeightScreen';
+import OnboardingCalorieResultsScreen from '../screens/onboarding/OnboardingCalorieResultsScreen';
+import OnboardingWorkoutDaysScreen from '../screens/onboarding/OnboardingWorkoutDaysScreen';
+import OnboardingPlansWelcomeScreen from '../screens/onboarding/OnboardingPlansWelcomeScreen';
+import OnboardingNotificationsScreen from '../screens/onboarding/OnboardingNotificationsScreen';
+import OnboardingCompleteScreen from '../screens/onboarding/OnboardingCompleteScreen';
+import OnboardingAllergensScreen from '../screens/onboarding/OnboardingAllergensScreen';
+import OnboardingDietsScreen from '../screens/onboarding/OnboardingDietsScreen';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const HomeStack = () => {
+  const { isDark } = useTheme();
+  const { t } = useLanguage();

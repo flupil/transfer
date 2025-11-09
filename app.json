@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "Fit&Power",
+    "slug": "fitandpower",
+    "owner": "flupil",
+    "scheme": "fitgym",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FF6B35"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fitandpower.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSMotionUsageDescription": "This app uses motion data to count your steps and track your fitness activity.",
+        "NSCameraUsageDescription": "This app needs camera access to scan food barcodes for nutrition tracking."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FF6B35"
+      },
+      "package": "com.fitandpower.app",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.ACTIVITY_RECOGNITION",
+        "android.permission.CAMERA"
+      ],
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3b5f6e03-1b00-49a8-a5ae-590defed5901"
+      }
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-web-browser"
+    ]
+  }
+}

@@ -1,0 +1,448 @@
+import { Audio } from 'expo-av';
+import * as MediaLibrary from 'expo-media-library';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
+import { translate } from '../contexts/LanguageContext';
+
+interface Playlist {
+  id: string;
+  name: string;
+  tracks: Track[];
+  type: 'workout' | 'warmup' | 'cooldown' | 'cardio' | 'strength' | 'custom';
+  bpm?: number; // Beats per minute for workout sync
+}
+
+interface Track {
+  id: string;
+  uri: string;
+  filename: string;
+  duration: number;
+  artist?: string;
+  album?: string;
+}
+
+interface WorkoutMusic {
+  warmupPlaylist?: string;
+  workoutPlaylist: string;
+  cooldownPlaylist?: string;
+  autoPlay: boolean;
+  volume: number;
+  fadeInOut: boolean;
+}
+
+const STORAGE_KEYS = {
+  PLAYLISTS: '@music_playlists',
+  SETTINGS: '@music_settings',
+  RECENT_TRACKS: '@recent_tracks',
+  WORKOUT_MUSIC: '@workout_music',
+};
+
+class MusicService {
+  private sound: Audio.Sound | null = null;
+  private isPlaying: boolean = false;
+  private currentTrack: Track | null = null;
+  private currentPlaylist: Playlist | null = null;
+  private playbackStatus: any = null;
+  private listeners: Set<(status: any) => void> = new Set();
+
+  constructor() {
+    this.setupAudio();
+  }
+
+  private async setupAudio() {
+    try {
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: true,
+        staysActiveInBackground: true,
+        playThroughEarpieceAndroid: false,
+      });
+    } catch (error) {
+      Alert.alert('Error', 'Failed to setup audio. Please try again.');
+
+      console.error('Failed to setup audio:', error);
+    }
+  }
+
+  // Request media library permissions
+  async requestMediaPermissions(): Promise<boolean> {
+    try {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      return status === 'granted';
+    } catch (error) {
+      Alert.alert('Error', 'Failed to request media permissions. Please try again.');
+
+      console.error('Failed to request media permissions:', error);
+      return false;
+    }
+  }
+
+  // Get music from device
+  async getDeviceMusic(): Promise<Track[]> {
+    try {
+      const hasPermission = await this.requestMediaPermissions();
+      if (!hasPermission) return [];
+
+      const media = await MediaLibrary.getAssetsAsync({
+        mediaType: MediaLibrary.MediaType.audio,
+        first: 1000,
+      });
+
+      return media.assets.map(asset => ({
+        id: asset.id,
+        uri: asset.uri,
+        filename: asset.filename,
+        duration: asset.duration,
+      }));
+    } catch (error) {
+      Alert.alert('Error', 'Failed to get device music. Please try again.');
+
+      console.error('Failed to get device music:', error);
+      return [];
+    }
+  }
+
+  // Create playlist
+  async createPlaylist(
+    name: string,
+    type: Playlist['type'],
+    tracks: Track[],
+    bpm?: number
+  ): Promise<Playlist> {
+    try {
+      const playlists = await this.getPlaylists();
+      const newPlaylist: Playlist = {
+        id: `playlist_${Date.now()}`,
+        name,
+        type,
+        tracks,
+        bpm,
+      };
+
+      playlists.push(newPlaylist);
+      await AsyncStorage.setItem(STORAGE_KEYS.PLAYLISTS, JSON.stringify(playlists));
+      return newPlaylist;
+    } catch (error) {
+      Alert.alert('Error', 'Failed to create playlist. Please try again.');
+
+      console.error('Failed to create playlist:', error);
+      throw error;
+    }
+  }
+
+  // Get all playlists
+  async getPlaylists(): Promise<Playlist[]> {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.PLAYLISTS);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      Alert.alert('Error', 'Failed to get playlists. Please try again.');
+
+      console.error('Failed to get playlists:', error);
+      return [];
+    }
+  }
+
+  // Play track
+  async playTrack(track: Track, volume: number = 1.0): Promise<void> {
+    try {
+      // Stop current track if playing
+      if (this.sound) {
+        await this.sound.stopAsync();
+        await this.sound.unloadAsync();
+      }
+
+      // Load and play new track
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: track.uri },
+        {
+          shouldPlay: true,
+          volume,
+          progressUpdateIntervalMillis: 1000,
+        },
+        this.onPlaybackStatusUpdate.bind(this)
+      );
+
+      this.sound = sound;
+      this.currentTrack = track;
+      this.isPlaying = true;
+    } catch (error) {
+      Alert.alert('Error', 'Failed to play track. Please try again.');
+
+      console.error('Failed to play track:', error);
+    }
+  }
+
+  // Play playlist
+  async playPlaylist(playlist: Playlist, volume: number = 1.0): Promise<void> {
+    if (playlist.tracks.length === 0) return;
+
+    this.currentPlaylist = playlist;
+    await this.playTrack(playlist.tracks[0], volume);
+  }
+
+  // Pause/Resume
+  async togglePlayPause(): Promise<void> {
+    if (!this.sound) return;
+
+    try {
+      if (this.isPlaying) {
+        await this.sound.pauseAsync();
+        this.isPlaying = false;
+      } else {
+        await this.sound.playAsync();
+        this.isPlaying = true;
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to toggle play/pause. Please try again.');
+
+      console.error('Failed to toggle play/pause:', error);
+    }
+  }
+
+  // Skip to next track
+  async skipToNext(): Promise<void> {
+    if (!this.currentPlaylist || !this.currentTrack) return;
+
+    const currentIndex = this.currentPlaylist.tracks.findIndex(
+      t => t.id === this.currentTrack!.id
+    );
+
+    if (currentIndex < this.currentPlaylist.tracks.length - 1) {
+      await this.playTrack(this.currentPlaylist.tracks[currentIndex + 1]);
+    } else {
+      // Loop back to first track
+      await this.playTrack(this.currentPlaylist.tracks[0]);
+    }
+  }
+
+  // Skip to previous track
+  async skipToPrevious(): Promise<void> {
+    if (!this.currentPlaylist || !this.currentTrack) return;
+
+    const currentIndex = this.currentPlaylist.tracks.findIndex(
+      t => t.id === this.currentTrack!.id
+    );
+
+    if (currentIndex > 0) {
+      await this.playTrack(this.currentPlaylist.tracks[currentIndex - 1]);
+    } else {
+      // Loop to last track
+      await this.playTrack(
+        this.currentPlaylist.tracks[this.currentPlaylist.tracks.length - 1]
+      );
+    }
+  }
+
+  // Set volume
+  async setVolume(volume: number): Promise<void> {
+    if (!this.sound) return;
+
+    try {
+      await this.sound.setVolumeAsync(volume);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to set volume. Please try again.');
+
+      console.error('Failed to set volume:', error);
+    }
+  }
+
+  // Stop music
+  async stop(): Promise<void> {
+    if (!this.sound) return;
+
+    try {
+      await this.sound.stopAsync();
+      await this.sound.unloadAsync();
+      this.sound = null;
+      this.currentTrack = null;
+      this.isPlaying = false;
+    } catch (error) {
+      Alert.alert('Error', 'Failed to stop music. Please try again.');
+
+      console.error('Failed to stop music:', error);
+    }
+  }
+
+  // Playback status update
+  private onPlaybackStatusUpdate(status: any) {
+    this.playbackStatus = status;
+
+    // Notify listeners
+    this.listeners.forEach(listener => listener(status));
+
+    // Auto-play next track when current finishes
+    if (status.didJustFinish && this.currentPlaylist) {
+      this.skipToNext();
+    }
+  }
+
+  // Add playback listener
+  addPlaybackListener(callback: (status: any) => void) {
+    this.listeners.add(callback);
+    return () => this.listeners.delete(callback);
+  }
+
+  // Get current playback status
+  getPlaybackStatus() {
+    return {
+      isPlaying: this.isPlaying,
+      currentTrack: this.currentTrack,
+      currentPlaylist: this.currentPlaylist,
+      playbackStatus: this.playbackStatus,
+    };
+  }
+
+  // Save workout music preferences
+  async saveWorkoutMusicPreferences(prefs: WorkoutMusic): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.WORKOUT_MUSIC, JSON.stringify(prefs));
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save workout music preferences. Please try again.');
+
+      console.error('Failed to save workout music preferences:', error);
+    }
+  }
+
+  // Get workout music preferences
+  async getWorkoutMusicPreferences(): Promise<WorkoutMusic | null> {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.WORKOUT_MUSIC);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      Alert.alert('Error', 'Failed to get workout music preferences. Please try again.');
+
+      console.error('Failed to get workout music preferences:', error);
+      return null;
+    }
+  }
+
+  // Start workout music
+  async startWorkoutMusic(workoutType?: string): Promise<void> {
+    try {
+      const prefs = await this.getWorkoutMusicPreferences();
+      if (!prefs || !prefs.autoPlay) return;
+
+      const playlists = await this.getPlaylists();
+
+      // Find appropriate playlist
+      let playlist = playlists.find(p => p.id === prefs.workoutPlaylist);
+
+      // If specific workout type, try to find matching playlist
+      if (workoutType) {
+        const typePlaylist = playlists.find(
+          p => p.type === workoutType.toLowerCase()
+        );
+        if (typePlaylist) playlist = typePlaylist;
+      }
+
+      if (playlist) {
+        await this.playPlaylist(playlist, prefs.volume);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to start workout music. Please try again.');
+
+      console.error('Failed to start workout music:', error);
+    }
+  }
+
+  // Create BPM-matched playlist for cardio
+  async createBPMPlaylist(targetBPM: number, tracks: Track[]): Promise<Playlist> {
+    // This is a simplified version - in production, you'd analyze track BPM
+    const bpmTolerance = 10;
+    const filteredTracks = tracks.filter(track => {
+      // Simulate BPM matching (would need actual BPM detection)
+      const estimatedBPM = Math.random() * 60 + 90; // Random BPM 90-150
+      return Math.abs(estimatedBPM - targetBPM) <= bpmTolerance;
+    });
+
+    return this.createPlaylist(
+      `${targetBPM} BPM Workout`,
+      'cardio',
+      filteredTracks,
+      targetBPM
+    );
+  }
+
+  // Update playlist
+  async updatePlaylist(playlistId: string, updates: Partial<Playlist>): Promise<void> {
+    try {
+      const playlists = await this.getPlaylists();
+      const index = playlists.findIndex(p => p.id === playlistId);
+
+      if (index !== -1) {
+        playlists[index] = { ...playlists[index], ...updates };
+        await AsyncStorage.setItem(STORAGE_KEYS.PLAYLISTS, JSON.stringify(playlists));
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update playlist. Please try again.');
+
+      console.error('Failed to update playlist:', error);
+    }
+  }
+
+  // Delete playlist
+  async deletePlaylist(playlistId: string): Promise<void> {
+    try {
+      const playlists = await this.getPlaylists();
+      const filtered = playlists.filter(p => p.id !== playlistId);
+      await AsyncStorage.setItem(STORAGE_KEYS.PLAYLISTS, JSON.stringify(filtered));
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete playlist. Please try again.');
+
+      console.error('Failed to delete playlist:', error);
+    }
+  }
+
+  // Get suggested playlists based on workout type
+  getSuggestedPlaylists(workoutType: string): Playlist[] {
+    // This would be more sophisticated in production
+    const suggestions: { [key: string]: { bpm: number; type: Playlist['type'] }[] } = {
+      'cardio': [
+        { bpm: 140, type: 'cardio' },
+        { bpm: 150, type: 'cardio' },
+      ],
+      'strength': [
+        { bpm: 100, type: 'strength' },
+        { bpm: 110, type: 'strength' },
+      ],
+      'yoga': [
+        { bpm: 60, type: 'cooldown' },
+        { bpm: 70, type: 'cooldown' },
+      ],
+      'hiit': [
+        { bpm: 160, type: 'cardio' },
+        { bpm: 170, type: 'cardio' },
+      ],
+    };
+
+    return [];
+  }
+}
+
+// Create singleton instance
+const musicService = new MusicService();
+
+// Export functions
+export const getDeviceMusic = () => musicService.getDeviceMusic();
+export const createPlaylist = (name: string, type: Playlist['type'], tracks: Track[], bpm?: number) =>
+  musicService.createPlaylist(name, type, tracks, bpm);
+export const getPlaylists = () => musicService.getPlaylists();
+export const playTrack = (track: Track, volume?: number) => musicService.playTrack(track, volume);
+export const playPlaylist = (playlist: Playlist, volume?: number) =>
+  musicService.playPlaylist(playlist, volume);
+export const togglePlayPause = () => musicService.togglePlayPause();
+export const skipToNext = () => musicService.skipToNext();
+export const skipToPrevious = () => musicService.skipToPrevious();
+export const setVolume = (volume: number) => musicService.setVolume(volume);
+export const stop = () => musicService.stop();
+export const getPlaybackStatus = () => musicService.getPlaybackStatus();
+export const startWorkoutMusic = (workoutType?: string) => musicService.startWorkoutMusic(workoutType);
+export const saveWorkoutMusicPreferences = (prefs: WorkoutMusic) =>
+  musicService.saveWorkoutMusicPreferences(prefs);
+export const addPlaybackListener = (callback: (status: any) => void) =>
+  musicService.addPlaybackListener(callback);
+
+export default musicService;

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/jgola/Downloads/**)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.muscleandstrength.com)",
+      "Bash(cat:*)",
+      "Bash(npm start)",
+      "WebFetch(domain:world.openfoodfacts.org)",
+      "Bash(npx tsc:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

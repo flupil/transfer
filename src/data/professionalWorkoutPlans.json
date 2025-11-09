@@ -1,0 +1,1359 @@
+[
+  {
+    "id": 1,
+    "name": "Beginner Full Body Strength",
+    "goal": "strength",
+    "experience": "beginner",
+    "duration": "45 min",
+    "daysPerWeek": 3,
+    "equipment": "gym",
+    "description": "Perfect for beginners looking to build a foundation of strength",
+    "days": [
+      {
+        "day": "Day 1 - Full Body A",
+        "exercises": [
+          "Barbell Squat – 3 × 10",
+          "Bench Press – 3 × 10",
+          "Bent Over Row – 3 × 10",
+          "Overhead Press – 2 × 10",
+          "Plank – 3 × 30 sec"
+        ]
+      },
+      {
+        "day": "Day 2 - Full Body B",
+        "exercises": [
+          "Deadlift – 3 × 8",
+          "Incline Dumbbell Press – 3 × 10",
+          "Lat Pulldown – 3 × 10",
+          "Dumbbell Shoulder Press – 2 × 10",
+          "Leg Raises – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 3 - Full Body A",
+        "exercises": [
+          "Barbell Squat – 3 × 10",
+          "Bench Press – 3 × 10",
+          "Bent Over Row – 3 × 10",
+          "Overhead Press – 2 × 10",
+          "Plank – 3 × 30 sec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "PHUL - Power Hypertrophy",
+    "goal": "muscle_building",
+    "experience": "intermediate",
+    "duration": "60 min",
+    "daysPerWeek": 4,
+    "equipment": "gym",
+    "description": "Combines powerlifting and bodybuilding for maximum muscle and strength",
+    "days": [
+      {
+        "day": "Day 1 - Upper Power",
+        "exercises": [
+          "Barbell Bench Press – 3-4 × 3-5",
+          "Incline Dumbbell Press – 3-4 × 6-10",
+          "Bent Over Row – 3-4 × 3-5",
+          "Lat Pulldown – 3-4 × 6-10",
+          "Overhead Press – 2-3 × 5-8"
+        ]
+      },
+      {
+        "day": "Day 2 - Lower Power",
+        "exercises": [
+          "Squat – 3-4 × 3-5",
+          "Deadlift – 3-4 × 3-5",
+          "Leg Press – 3-5 × 10-15",
+          "Leg Curl – 3-4 × 6-10",
+          "Calf Raises – 4 × 6-10"
+        ]
+      },
+      {
+        "day": "Day 3 - Upper Hypertrophy",
+        "exercises": [
+          "Incline Barbell Press – 3-4 × 8-12",
+          "Flat Dumbbell Flye – 3-4 × 8-12",
+          "Seated Cable Row – 3-4 × 8-12",
+          "Dumbbell Lateral Raise – 3-4 × 8-12",
+          "Cable Curl – 3-4 × 8-12"
+        ]
+      },
+      {
+        "day": "Day 4 - Lower Hypertrophy",
+        "exercises": [
+          "Front Squat – 3-4 × 8-12",
+          "Romanian Deadlift – 3-4 × 8-12",
+          "Leg Press – 3-4 × 12-15",
+          "Leg Extension – 3-4 × 12-15",
+          "Seated Calf Raise – 3-4 × 12-15"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Fat Loss HIIT Circuit",
+    "goal": "fat_loss",
+    "experience": "beginner",
+    "duration": "40 min",
+    "daysPerWeek": 4,
+    "equipment": "minimal",
+    "description": "High-intensity workouts designed to maximize calorie burn and fat loss",
+    "days": [
+      {
+        "day": "Day 1 - HIIT Cardio",
+        "exercises": [
+          "Jump Rope – 4 × 60 sec",
+          "Burpees – 4 × 15",
+          "Mountain Climbers – 4 × 30 sec",
+          "Jump Squats – 4 × 20",
+          "High Knees – 4 × 30 sec"
+        ]
+      },
+      {
+        "day": "Day 2 - Strength Circuit",
+        "exercises": [
+          "Goblet Squat – 3 × 15",
+          "Push-ups – 3 × 15",
+          "Dumbbell Rows – 3 × 12 per side",
+          "Walking Lunges – 3 × 20 total",
+          "Plank – 3 × 45 sec"
+        ]
+      },
+      {
+        "day": "Day 3 - HIIT Cardio",
+        "exercises": [
+          "Sprints – 8 × 30 sec on, 60 sec off",
+          "Box Jumps – 4 × 12",
+          "Kettlebell Swings – 4 × 20",
+          "Battle Ropes – 4 × 30 sec"
+        ]
+      },
+      {
+        "day": "Day 4 - Full Body Burn",
+        "exercises": [
+          "Thrusters – 4 × 12",
+          "Renegade Rows – 3 × 10 per side",
+          "Jump Lunges – 3 × 20 total",
+          "Russian Twists – 3 × 30",
+          "Bicycle Crunches – 3 × 30"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Women's Sculpt & Tone",
+    "goal": "tone",
+    "experience": "beginner",
+    "duration": "50 min",
+    "daysPerWeek": 5,
+    "equipment": "gym",
+    "description": "Designed to build lean muscle and create a toned, sculpted physique",
+    "days": [
+      {
+        "day": "Day 1 - Glutes & Legs",
+        "exercises": [
+          "Hip Thrusts – 4 × 12",
+          "Bulgarian Split Squats – 3 × 12 per leg",
+          "Leg Press – 3 × 15",
+          "Romanian Deadlift – 3 × 12",
+          "Cable Kickbacks – 3 × 15 per leg"
+        ]
+      },
+      {
+        "day": "Day 2 - Upper Body & Core",
+        "exercises": [
+          "Dumbbell Bench Press – 3 × 12",
+          "Cable Rows – 3 × 12",
+          "Dumbbell Shoulder Press – 3 × 12",
+          "Tricep Dips – 3 × 10",
+          "Plank Variations – 3 × 40 sec"
+        ]
+      },
+      {
+        "day": "Day 3 - Cardio & Abs",
+        "exercises": [
+          "Treadmill Intervals – 20 min",
+          "Crunches – 3 × 20",
+          "Leg Raises – 3 × 15",
+          "Russian Twists – 3 × 30",
+          "Plank – 3 × 45 sec"
+        ]
+      },
+      {
+        "day": "Day 4 - Lower Body Focus",
+        "exercises": [
+          "Squats – 4 × 12",
+          "Walking Lunges – 3 × 20 total",
+          "Hamstring Curls – 3 × 15",
+          "Calf Raises – 4 × 15",
+          "Glute Bridges – 3 × 15"
+        ]
+      },
+      {
+        "day": "Day 5 - Full Body Circuit",
+        "exercises": [
+          "Deadlifts – 3 × 10",
+          "Push-ups – 3 × 12",
+          "Step-ups – 3 × 12 per leg",
+          "Dumbbell Rows – 3 × 12",
+          "Mountain Climbers – 3 × 30 sec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Dumbbell Only Home Workout",
+    "goal": "muscle_building",
+    "experience": "beginner",
+    "duration": "45 min",
+    "daysPerWeek": 3,
+    "equipment": "dumbbells",
+    "description": "Build muscle at home with just dumbbells - no gym required",
+    "days": [
+      {
+        "day": "Day 1 - Upper Body",
+        "exercises": [
+          "Dumbbell Bench Press – 3 × 10",
+          "Dumbbell Rows – 3 × 10",
+          "Dumbbell Shoulder Press – 3 × 10",
+          "Dumbbell Bicep Curls – 3 × 12",
+          "Tricep Kickbacks – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 2 - Lower Body",
+        "exercises": [
+          "Goblet Squats – 3 × 12",
+          "Dumbbell Romanian Deadlifts – 3 × 10",
+          "Dumbbell Lunges – 3 × 10 per leg",
+          "Dumbbell Calf Raises – 3 × 15",
+          "Plank – 3 × 40 sec"
+        ]
+      },
+      {
+        "day": "Day 3 - Full Body",
+        "exercises": [
+          "Dumbbell Thrusters – 3 × 12",
+          "Renegade Rows – 3 × 8 per side",
+          "Dumbbell Step-ups – 3 × 10 per leg",
+          "Dumbbell Chest Flyes – 3 × 12",
+          "Russian Twists – 3 × 20"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Advanced Strength Program",
+    "goal": "strength",
+    "experience": "advanced",
+    "duration": "75 min",
+    "daysPerWeek": 4,
+    "equipment": "gym",
+    "description": "Powerlifting-focused program for experienced lifters seeking maximum strength",
+    "days": [
+      {
+        "day": "Day 1 - Heavy Squat",
+        "exercises": [
+          "Back Squat – 5 × 5",
+          "Front Squat – 3 × 8",
+          "Romanian Deadlift – 3 × 8",
+          "Bulgarian Split Squats – 3 × 8 per leg",
+          "Leg Curls – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 2 - Heavy Bench",
+        "exercises": [
+          "Bench Press – 5 × 5",
+          "Incline Bench Press – 3 × 8",
+          "Barbell Rows – 4 × 8",
+          "Close Grip Bench – 3 × 8",
+          "Face Pulls – 3 × 15"
+        ]
+      },
+      {
+        "day": "Day 3 - Heavy Deadlift",
+        "exercises": [
+          "Deadlift – 5 × 5",
+          "Deficit Deadlifts – 3 × 6",
+          "Barbell Rows – 4 × 8",
+          "Pull-ups – 4 × 6-8",
+          "Hanging Leg Raises – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 4 - Overhead Press",
+        "exercises": [
+          "Overhead Press – 5 × 5",
+          "Push Press – 3 × 6",
+          "Weighted Dips – 3 × 8",
+          "Lateral Raises – 4 × 12",
+          "Barbell Curls – 3 × 10"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Bodyweight Home Workout",
+    "goal": "general_fitness",
+    "experience": "beginner",
+    "duration": "30 min",
+    "daysPerWeek": 4,
+    "equipment": "none",
+    "description": "Get fit at home with no equipment - perfect for anywhere, anytime",
+    "days": [
+      {
+        "day": "Day 1 - Upper Body",
+        "exercises": [
+          "Push-ups – 4 × 15",
+          "Diamond Push-ups – 3 × 10",
+          "Pike Push-ups – 3 × 12",
+          "Tricep Dips (chair) – 3 × 15",
+          "Plank – 3 × 45 sec"
+        ]
+      },
+      {
+        "day": "Day 2 - Lower Body",
+        "exercises": [
+          "Bodyweight Squats – 4 × 20",
+          "Lunges – 3 × 15 per leg",
+          "Single Leg Deadlifts – 3 × 12 per leg",
+          "Jump Squats – 3 × 15",
+          "Calf Raises – 4 × 20"
+        ]
+      },
+      {
+        "day": "Day 3 - Core & Cardio",
+        "exercises": [
+          "Mountain Climbers – 4 × 30 sec",
+          "Burpees – 4 × 12",
+          "Crunches – 3 × 25",
+          "Leg Raises – 3 × 15",
+          "Side Plank – 3 × 30 sec per side"
+        ]
+      },
+      {
+        "day": "Day 4 - Full Body",
+        "exercises": [
+          "Push-ups – 3 × 15",
+          "Squats – 3 × 20",
+          "Plank to Downward Dog – 3 × 12",
+          "High Knees – 3 × 30 sec",
+          "Superman Hold – 3 × 30 sec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Push Pull Legs Split",
+    "goal": "muscle_building",
+    "experience": "intermediate",
+    "duration": "60 min",
+    "daysPerWeek": 6,
+    "equipment": "gym",
+    "description": "Classic bodybuilding split for balanced muscle development",
+    "days": [
+      {
+        "day": "Day 1 - Push (Chest, Shoulders, Triceps)",
+        "exercises": [
+          "Bench Press – 4 × 8-10",
+          "Incline Dumbbell Press – 3 × 10-12",
+          "Overhead Press – 3 × 8-10",
+          "Lateral Raises – 3 × 12-15",
+          "Tricep Pushdowns – 3 × 12-15"
+        ]
+      },
+      {
+        "day": "Day 2 - Pull (Back, Biceps)",
+        "exercises": [
+          "Deadlifts – 4 × 6-8",
+          "Pull-ups – 3 × 8-10",
+          "Barbell Rows – 3 × 8-10",
+          "Face Pulls – 3 × 15",
+          "Barbell Curls – 3 × 10-12"
+        ]
+      },
+      {
+        "day": "Day 3 - Legs",
+        "exercises": [
+          "Squats – 4 × 8-10",
+          "Romanian Deadlifts – 3 × 10-12",
+          "Leg Press – 3 × 12-15",
+          "Leg Curls – 3 × 12",
+          "Calf Raises – 4 × 15"
+        ]
+      },
+      {
+        "day": "Day 4 - Push",
+        "exercises": [
+          "Incline Barbell Press – 4 × 8-10",
+          "Dumbbell Bench Press – 3 × 10-12",
+          "Arnold Press – 3 × 10-12",
+          "Cable Flyes – 3 × 12-15",
+          "Tricep Dips – 3 × 10-12"
+        ]
+      },
+      {
+        "day": "Day 5 - Pull",
+        "exercises": [
+          "T-Bar Rows – 4 × 8-10",
+          "Lat Pulldowns – 3 × 10-12",
+          "Seated Cable Rows – 3 × 10-12",
+          "Dumbbell Shrugs – 3 × 12-15",
+          "Preacher Curls – 3 × 10-12"
+        ]
+      },
+      {
+        "day": "Day 6 - Legs",
+        "exercises": [
+          "Front Squats – 4 × 8-10",
+          "Leg Press – 4 × 12-15",
+          "Walking Lunges – 3 × 12 per leg",
+          "Hamstring Curls – 3 × 12-15",
+          "Seated Calf Raises – 4 × 15-20"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Beginner Endurance & Cardio",
+    "goal": "endurance",
+    "experience": "beginner",
+    "duration": "35 min",
+    "daysPerWeek": 4,
+    "equipment": "minimal",
+    "description": "Build cardiovascular endurance and stamina for everyday activities",
+    "days": [
+      {
+        "day": "Day 1 - Low Intensity Cardio",
+        "exercises": [
+          "Brisk Walking – 25 min",
+          "Arm Circles – 2 × 20",
+          "Leg Swings – 2 × 15 per leg",
+          "Jumping Jacks – 3 × 30 sec",
+          "Cool Down Walk – 5 min"
+        ]
+      },
+      {
+        "day": "Day 2 - Bodyweight Circuit",
+        "exercises": [
+          "Marching in Place – 3 × 60 sec",
+          "Bodyweight Squats – 3 × 15",
+          "Modified Push-ups – 3 × 10",
+          "Step Touches – 3 × 30 sec",
+          "Gentle Stretching – 5 min"
+        ]
+      },
+      {
+        "day": "Day 3 - Interval Training",
+        "exercises": [
+          "Walk/Jog Intervals – 20 min",
+          "High Knees – 3 × 20 sec",
+          "Butt Kicks – 3 × 20 sec",
+          "Side Steps – 3 × 30 sec",
+          "Cool Down – 5 min"
+        ]
+      },
+      {
+        "day": "Day 4 - Active Recovery",
+        "exercises": [
+          "Light Walking – 15 min",
+          "Dynamic Stretches – 5 min",
+          "Gentle Yoga Flow – 10 min",
+          "Deep Breathing – 3 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Intermediate Cardio Blast",
+    "goal": "endurance",
+    "experience": "intermediate",
+    "duration": "50 min",
+    "daysPerWeek": 5,
+    "equipment": "minimal",
+    "description": "Boost your cardio fitness with varied high-intensity workouts",
+    "days": [
+      {
+        "day": "Day 1 - Running Intervals",
+        "exercises": [
+          "Warm-up Jog – 5 min",
+          "Sprint Intervals – 10 × 1 min on, 1 min off",
+          "Steady Run – 10 min",
+          "Cool Down – 5 min"
+        ]
+      },
+      {
+        "day": "Day 2 - Circuit Training",
+        "exercises": [
+          "Jump Rope – 5 × 2 min",
+          "Mountain Climbers – 4 × 45 sec",
+          "Box Jumps – 4 × 12",
+          "Burpees – 4 × 15",
+          "Plank Jacks – 4 × 30 sec"
+        ]
+      },
+      {
+        "day": "Day 3 - Steady State Cardio",
+        "exercises": [
+          "Running or Cycling – 35 min moderate pace",
+          "Cool Down – 5 min",
+          "Stretching – 10 min"
+        ]
+      },
+      {
+        "day": "Day 4 - HIIT Workout",
+        "exercises": [
+          "Warm-up – 5 min",
+          "High Knees – 5 × 30 sec",
+          "Jump Squats – 5 × 20",
+          "Mountain Climbers – 5 × 30 sec",
+          "Rest 90 sec between rounds"
+        ]
+      },
+      {
+        "day": "Day 5 - Active Recovery Run",
+        "exercises": [
+          "Easy Jog – 30 min",
+          "Walking – 10 min",
+          "Full Body Stretch – 10 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Upper Lower 4-Day Split",
+    "goal": "muscle_building",
+    "experience": "intermediate",
+    "duration": "55 min",
+    "daysPerWeek": 4,
+    "equipment": "gym",
+    "description": "Efficient upper/lower split for balanced muscle growth",
+    "days": [
+      {
+        "day": "Day 1 - Upper Body A",
+        "exercises": [
+          "Bench Press – 4 × 8",
+          "Bent Over Rows – 4 × 8",
+          "Overhead Press – 3 × 10",
+          "Lat Pulldown – 3 × 10",
+          "Dumbbell Curls – 3 × 12",
+          "Tricep Dips – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 2 - Lower Body A",
+        "exercises": [
+          "Squats – 4 × 8",
+          "Romanian Deadlifts – 3 × 10",
+          "Leg Press – 3 × 12",
+          "Leg Curls – 3 × 12",
+          "Calf Raises – 4 × 15",
+          "Abs – 3 × 15"
+        ]
+      },
+      {
+        "day": "Day 3 - Upper Body B",
+        "exercises": [
+          "Incline Dumbbell Press – 4 × 10",
+          "Cable Rows – 4 × 10",
+          "Dumbbell Shoulder Press – 3 × 10",
+          "Pull-ups – 3 × 8",
+          "Hammer Curls – 3 × 12",
+          "Overhead Tricep Extension – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 4 - Lower Body B",
+        "exercises": [
+          "Deadlifts – 4 × 6",
+          "Front Squats – 3 × 10",
+          "Leg Extensions – 3 × 15",
+          "Hamstring Curls – 3 × 12",
+          "Seated Calf Raises – 4 × 15",
+          "Planks – 3 × 45 sec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "5-Day Body Part Split",
+    "goal": "muscle_building",
+    "experience": "advanced",
+    "duration": "70 min",
+    "daysPerWeek": 5,
+    "equipment": "gym",
+    "description": "Classic bodybuilding split focusing on one muscle group per day",
+    "days": [
+      {
+        "day": "Day 1 - Chest",
+        "exercises": [
+          "Flat Bench Press – 4 × 8-10",
+          "Incline Dumbbell Press – 4 × 10",
+          "Cable Flyes – 3 × 12",
+          "Dumbbell Pullovers – 3 × 12",
+          "Dips – 3 × 12",
+          "Push-ups – 3 × max"
+        ]
+      },
+      {
+        "day": "Day 2 - Back",
+        "exercises": [
+          "Deadlifts – 4 × 6",
+          "Pull-ups – 4 × 8",
+          "Barbell Rows – 4 × 8",
+          "T-Bar Rows – 3 × 10",
+          "Face Pulls – 3 × 15",
+          "Hyperextensions – 3 × 15"
+        ]
+      },
+      {
+        "day": "Day 3 - Shoulders",
+        "exercises": [
+          "Overhead Press – 4 × 8",
+          "Arnold Press – 3 × 10",
+          "Lateral Raises – 4 × 12",
+          "Front Raises – 3 × 12",
+          "Rear Delt Flyes – 4 × 12",
+          "Shrugs – 4 × 15"
+        ]
+      },
+      {
+        "day": "Day 4 - Legs",
+        "exercises": [
+          "Squats – 5 × 8",
+          "Leg Press – 4 × 12",
+          "Romanian Deadlifts – 4 × 10",
+          "Leg Extensions – 3 × 15",
+          "Leg Curls – 3 × 15",
+          "Calf Raises – 5 × 15"
+        ]
+      },
+      {
+        "day": "Day 5 - Arms",
+        "exercises": [
+          "Close Grip Bench – 4 × 8",
+          "Barbell Curls – 4 × 10",
+          "Tricep Dips – 3 × 12",
+          "Hammer Curls – 3 × 12",
+          "Cable Tricep Pushdowns – 3 × 15",
+          "Concentration Curls – 3 × 12"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Beginner Home Strength",
+    "goal": "strength",
+    "experience": "beginner",
+    "duration": "35 min",
+    "daysPerWeek": 3,
+    "equipment": "dumbbells",
+    "description": "Build strength at home with minimal equipment",
+    "days": [
+      {
+        "day": "Day 1 - Full Body",
+        "exercises": [
+          "Goblet Squats – 3 × 12",
+          "Dumbbell Chest Press – 3 × 10",
+          "Dumbbell Rows – 3 × 10 per side",
+          "Shoulder Press – 3 × 10",
+          "Plank – 3 × 30 sec"
+        ]
+      },
+      {
+        "day": "Day 2 - Full Body",
+        "exercises": [
+          "Dumbbell Deadlifts – 3 × 10",
+          "Push-ups – 3 × 12",
+          "Dumbbell Lunges – 3 × 10 per leg",
+          "Bicep Curls – 3 × 12",
+          "Russian Twists – 3 × 20"
+        ]
+      },
+      {
+        "day": "Day 3 - Full Body",
+        "exercises": [
+          "Dumbbell Front Squats – 3 × 12",
+          "Dumbbell Flyes – 3 × 12",
+          "Single Arm Rows – 3 × 10 per side",
+          "Lateral Raises – 3 × 12",
+          "Bicycle Crunches – 3 × 20"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Active Recovery & Mobility",
+    "goal": "flexibility",
+    "experience": "beginner",
+    "duration": "30 min",
+    "daysPerWeek": 3,
+    "equipment": "none",
+    "description": "Improve flexibility, reduce stress, and enhance recovery",
+    "days": [
+      {
+        "day": "Day 1 - Full Body Stretch",
+        "exercises": [
+          "Cat-Cow Stretch – 2 min",
+          "Downward Dog – 2 min",
+          "Child's Pose – 2 min",
+          "Hip Flexor Stretch – 90 sec per side",
+          "Hamstring Stretch – 90 sec per side",
+          "Shoulder Rolls – 2 min"
+        ]
+      },
+      {
+        "day": "Day 2 - Yoga Flow",
+        "exercises": [
+          "Sun Salutations – 5 rounds",
+          "Warrior Poses – 2 min per side",
+          "Triangle Pose – 90 sec per side",
+          "Pigeon Pose – 2 min per side",
+          "Seated Forward Fold – 3 min"
+        ]
+      },
+      {
+        "day": "Day 3 - Mobility Work",
+        "exercises": [
+          "Arm Circles – 2 min",
+          "Leg Swings – 2 min",
+          "Hip Circles – 2 min",
+          "Ankle Mobility – 2 min",
+          "Neck Rolls – 2 min",
+          "Deep Breathing – 5 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Advanced Athlete Training",
+    "goal": "sport_performance",
+    "experience": "advanced",
+    "duration": "80 min",
+    "daysPerWeek": 6,
+    "equipment": "gym",
+    "description": "Sport-specific training for competitive athletes",
+    "days": [
+      {
+        "day": "Day 1 - Power & Explosiveness",
+        "exercises": [
+          "Power Cleans – 5 × 3",
+          "Box Jumps – 5 × 5",
+          "Medicine Ball Slams – 4 × 10",
+          "Sprints – 8 × 40m",
+          "Depth Jumps – 4 × 6"
+        ]
+      },
+      {
+        "day": "Day 2 - Strength",
+        "exercises": [
+          "Back Squat – 5 × 5",
+          "Bench Press – 5 × 5",
+          "Deadlift – 3 × 5",
+          "Pull-ups – 4 × 8",
+          "Core Circuit – 15 min"
+        ]
+      },
+      {
+        "day": "Day 3 - Speed & Agility",
+        "exercises": [
+          "Ladder Drills – 10 min",
+          "Cone Drills – 15 min",
+          "Shuttle Runs – 10 × 20m",
+          "Lateral Bounds – 4 × 10",
+          "Reaction Drills – 10 min"
+        ]
+      },
+      {
+        "day": "Day 4 - Upper Body Power",
+        "exercises": [
+          "Push Press – 5 × 5",
+          "Explosive Push-ups – 4 × 8",
+          "Medicine Ball Chest Pass – 4 × 10",
+          "Battle Ropes – 5 × 30 sec",
+          "Plyometric Pull-ups – 4 × 6"
+        ]
+      },
+      {
+        "day": "Day 5 - Lower Body Power",
+        "exercises": [
+          "Jump Squats – 5 × 5",
+          "Single Leg Bounds – 4 × 8 per leg",
+          "Broad Jumps – 4 × 5",
+          "Sled Pushes – 6 × 20m",
+          "Hill Sprints – 8 × 30 sec"
+        ]
+      },
+      {
+        "day": "Day 6 - Conditioning",
+        "exercises": [
+          "Bike Sprints – 10 × 30 sec",
+          "Rowing Intervals – 8 × 200m",
+          "Battle Ropes – 5 × 45 sec",
+          "Burpees – 5 × 15",
+          "Cool Down – 10 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Intermediate Fat Shredder",
+    "goal": "fat_loss",
+    "experience": "intermediate",
+    "duration": "50 min",
+    "daysPerWeek": 5,
+    "equipment": "gym",
+    "description": "Intense training program designed for maximum fat burn",
+    "days": [
+      {
+        "day": "Day 1 - HIIT Strength",
+        "exercises": [
+          "Barbell Complexes – 5 rounds",
+          "Kettlebell Swings – 4 × 25",
+          "Box Jumps – 4 × 15",
+          "Battle Ropes – 4 × 45 sec",
+          "Burpees – 4 × 15"
+        ]
+      },
+      {
+        "day": "Day 2 - Circuit Training",
+        "exercises": [
+          "Deadlifts – 3 × 12",
+          "Push-ups – 3 × 20",
+          "Jump Squats – 3 × 20",
+          "Pull-ups – 3 × 10",
+          "Mountain Climbers – 3 × 45 sec"
+        ]
+      },
+      {
+        "day": "Day 3 - Cardio Blast",
+        "exercises": [
+          "Treadmill Sprints – 15 min",
+          "Rowing Machine – 10 min",
+          "Jump Rope – 5 × 2 min",
+          "Bike Sprints – 10 × 30 sec",
+          "Stretching – 10 min"
+        ]
+      },
+      {
+        "day": "Day 4 - Metabolic Conditioning",
+        "exercises": [
+          "Thrusters – 5 × 15",
+          "Renegade Rows – 4 × 10 per side",
+          "Wall Balls – 4 × 20",
+          "Sled Pushes – 5 × 30m",
+          "Farmer's Walks – 4 × 50m"
+        ]
+      },
+      {
+        "day": "Day 5 - Full Body HIIT",
+        "exercises": [
+          "Clean and Press – 4 × 10",
+          "Jump Lunges – 4 × 20 total",
+          "Dips – 3 × 15",
+          "Kettlebell Swings – 4 × 30",
+          "Ab Circuit – 10 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Beginner's PPL",
+    "goal": "muscle_building",
+    "experience": "beginner",
+    "duration": "45 min",
+    "daysPerWeek": 3,
+    "equipment": "gym",
+    "description": "Simplified push/pull/legs split perfect for beginners",
+    "days": [
+      {
+        "day": "Day 1 - Push",
+        "exercises": [
+          "Bench Press – 3 × 10",
+          "Dumbbell Shoulder Press – 3 × 10",
+          "Incline Dumbbell Press – 3 × 10",
+          "Lateral Raises – 3 × 12",
+          "Tricep Pushdowns – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 2 - Pull",
+        "exercises": [
+          "Deadlifts – 3 × 8",
+          "Lat Pulldown – 3 × 10",
+          "Cable Rows – 3 × 10",
+          "Face Pulls – 3 × 12",
+          "Dumbbell Curls – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 3 - Legs",
+        "exercises": [
+          "Squats – 3 × 10",
+          "Leg Press – 3 × 12",
+          "Romanian Deadlift – 3 × 10",
+          "Leg Curls – 3 × 12",
+          "Calf Raises – 4 × 15"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "6-Day Strength & Hypertrophy",
+    "goal": "strength",
+    "experience": "advanced",
+    "duration": "75 min",
+    "daysPerWeek": 6,
+    "equipment": "gym",
+    "description": "Combine strength and size gains with high-frequency training",
+    "days": [
+      {
+        "day": "Day 1 - Chest & Triceps",
+        "exercises": [
+          "Bench Press – 5 × 5",
+          "Incline Press – 4 × 8",
+          "Cable Flyes – 3 × 12",
+          "Close Grip Bench – 4 × 8",
+          "Tricep Extensions – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 2 - Back & Biceps",
+        "exercises": [
+          "Deadlifts – 5 × 5",
+          "Pull-ups – 4 × 8",
+          "T-Bar Rows – 4 × 8",
+          "Face Pulls – 3 × 15",
+          "Barbell Curls – 4 × 10"
+        ]
+      },
+      {
+        "day": "Day 3 - Legs",
+        "exercises": [
+          "Squats – 5 × 5",
+          "Front Squats – 3 × 8",
+          "RDL – 4 × 8",
+          "Leg Press – 3 × 12",
+          "Leg Curls – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 4 - Shoulders",
+        "exercises": [
+          "Overhead Press – 5 × 5",
+          "Arnold Press – 4 × 10",
+          "Lateral Raises – 4 × 12",
+          "Rear Delt Flyes – 4 × 12",
+          "Shrugs – 4 × 15"
+        ]
+      },
+      {
+        "day": "Day 5 - Upper Body",
+        "exercises": [
+          "Incline Bench – 4 × 8",
+          "Cable Rows – 4 × 10",
+          "Dumbbell Press – 3 × 10",
+          "Lat Pulldown – 3 × 12",
+          "Arm Superset – 4 × 12"
+        ]
+      },
+      {
+        "day": "Day 6 - Legs & Abs",
+        "exercises": [
+          "Deadlifts – 4 × 6",
+          "Leg Extensions – 4 × 15",
+          "Hamstring Curls – 4 × 12",
+          "Calf Raises – 5 × 20",
+          "Ab Circuit – 15 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Home HIIT for Fat Loss",
+    "goal": "fat_loss",
+    "experience": "beginner",
+    "duration": "25 min",
+    "daysPerWeek": 4,
+    "equipment": "none",
+    "description": "Quick, effective home workouts to burn fat fast",
+    "days": [
+      {
+        "day": "Day 1 - Cardio Blast",
+        "exercises": [
+          "Jumping Jacks – 4 × 45 sec",
+          "High Knees – 4 × 30 sec",
+          "Butt Kicks – 4 × 30 sec",
+          "Burpees – 3 × 10",
+          "Mountain Climbers – 3 × 30 sec"
+        ]
+      },
+      {
+        "day": "Day 2 - Bodyweight Circuit",
+        "exercises": [
+          "Squats – 3 × 20",
+          "Push-ups – 3 × 15",
+          "Lunges – 3 × 15 per leg",
+          "Plank – 3 × 40 sec",
+          "Jump Squats – 3 × 15"
+        ]
+      },
+      {
+        "day": "Day 3 - Tabata",
+        "exercises": [
+          "Burpees – 8 × 20 sec on, 10 sec off",
+          "Mountain Climbers – 8 × 20 sec on, 10 sec off",
+          "Jump Squats – 8 × 20 sec on, 10 sec off",
+          "High Knees – 8 × 20 sec on, 10 sec off"
+        ]
+      },
+      {
+        "day": "Day 4 - Full Body Burn",
+        "exercises": [
+          "Jumping Jacks – 3 × 60 sec",
+          "Push-ups – 3 × 12",
+          "Squat Jumps – 3 × 15",
+          "Bicycle Crunches – 3 × 30",
+          "Plank Jacks – 3 × 30 sec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Outdoor Running Program",
+    "goal": "endurance",
+    "experience": "intermediate",
+    "duration": "45 min",
+    "daysPerWeek": 4,
+    "equipment": "none",
+    "description": "Structured outdoor running program to build endurance",
+    "days": [
+      {
+        "day": "Day 1 - Easy Run",
+        "exercises": [
+          "Warm-up Walk – 5 min",
+          "Easy Pace Run – 30 min",
+          "Cool Down Walk – 5 min",
+          "Stretching – 5 min"
+        ]
+      },
+      {
+        "day": "Day 2 - Intervals",
+        "exercises": [
+          "Warm-up Jog – 5 min",
+          "Fast Run – 8 × 2 min, 90 sec recovery",
+          "Cool Down – 5 min",
+          "Stretching – 5 min"
+        ]
+      },
+      {
+        "day": "Day 3 - Tempo Run",
+        "exercises": [
+          "Warm-up – 5 min",
+          "Tempo Pace – 20 min",
+          "Easy Jog – 10 min",
+          "Cool Down – 5 min"
+        ]
+      },
+      {
+        "day": "Day 4 - Long Run",
+        "exercises": [
+          "Warm-up – 5 min",
+          "Steady Pace Run – 40 min",
+          "Cool Down – 5 min",
+          "Full Stretch – 10 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Women's Beginner Gym",
+    "goal": "tone",
+    "experience": "beginner",
+    "duration": "40 min",
+    "daysPerWeek": 3,
+    "equipment": "gym",
+    "description": "Perfect introduction to gym training for women",
+    "days": [
+      {
+        "day": "Day 1 - Lower Body",
+        "exercises": [
+          "Goblet Squats – 3 × 12",
+          "Leg Press – 3 × 12",
+          "Glute Bridges – 3 × 15",
+          "Leg Curls – 3 × 12",
+          "Calf Raises – 3 × 15"
+        ]
+      },
+      {
+        "day": "Day 2 - Upper Body",
+        "exercises": [
+          "Machine Chest Press – 3 × 12",
+          "Lat Pulldown – 3 × 12",
+          "Dumbbell Shoulder Press – 3 × 10",
+          "Cable Rows – 3 × 12",
+          "Tricep Pushdowns – 3 × 12"
+        ]
+      },
+      {
+        "day": "Day 3 - Full Body",
+        "exercises": [
+          "Dumbbell Squats – 3 × 12",
+          "Push-ups (modified) – 3 × 10",
+          "Walking Lunges – 3 × 20 total",
+          "Dumbbell Rows – 3 × 10 per side",
+          "Plank – 3 × 30 sec"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Advanced 7-Day Shred",
+    "goal": "fat_loss",
+    "experience": "advanced",
+    "duration": "60 min",
+    "daysPerWeek": 7,
+    "equipment": "gym",
+    "description": "Intense daily training for serious fat loss goals",
+    "days": [
+      {
+        "day": "Day 1 - HIIT & Weights",
+        "exercises": [
+          "Barbell Complexes – 5 rounds",
+          "Sprints – 10 × 100m",
+          "Kettlebell Swings – 5 × 30",
+          "Box Jumps – 4 × 15",
+          "Core Circuit – 10 min"
+        ]
+      },
+      {
+        "day": "Day 2 - Upper Body Circuit",
+        "exercises": [
+          "Bench Press – 4 × 12",
+          "Pull-ups – 4 × 10",
+          "Dips – 3 × 15",
+          "Rows – 4 × 12",
+          "Burpees – 5 × 15"
+        ]
+      },
+      {
+        "day": "Day 3 - Lower Body & Cardio",
+        "exercises": [
+          "Squats – 4 × 15",
+          "Deadlifts – 3 × 12",
+          "Lunges – 3 × 15 per leg",
+          "Jump Rope – 5 × 3 min",
+          "Leg Circuit – 15 min"
+        ]
+      },
+      {
+        "day": "Day 4 - Metabolic",
+        "exercises": [
+          "Clean and Press – 5 × 10",
+          "Sled Pushes – 8 × 30m",
+          "Battle Ropes – 6 × 45 sec",
+          "Farmer's Walks – 5 × 50m",
+          "Wall Balls – 5 × 20"
+        ]
+      },
+      {
+        "day": "Day 5 - Full Body HIIT",
+        "exercises": [
+          "Thrusters – 5 × 15",
+          "Pull-ups – 4 × 10",
+          "Box Jumps – 4 × 20",
+          "Renegade Rows – 4 × 10",
+          "Burpees – 5 × 20"
+        ]
+      },
+      {
+        "day": "Day 6 - Cardio Blast",
+        "exercises": [
+          "Rowing – 5 × 500m",
+          "Bike Sprints – 10 × 45 sec",
+          "Stair Climber – 20 min",
+          "Treadmill Sprints – 10 × 1 min",
+          "Stretching – 10 min"
+        ]
+      },
+      {
+        "day": "Day 7 - Active Recovery",
+        "exercises": [
+          "Light Jogging – 20 min",
+          "Swimming or Cycling – 20 min",
+          "Yoga Flow – 20 min",
+          "Stretching – 10 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Intermediate Home Athlete",
+    "goal": "sport_performance",
+    "experience": "intermediate",
+    "duration": "50 min",
+    "daysPerWeek": 4,
+    "equipment": "dumbbells",
+    "description": "Build athletic performance with minimal equipment at home",
+    "days": [
+      {
+        "day": "Day 1 - Power",
+        "exercises": [
+          "Jump Squats – 5 × 8",
+          "Dumbbell Push Press – 4 × 8",
+          "Broad Jumps – 4 × 6",
+          "Dumbbell Snatch – 4 × 6 per side",
+          "Plyo Push-ups – 4 × 10"
+        ]
+      },
+      {
+        "day": "Day 2 - Strength",
+        "exercises": [
+          "Dumbbell Squats – 4 × 10",
+          "Single Leg RDL – 3 × 10 per leg",
+          "Dumbbell Bench Press – 4 × 10",
+          "Dumbbell Rows – 4 × 10",
+          "Core Circuit – 12 min"
+        ]
+      },
+      {
+        "day": "Day 3 - Speed & Agility",
+        "exercises": [
+          "Sprint Drills – 15 min",
+          "Lateral Bounds – 4 × 10 per side",
+          "High Knees – 5 × 30 sec",
+          "Agility Ladder (imaginary) – 10 min",
+          "Jump Rope – 5 × 2 min"
+        ]
+      },
+      {
+        "day": "Day 4 - Conditioning",
+        "exercises": [
+          "Dumbbell Thrusters – 5 × 15",
+          "Burpees – 5 × 15",
+          "Dumbbell Swings – 4 × 20",
+          "Mountain Climbers – 5 × 45 sec",
+          "Finisher Circuit – 10 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Beginner Stay Active",
+    "goal": "general_fitness",
+    "experience": "beginner",
+    "duration": "25 min",
+    "daysPerWeek": 3,
+    "equipment": "none",
+    "description": "Simple, gentle workouts to stay active and healthy",
+    "days": [
+      {
+        "day": "Day 1 - Light Movement",
+        "exercises": [
+          "Walking – 15 min",
+          "Arm Circles – 2 min",
+          "Bodyweight Squats – 2 × 10",
+          "Wall Push-ups – 2 × 8",
+          "Stretching – 5 min"
+        ]
+      },
+      {
+        "day": "Day 2 - Gentle Strength",
+        "exercises": [
+          "Chair Squats – 3 × 10",
+          "Wall Push-ups – 3 × 10",
+          "Standing Marches – 3 × 30 sec",
+          "Seated Toe Touches – 3 × 10",
+          "Gentle Yoga – 5 min"
+        ]
+      },
+      {
+        "day": "Day 3 - Balance & Stretch",
+        "exercises": [
+          "Single Leg Stands – 3 × 20 sec per leg",
+          "Heel Raises – 2 × 15",
+          "Arm Reaches – 2 × 10",
+          "Hip Circles – 2 × 10 each direction",
+          "Full Body Stretch – 10 min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Intermediate Flexibility & Yoga",
+    "goal": "flexibility",
+    "experience": "intermediate",
+    "duration": "45 min",
+    "daysPerWeek": 4,
+    "equipment": "none",
+    "description": "Advanced yoga and flexibility training for better mobility",
+    "days": [
+      {
+        "day": "Day 1 - Vinyasa Flow",
+        "exercises": [
+          "Sun Salutations A – 10 rounds",
+          "Sun Salutations B – 5 rounds",
+          "Warrior Sequence – 5 min per side",
+          "Balance Poses – 10 min",
+          "Savasana – 5 min"
+        ]
+      },
+      {
+        "day": "Day 2 - Deep Stretch",
+        "exercises": [
+          "Hip Openers – 10 min",
+          "Forward Folds – 8 min",
+          "Spinal Twists – 8 min",
+          "Shoulder Stretches – 5 min",
+          "Relaxation – 10 min"
+        ]
+      },
+      {
+        "day": "Day 3 - Power Yoga",
+        "exercises": [
+          "Dynamic Flow – 15 min",
+          "Arm Balances – 10 min",
+          "Core Work – 10 min",
+          "Inversions – 5 min",
+          "Cool Down – 5 min"
+        ]
+      },
+      {
+        "day": "Day 4 - Restorative",
+        "exercises": [
+          "Yin Yoga Poses – 25 min",
+          "Gentle Stretches – 10 min",
+          "Meditation – 5 min",
+          "Breathing Exercises – 5 min"
+        ]
+      }
+    ]
+  }
+]

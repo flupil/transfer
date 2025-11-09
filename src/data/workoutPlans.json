@@ -1,0 +1,1404 @@
+[
+  {
+    "plan_id": 1,
+    "title": "Base Plan 1 \u2013 Full Body (Beginner, Stay Active)",
+    "days": [
+      {
+        "day": "Day 1 \u2013 Full Body Strength",
+        "exercises": [
+          "Squats \u2013 3\u00d710",
+          "Push-ups \u2013 3\u00d712",
+          "Dumbbell Rows \u2013 3\u00d710 per side",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 2 \u2013 Rest",
+        "exercises": [
+          "Rest / light stretching"
+        ]
+      },
+      {
+        "day": "Day 3 \u2013 Full Body Circuit",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Bench Dips \u2013 3\u00d712",
+          "Shoulder Press \u2013 3\u00d710",
+          "Bicycle Crunch \u2013 3\u00d715 per side"
+        ]
+      },
+      {
+        "day": "Day 4 \u2013 Rest",
+        "exercises": [
+          "Rest / yoga"
+        ]
+      },
+      {
+        "day": "Day 5 \u2013 Full Body Strength",
+        "exercises": [
+          "Deadlifts \u2013 3\u00d78",
+          "Incline Push-ups \u2013 3\u00d712",
+          "Chin-ups or Assisted Pull-ups \u2013 3\u00d78",
+          "Side Plank \u2013 3\u00d720 sec per side"
+        ]
+      },
+      {
+        "day": "Day 6 \u2013 Active Recovery",
+        "exercises": [
+          "Yoga / mobility / 20 min walk"
+        ]
+      },
+      {
+        "day": "Day 7 \u2013 Rest",
+        "exercises": [
+          "Full rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 2,
+    "title": "Base Plan 2 \u2013 Push / Pull / Legs (Intermediate, Muscle Gain)",
+    "days": [
+      {
+        "day": "Day 1 \u2013 Push",
+        "exercises": [
+          "Bench Press \u2013 4\u00d78",
+          "Overhead Press \u2013 3\u00d710",
+          "Tricep Dips \u2013 3\u00d712",
+          "Lateral Raises \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2 \u2013 Pull",
+        "exercises": [
+          "Pull-ups \u2013 4\u00d76",
+          "Barbell Rows \u2013 3\u00d710",
+          "Bicep Curls \u2013 3\u00d712",
+          "Face Pulls \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 3 \u2013 Legs",
+        "exercises": [
+          "Back Squats \u2013 4\u00d78",
+          "Romanian Deadlifts \u2013 3\u00d710",
+          "Walking Lunges \u2013 3\u00d712 per leg",
+          "Calf Raises \u2013 3\u00d715"
+        ]
+      },
+      {
+        "day": "Day 4 \u2013 Rest",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 5 \u2013 Push",
+        "exercises": [
+          "Incline Dumbbell Press \u2013 4\u00d78",
+          "Arnold Press \u2013 3\u00d710",
+          "Close-grip Push-ups \u2013 3\u00d712",
+          "Chest Fly \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 6 \u2013 Pull",
+        "exercises": [
+          "Lat Pulldown \u2013 4\u00d78",
+          "Seated Cable Row \u2013 3\u00d710",
+          "Hammer Curls \u2013 3\u00d712",
+          "Shrugs \u2013 3\u00d715"
+        ]
+      },
+      {
+        "day": "Day 7 \u2013 Rest",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 3,
+    "title": "Base Plan 3 \u2013 Upper / Lower (Strength Focus)",
+    "days": [
+      {
+        "day": "Day 1 \u2013 Upper Heavy",
+        "exercises": [
+          "Bench Press \u2013 5\u00d75",
+          "Weighted Pull-ups \u2013 4\u00d76",
+          "Overhead Press \u2013 4\u00d76",
+          "Barbell Curl \u2013 3\u00d710"
+        ]
+      },
+      {
+        "day": "Day 2 \u2013 Lower Heavy",
+        "exercises": [
+          "Back Squat \u2013 5\u00d75",
+          "Deadlift \u2013 4\u00d75",
+          "Bulgarian Split Squat \u2013 3\u00d710 per leg",
+          "Hanging Leg Raises \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 3 \u2013 Rest",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4 \u2013 Upper Volume",
+        "exercises": [
+          "Incline Bench \u2013 4\u00d710",
+          "Barbell Rows \u2013 4\u00d710",
+          "Lateral Raises \u2013 3\u00d715",
+          "Tricep Rope Pushdowns \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 5 \u2013 Lower Volume",
+        "exercises": [
+          "Front Squats \u2013 4\u00d710",
+          "Hip Thrusts \u2013 4\u00d712",
+          "Leg Curls \u2013 3\u00d715",
+          "Standing Calf Raises \u2013 4\u00d715"
+        ]
+      },
+      {
+        "day": "Day 6 \u2013 Conditioning",
+        "exercises": [
+          "Kettlebell Swings \u2013 3\u00d720",
+          "Push-ups \u2013 3\u00d720",
+          "Mountain Climbers \u2013 3\u00d740 sec",
+          "Plank \u2013 3\u00d740 sec"
+        ]
+      },
+      {
+        "day": "Day 7 \u2013 Rest",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 4,
+    "title": "Base Plan 4 \u2013 Endurance & Conditioning (Weight Loss Focus)",
+    "days": [
+      {
+        "day": "Day 1 \u2013 HIIT",
+        "exercises": [
+          "Treadmill Intervals: 30s sprint / 90s walk \u00d7 8 rounds",
+          "Burpees \u2013 3\u00d715",
+          "Jump Squats \u2013 3\u00d720"
+        ]
+      },
+      {
+        "day": "Day 2 \u2013 Strength Circuit",
+        "exercises": [
+          "Goblet Squat \u2013 3\u00d715",
+          "Push-ups \u2013 3\u00d715",
+          "Bent-over Rows \u2013 3\u00d712",
+          "Russian Twists \u2013 3\u00d720"
+        ]
+      },
+      {
+        "day": "Day 3 \u2013 Rest",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4 \u2013 Steady Cardio",
+        "exercises": [
+          "Bike / Run / Row \u2013 40 min at steady pace"
+        ]
+      },
+      {
+        "day": "Day 5 \u2013 HIIT + Core",
+        "exercises": [
+          "Jump Lunges \u2013 3\u00d715 per leg",
+          "Mountain Climbers \u2013 3\u00d730 sec",
+          "Sit-ups \u2013 3\u00d720",
+          "Plank \u2013 3\u00d745 sec"
+        ]
+      },
+      {
+        "day": "Day 6 \u2013 Yoga",
+        "exercises": [
+          "30 min mobility / yoga"
+        ]
+      },
+      {
+        "day": "Day 7 \u2013 Rest",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 5,
+    "title": "Base Plan 5 \u2013 Hybrid Balanced (Strength + Conditioning)",
+    "days": [
+      {
+        "day": "Day 1 \u2013 Upper Strength",
+        "exercises": [
+          "Bench Press \u2013 4\u00d78",
+          "Pull-ups \u2013 4\u00d76",
+          "Shoulder Press \u2013 3\u00d710",
+          "Bicep Curls \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2 \u2013 Lower Strength",
+        "exercises": [
+          "Back Squats \u2013 4\u00d78",
+          "Romanian Deadlifts \u2013 4\u00d78",
+          "Walking Lunges \u2013 3\u00d712 per leg",
+          "Standing Calf Raises \u2013 3\u00d715"
+        ]
+      },
+      {
+        "day": "Day 3 \u2013 Rest",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4 \u2013 HIIT + Core",
+        "exercises": [
+          "Burpees \u2013 3\u00d715",
+          "Jumping Jacks \u2013 3\u00d730 sec",
+          "Sit-ups \u2013 3\u00d720",
+          "Plank \u2013 3\u00d745 sec"
+        ]
+      },
+      {
+        "day": "Day 5 \u2013 Push",
+        "exercises": [
+          "Incline Dumbbell Press \u2013 4\u00d78",
+          "Overhead Press \u2013 3\u00d710",
+          "Tricep Dips \u2013 3\u00d712",
+          "Chest Fly \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 6 \u2013 Pull + Legs",
+        "exercises": [
+          "Barbell Rows \u2013 4\u00d710",
+          "Pull-ups \u2013 3\u00d76",
+          "Front Squat \u2013 4\u00d78",
+          "Leg Curls \u2013 3\u00d715"
+        ]
+      },
+      {
+        "day": "Day 7 \u2013 Rest",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 6,
+    "title": "Tailored Plan 6",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 7,
+    "title": "Tailored Plan 7",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 8,
+    "title": "Tailored Plan 8",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 9,
+    "title": "Tailored Plan 9",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 10,
+    "title": "Tailored Plan 10",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 11,
+    "title": "Tailored Plan 11",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 12,
+    "title": "Tailored Plan 12",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 13,
+    "title": "Tailored Plan 13",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 14,
+    "title": "Tailored Plan 14",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 15,
+    "title": "Tailored Plan 15",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 16,
+    "title": "Tailored Plan 16",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 17,
+    "title": "Tailored Plan 17",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 18,
+    "title": "Tailored Plan 18",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 19,
+    "title": "Tailored Plan 19",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 20,
+    "title": "Tailored Plan 20",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 21,
+    "title": "Tailored Plan 21",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 22,
+    "title": "Tailored Plan 22",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 23,
+    "title": "Tailored Plan 23",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 24,
+    "title": "Tailored Plan 24",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  },
+  {
+    "plan_id": 25,
+    "title": "Tailored Plan 25",
+    "days": [
+      {
+        "day": "Day 1",
+        "exercises": [
+          "Squats \u2013 3\u00d712",
+          "Push-ups \u2013 3\u00d715",
+          "Rows \u2013 3\u00d712"
+        ]
+      },
+      {
+        "day": "Day 2",
+        "exercises": [
+          "Lunges \u2013 3\u00d712 per leg",
+          "Shoulder Press \u2013 3\u00d710",
+          "Plank \u2013 3\u00d730 sec"
+        ]
+      },
+      {
+        "day": "Day 3",
+        "exercises": [
+          "Rest"
+        ]
+      },
+      {
+        "day": "Day 4",
+        "exercises": [
+          "Deadlift \u2013 3\u00d78",
+          "Bench Press \u2013 3\u00d710",
+          "Pull-ups \u2013 3\u00d76"
+        ]
+      },
+      {
+        "day": "Day 5",
+        "exercises": [
+          "HIIT Circuit: 20 min",
+          "Core \u2013 10 min"
+        ]
+      },
+      {
+        "day": "Day 6",
+        "exercises": [
+          "Yoga / Mobility \u2013 30 min"
+        ]
+      },
+      {
+        "day": "Day 7",
+        "exercises": [
+          "Rest"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,222 @@
+src/screens/activity/MyActivityScreen.tsx(490,29): error TS2367: This comparison appears to be unintentional because the types '"month" | "week"' and '"day"' have no overlap.
+src/screens/activity/MyActivityScreen.tsx(492,30): error TS2367: This comparison appears to be unintentional because the types '"month"' and '"day"' have no overlap.
+src/screens/activity/MyActivityScreen.tsx(496,29): error TS2367: This comparison appears to be unintentional because the types '"month"' and '"day"' have no overlap.
+src/screens/nutrition/BarcodeScannerScreen.tsx(27,23): error TS2339: Property 'onScan' does not exist on type 'object'.
+src/screens/nutrition/BarcodeScannerScreen.tsx(33,27): error TS2345: Argument of type '[never, never]' is not assignable to parameter of type 'never'.
+src/screens/nutrition/CompleteFoodLogScreen.tsx(163,30): error TS2339: Property 'mealType' does not exist on type 'NutritionLog'.
+src/screens/nutrition/CompleteFoodLogScreen.tsx(164,28): error TS2339: Property 'mealType' does not exist on type 'NutritionLog'.
+src/screens/nutrition/CompleteFoodLogScreen.tsx(164,45): error TS2339: Property 'items' does not exist on type 'NutritionLog'.
+src/screens/nutrition/CompleteFoodLogScreen.tsx(288,45): error TS2339: Property 'name' does not exist on type 'MealEntry'.
+src/screens/nutrition/FoodDiaryScreen.tsx(104,40): error TS2339: Property 'meals' does not exist on type 'DailyDiary'.
+src/screens/nutrition/FoodDiaryScreen.tsx(105,25): error TS2339: Property 'meals' does not exist on type 'DailyDiary'.
+src/screens/nutrition/FoodDiaryScreen.tsx(418,44): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(418,57): error TS2339: Property 'quantity' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(428,39): error TS2339: Property 'name' does not exist on type '{ container: { flex: number; backgroundColor: string; }; loadingText: { color: string; textAlign: "center"; marginTop: number; }; header: { paddingHorizontal: number; paddingVertical: number; flexDirection: "row"; justifyContent: "space-between"; alignItems: "center"; }; ... 50 more ...; menuButton: { ...; }; }'.
+src/screens/nutrition/FoodDiaryScreen.tsx(428,51): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(430,27): error TS2339: Property 'servingSize' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(435,59): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(467,40): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(467,53): error TS2339: Property 'servingSize' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(477,39): error TS2339: Property 'name' does not exist on type '{ container: { flex: number; backgroundColor: string; }; loadingText: { color: string; textAlign: "center"; marginTop: number; }; header: { paddingHorizontal: number; paddingVertical: number; flexDirection: "row"; justifyContent: "space-between"; alignItems: "center"; }; ... 50 more ...; menuButton: { ...; }; }'.
+src/screens/nutrition/FoodDiaryScreen.tsx(477,51): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(479,27): error TS2339: Property 'servingSize' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(484,59): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(516,41): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(516,54): error TS2339: Property 'servingSize' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(526,39): error TS2339: Property 'name' does not exist on type '{ container: { flex: number; backgroundColor: string; }; loadingText: { color: string; textAlign: "center"; marginTop: number; }; header: { paddingHorizontal: number; paddingVertical: number; flexDirection: "row"; justifyContent: "space-between"; alignItems: "center"; }; ... 50 more ...; menuButton: { ...; }; }'.
+src/screens/nutrition/FoodDiaryScreen.tsx(526,51): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(528,27): error TS2339: Property 'servingSize' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(533,59): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(565,40): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(565,53): error TS2339: Property 'servingSize' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(575,39): error TS2339: Property 'name' does not exist on type '{ container: { flex: number; backgroundColor: string; }; loadingText: { color: string; textAlign: "center"; marginTop: number; }; header: { paddingHorizontal: number; paddingVertical: number; flexDirection: "row"; justifyContent: "space-between"; alignItems: "center"; }; ... 50 more ...; menuButton: { ...; }; }'.
+src/screens/nutrition/FoodDiaryScreen.tsx(575,51): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(577,27): error TS2339: Property 'servingSize' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreen.tsx(582,59): error TS2339: Property 'name' does not exist on type 'FoodIntake'.
+src/screens/nutrition/FoodDiaryScreenNew.tsx(144,25): error TS2345: Argument of type '[never, never]' is not assignable to parameter of type 'never'.
+src/screens/nutrition/MealLogScreen.tsx(105,25): error TS2345: Argument of type '[never, never]' is not assignable to parameter of type 'never'.
+src/screens/nutrition/MealLogScreen.tsx(116,25): error TS2345: Argument of type '[never, never]' is not assignable to parameter of type 'never'.
+src/screens/nutrition/MealLogScreen.tsx(221,48): error TS2345: Argument of type '[never, never]' is not assignable to parameter of type 'never'.
+src/screens/nutrition/MealLogScreen.tsx(327,37): error TS2739: Type 'CustomMeal' is missing the following properties from type 'FoodItem': calories, protein, carbs, fat, serving
+src/screens/nutrition/NutritionOnboardingScreen.tsx(112,5): error TS2304: Cannot find name 'setSelectedCategories'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(291,18): error TS2304: Cannot find name 'weight'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(292,25): error TS2304: Cannot find name 'setWeight'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(303,18): error TS2304: Cannot find name 'height'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(304,25): error TS2304: Cannot find name 'setHeight'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(321,18): error TS2304: Cannot find name 'age'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(322,25): error TS2304: Cannot find name 'setAge'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(332,38): error TS2304: Cannot find name 'gender'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(333,26): error TS2304: Cannot find name 'setGender'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(335,44): error TS2304: Cannot find name 'gender'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(338,38): error TS2304: Cannot find name 'gender'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(339,26): error TS2304: Cannot find name 'setGender'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(341,44): error TS2304: Cannot find name 'gender'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(362,40): error TS2304: Cannot find name 'activityLevel'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(363,28): error TS2304: Cannot find name 'setActivityLevel'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(365,46): error TS2304: Cannot find name 'activityLevel'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(366,46): error TS2304: Cannot find name 'activityLevel'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(468,10): error TS2304: Cannot find name 'foodCategories'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(473,15): error TS2304: Cannot find name 'selectedCategories'.
+src/screens/nutrition/NutritionOnboardingScreen.tsx(480,17): error TS2304: Cannot find name 'selectedCategories'.
+src/screens/onboarding/OnboardingAppPurposeScreen.tsx(34,30): error TS2322: Type 'string' is not assignable to type '"gym" | "football"'.
+src/screens/onboarding/OnboardingBodyStatsScreen.tsx(26,63): error TS2367: This comparison appears to be unintentional because the types '"cm" | "ft"' and '"in"' have no overlap.
+src/screens/onboarding/OnboardingBodyStatsScreen.tsx(85,63): error TS2367: This comparison appears to be unintentional because the types '"cm" | "ft"' and '"in"' have no overlap.
+src/screens/onboarding/OnboardingBodyStatsScreen.tsx(170,46): error TS2367: This comparison appears to be unintentional because the types '"cm"' and '"in"' have no overlap.
+src/screens/onboarding/OnboardingBodyStatsScreen.tsx(173,50): error TS2367: This comparison appears to be unintentional because the types '"cm"' and '"in"' have no overlap.
+src/screens/onboarding/OnboardingBodyStatsScreen.tsx(203,46): error TS2367: This comparison appears to be unintentional because the types '"ft"' and '"cm"' have no overlap.
+src/screens/onboarding/OnboardingBodyStatsScreen.tsx(206,50): error TS2367: This comparison appears to be unintentional because the types '"ft"' and '"cm"' have no overlap.
+src/screens/onboarding/OnboardingBodyStatsScreen.tsx(211,46): error TS2367: This comparison appears to be unintentional because the types '"ft"' and '"in"' have no overlap.
+src/screens/onboarding/OnboardingBodyStatsScreen.tsx(214,50): error TS2367: This comparison appears to be unintentional because the types '"ft"' and '"in"' have no overlap.
+src/screens/onboarding/OnboardingFitnessLevelScreen.tsx(34,23): error TS2345: Argument of type 'Value' is not assignable to parameter of type 'number'.
+src/screens/onboarding/OnboardingFitnessLevelScreen.tsx(37,65): error TS2339: Property '_offset' does not exist on type 'Value'.
+src/screens/onboarding/OnboardingFitnessLevelScreen.tsx(38,37): error TS2339: Property '_offset' does not exist on type 'Value'.
+src/screens/onboarding/OnboardingFitnessLevelScreen.tsx(47,47): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/screens/onboarding/OnboardingInterestsScreen.tsx(60,30): error TS2322: Type 'string' is not assignable to type '"nutrition" | "workouts" | "football" | "both"'.
+src/screens/onboarding/OnboardingInterestsScreen.tsx(134,21): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: LinearGradientProps): LinearGradient', gave the following error.
+    Type 'string[]' is not assignable to type 'readonly [ColorValue, ColorValue, ...ColorValue[]]'.
+      Source provides no match for required element at position 0 in target.
+  Overload 2 of 2, '(props: LinearGradientProps, context: any): LinearGradient', gave the following error.
+    Type 'string[]' is not assignable to type 'readonly [ColorValue, ColorValue, ...ColorValue[]]'.
+      Source provides no match for required element at position 0 in target.
+src/screens/onboarding/OnboardingInterestsScreenV2.tsx(46,30): error TS2322: Type 'string' is not assignable to type '"nutrition" | "workouts" | "football" | "both"'.
+src/screens/progress/ProgressPhotosScreen.tsx(211,35): error TS2820: Type '"arrow-back"' is not assignable to type '"symbol" | "function" | "weight" | "nfc" | "nutrition" | "email" | "repeat" | "anchor" | "link" | "sort" | "map" | "filter" | "cancel" | "bike" | "box" | "kettlebell" | "glasses" | ... 7430 more ... | "blank"'. Did you mean '"car-back"'?
+src/screens/progress/ProgressPhotosScreen.tsx(278,45): error TS2339: Property 'card' does not exist on type 'CustomColors'.
+src/screens/ProgressScreen.tsx(474,45): error TS2339: Property 'card' does not exist on type 'CustomColors'.
+src/screens/SettingsScreen.tsx(696,55): error TS2322: Type 'Dispatch<SetStateAction<"en" | "he">>' is not assignable to type '(value: string) => void'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'string' is not assignable to type 'SetStateAction<"en" | "he">'.
+src/screens/TestingScreen.tsx(682,13): error TS2322: Type 'string' is not assignable to type 'Date'.
+src/screens/TryScreen.tsx(521,23): error TS2345: Argument of type '{ consumed: number; target: number; }' is not assignable to parameter of type 'SetStateAction<{ consumed: number; target: number; breakfast: number; lunch: number; snack: number; dinner: number; }>'.
+  Type '{ consumed: number; target: number; }' is missing the following properties from type '{ consumed: number; target: number; breakfast: number; lunch: number; snack: number; dinner: number; }': breakfast, lunch, snack, dinner
+src/screens/TryScreen.tsx(555,19): error TS2345: Argument of type '{ consumed: number; target: number; }' is not assignable to parameter of type 'SetStateAction<{ consumed: number; target: number; breakfast: number; lunch: number; snack: number; dinner: number; }>'.
+  Type '{ consumed: number; target: number; }' is missing the following properties from type '{ consumed: number; target: number; breakfast: number; lunch: number; snack: number; dinner: number; }': breakfast, lunch, snack, dinner
+src/screens/TryScreen.tsx(648,19): error TS2345: Argument of type '{ consumed: number; target: number; }' is not assignable to parameter of type 'SetStateAction<{ consumed: number; target: number; breakfast: number; lunch: number; snack: number; dinner: number; }>'.
+  Type '{ consumed: number; target: number; }' is missing the following properties from type '{ consumed: number; target: number; breakfast: number; lunch: number; snack: number; dinner: number; }': breakfast, lunch, snack, dinner
+src/screens/TryScreen.tsx(1203,56): error TS2367: This comparison appears to be unintentional because the types '"nutrition" | "both"' and '"football"' have no overlap.
+src/screens/TryScreen.tsx(2080,3): error TS1117: An object literal cannot have multiple properties with the same name.
+src/screens/workout/CompleteWorkoutLogScreen.tsx(142,25): error TS2339: Property 'exerciseToAdd' does not exist on type 'object'.
+src/screens/workout/CompleteWorkoutLogScreen.tsx(143,34): error TS2339: Property 'exerciseToAdd' does not exist on type 'object'.
+src/screens/workout/CompleteWorkoutLogScreen.tsx(429,47): error TS2345: Argument of type '{ userId: string; name: string; date: Date; exercises: WorkoutExercise[]; duration: number; totalVolume: number; totalCalories: number; personalRecords: PersonalRecord[]; notes: string; completedAt: Date; }' is not assignable to parameter of type 'Partial<WorkoutLog>'.
+  Types of property 'personalRecords' are incompatible.
+    Type 'PersonalRecord[]' is not assignable to type 'import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/src/types/index").PersonalRecord[]'.
+      Type 'PersonalRecord' is missing the following properties from type 'PersonalRecord': exerciseName, date
+src/screens/workout/CompleteWorkoutLogScreen.tsx(438,56): error TS2345: Argument of type '[never, { workoutLog: { userId: string; name: string; date: Date; exercises: WorkoutExercise[]; duration: number; totalVolume: number; totalCalories: number; personalRecords: PersonalRecord[]; notes: string; completedAt: Date; }; }]' is not assignable to parameter of type 'never'.
+src/screens/workout/EnhancedExerciseLibraryScreen.tsx(305,65): error TS2345: Argument of type '{ owner: "user"; ownerUserId: string; name: string; category: string; primaryMuscles: string[]; equipment: string; instructions: string; }' is not assignable to parameter of type 'Partial<Exercise>'.
+  Types of property 'category' are incompatible.
+    Type 'string' is not assignable to type 'ExerciseCategory'.
+src/screens/workout/EnhancedExerciseLibraryScreen.tsx(552,49): error TS2345: Argument of type '[never, { exerciseToAdd: Exercise; }]' is not assignable to parameter of type 'never'.
+src/screens/workout/WorkoutDetailScreen.tsx(247,28): error TS2448: Block-scoped variable 'styles' used before its declaration.
+src/screens/workout/WorkoutDetailScreen.tsx(248,22): error TS2448: Block-scoped variable 'styles' used before its declaration.
+src/screens/workout/WorkoutDetailScreen.tsx(248,29): error TS2339: Property 'errorContainer' does not exist on type '{ container: { flex: number; backgroundColor: string; }; floatingTimerButton: { position: "absolute"; bottom: number; right: number; width: number; height: number; borderRadius: number; backgroundColor: string; justifyContent: "center"; alignItems: "center"; }; ... 52 more ...; backButtonText: { ...; }; }'.
+src/screens/workout/WorkoutDetailScreen.tsx(249,24): error TS2448: Block-scoped variable 'styles' used before its declaration.
+src/screens/workout/WorkoutDetailScreen.tsx(249,31): error TS2339: Property 'errorText' does not exist on type '{ container: { flex: number; backgroundColor: string; }; floatingTimerButton: { position: "absolute"; bottom: number; right: number; width: number; height: number; borderRadius: number; backgroundColor: string; justifyContent: "center"; alignItems: "center"; }; ... 52 more ...; backButtonText: { ...; }; }'.
+src/screens/workout/WorkoutDetailScreen.tsx(250,72): error TS2448: Block-scoped variable 'styles' used before its declaration.
+src/screens/workout/WorkoutDetailScreen.tsx(251,26): error TS2448: Block-scoped variable 'styles' used before its declaration.
+src/screens/workout/WorkoutDetailScreen.tsx(401,31): error TS2339: Property 'card' does not exist on type 'CustomColors'.
+src/screens/workout/WorkoutDetailScreen.tsx(502,31): error TS2339: Property 'card' does not exist on type 'CustomColors'.
+src/screens/workout/WorkoutPlanSelectionScreen.tsx(198,79): error TS2339: Property 'backButton' does not exist on type '{ container: { flex: number; }; header: { paddingHorizontal: number; paddingTop: number; paddingBottom: number; }; headerTitle: { fontSize: number; fontWeight: "700"; marginBottom: number; }; headerSubtitle: { ...; }; ... 20 more ...; equipmentText: { ...; }; }'.
+src/screens/workout/WorkoutPlanSelectionScreen.tsx(214,35): error TS2322: Type '"sparkles"' is not assignable to type '"symbol" | "function" | "weight" | "nfc" | "nutrition" | "email" | "repeat" | "anchor" | "link" | "sort" | "map" | "filter" | "cancel" | "bike" | "box" | "kettlebell" | "glasses" | ... 7430 more ... | "blank"'.
+src/services/aiService.ts(102,30): error TS2339: Property 'EncodingType' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-file-system/build/index")'.
+src/services/aiService.ts(203,9): error TS2393: Duplicate function implementation.
+src/services/aiService.ts(344,15): error TS2448: Block-scoped variable 'data' used before its declaration.
+src/services/aiService.ts(345,14): error TS2448: Block-scoped variable 'data' used before its declaration.
+src/services/aiService.ts(346,12): error TS2448: Block-scoped variable 'data' used before its declaration.
+src/services/aiService.ts(347,10): error TS2448: Block-scoped variable 'data' used before its declaration.
+src/services/aiService.ts(350,15): error TS2448: Block-scoped variable 'data' used before its declaration.
+src/services/aiService.ts(351,14): error TS2448: Block-scoped variable 'data' used before its declaration.
+src/services/aiService.ts(352,12): error TS2448: Block-scoped variable 'data' used before its declaration.
+src/services/aiService.ts(353,10): error TS2448: Block-scoped variable 'data' used before its declaration.
+src/services/aiService.ts(790,11): error TS2393: Duplicate function implementation.
+src/services/aiService.ts(901,55): error TS2551: Property 'getWeekData' does not exist on type 'FirebaseDailyDataService'. Did you mean 'getWeeklyData'?
+src/services/aiService.ts(908,54): error TS2339: Property 'current' does not exist on type '{ count: number; target: number; }'.
+src/services/backupService.ts(97,34): error TS2339: Property 'documentDirectory' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-file-system/build/index")'.
+src/services/backupService.ts(99,30): error TS2339: Property 'EncodingType' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-file-system/build/index")'.
+src/services/backupService.ts(147,30): error TS2339: Property 'EncodingType' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-file-system/build/index")'.
+src/services/backupService.ts(189,34): error TS2339: Property 'documentDirectory' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-file-system/build/index")'.
+src/services/backupService.ts(222,18): error TS2339: Property 'type' does not exist on type 'DocumentPickerResult'.
+  Property 'type' does not exist on type 'DocumentPickerSuccessResult'.
+src/services/backupService.ts(279,37): error TS2339: Property 'documentDirectory' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-file-system/build/index")'.
+src/services/calendarService.ts(2,20): error TS2300: Duplicate identifier 'Alert'.
+src/services/calendarService.ts(4,10): error TS2300: Duplicate identifier 'Alert'.
+src/services/calendarService.ts(99,41): error TS2339: Property 'id' does not exist on type 'Source | { isLocalAccount: boolean; name: string; }'.
+  Property 'id' does not exist on type '{ isLocalAccount: boolean; name: string; }'.
+src/services/calendarSyncService.ts(47,43): error TS2551: Property 'getCalendarAsync' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-calendar/build/Calendar")'. Did you mean 'getCalendarsAsync'?
+src/services/challengeService.ts(380,26): error TS2551: Property 'completedAt' does not exist on type 'Challenge'. Did you mean 'completed'?
+src/services/challengeService.ts(381,25): error TS2551: Property 'completedAt' does not exist on type 'Challenge'. Did you mean 'completed'?
+src/services/challengeService.ts(389,46): error TS2551: Property 'completedAt' does not exist on type 'Challenge'. Did you mean 'completed'?
+src/services/databaseService.ts(278,36): error TS2345: Argument of type '{ sql: string; args: any[]; }[]' is not assignable to parameter of type 'string'.
+src/services/databaseService.ts(288,51): error TS2345: Argument of type '{ sql: string; args: string[]; }[]' is not assignable to parameter of type 'string'.
+src/services/databaseService.ts(319,36): error TS2345: Argument of type '{ sql: string; args: any[]; }[]' is not assignable to parameter of type 'string'.
+src/services/databaseService.ts(329,36): error TS2345: Argument of type '{ sql: string; args: string[]; }[]' is not assignable to parameter of type 'string'.
+src/services/databaseService.ts(355,51): error TS2345: Argument of type '{ sql: string; args: any[]; }[]' is not assignable to parameter of type 'string'.
+src/services/databaseService.ts(418,60): error TS2345: Argument of type '{ sql: string; args: undefined[]; }[]' is not assignable to parameter of type 'string'.
+src/services/databaseService.ts(430,44): error TS2345: Argument of type '{ sql: string; args: any[]; }[]' is not assignable to parameter of type 'string'.
+src/services/exportService.ts(83,37): error TS2339: Property 'documentDirectory' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-file-system/build/index")'.
+src/services/exportService.ts(85,30): error TS2339: Property 'EncodingType' does not exist on type 'typeof import("C:/Users/jgola/Downloads/fit app/fit app/fit-app/node_modules/expo-file-system/build/index")'.
+src/services/exportService.ts(108,45): error TS2554: Expected 2 arguments, but got 1.
+src/services/exportService.ts(122,20): error TS2339: Property 'name' does not exist on type 'WorkoutLogEntry'.
+src/services/exportService.ts(151,53): error TS2551: Property 'getDailyData' does not exist on type 'FirebaseDailyDataService'. Did you mean 'getTodayData'?
+src/services/exportService.ts(188,53): error TS2551: Property 'getDailyData' does not exist on type 'FirebaseDailyDataService'. Did you mean 'getTodayData'?
+src/services/foodDatabaseService.ts(238,51): error TS2345: Argument of type '{ sql: string; args: string[]; }[]' is not assignable to parameter of type 'string'.
+src/services/foodDatabaseService.ts(404,51): error TS2345: Argument of type '{ sql: string; args: string[]; }[]' is not assignable to parameter of type 'string'.
+src/services/geminiAIService.ts(414,35): error TS2339: Property 'dailyCalories' does not exist on type 'MealPlan'.
+src/services/geminiAIService.ts(415,28): error TS2339: Property 'macros' does not exist on type 'MealPlan'.
+src/services/hybridAIService.ts(218,33): error TS2551: Property 'workoutCompleted' does not exist on type 'DailyData'. Did you mean 'workoutsCompleted'?
+src/services/intelligentAIService.ts(282,11): error TS2353: Object literal may only specify known properties, and 'duration' does not exist in type '{ name: string; description?: string; exercises: { exerciseId: string; sets: number; reps: string; restSeconds?: number; notes?: string; }[]; tags?: string[]; }'.
+src/services/intelligentAIService.ts(316,59): error TS2339: Property 'getProgressData' does not exist on type 'FirebaseDailyDataService'.
+src/services/localStorageService.ts(28,5): error TS4104: The type 'readonly string[]' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+src/services/macroTrackingService.ts(182,18): error TS2552: Cannot find name 'getSafeDatabase'. Did you mean 'getFoodDatabase'?
+src/services/macroTrackingService.ts(205,7): error TS2304: Cannot find name 'Alert'.
+src/services/notificationService.ts(12,35): error TS2322: Type 'Promise<{ shouldShowAlert: true; shouldPlaySound: true; shouldSetBadge: true; }>' is not assignable to type 'Promise<NotificationBehavior>'.
+  Type '{ shouldShowAlert: true; shouldPlaySound: true; shouldSetBadge: true; }' is missing the following properties from type 'NotificationBehavior': shouldShowBanner, shouldShowList
+src/services/notificationService.ts(171,9): error TS2322: Type '{ hour: number; minute: number; repeats: true; }' is not assignable to type 'NotificationTriggerInput'.
+  Property 'type' is missing in type '{ hour: number; minute: number; repeats: true; }' but required in type 'CalendarTriggerInput'.
+src/services/notificationService.ts(209,11): error TS2322: Type '{ hour: number; minute: number; repeats: true; }' is not assignable to type 'NotificationTriggerInput'.
+  Property 'type' is missing in type '{ hour: number; minute: number; repeats: true; }' but required in type 'CalendarTriggerInput'.
+src/services/notificationService.ts(233,9): error TS2322: Type '{ hour: number; minute: number; repeats: true; }' is not assignable to type 'NotificationTriggerInput'.
+  Property 'type' is missing in type '{ hour: number; minute: number; repeats: true; }' but required in type 'CalendarTriggerInput'.
+src/services/notificationService.ts(270,9): error TS2322: Type '{ hour: number; minute: number; repeats: true; }' is not assignable to type 'NotificationTriggerInput'.
+  Property 'type' is missing in type '{ hour: number; minute: number; repeats: true; }' but required in type 'CalendarTriggerInput'.
+src/services/notificationService.ts(307,11): error TS2322: Type '{ hour: number; minute: number; repeats: true; }' is not assignable to type 'NotificationTriggerInput'.
+  Property 'type' is missing in type '{ hour: number; minute: number; repeats: true; }' but required in type 'CalendarTriggerInput'.
+src/services/nutritionService.ts(78,7): error TS2352: Conversion of type '{ loggedAt: string; meals: NutritionLogEntry[]; userId: string; water?: number; date: Date; targets: MacroTargets; notes?: string; syncedAt?: Date; totals: Macros; }' to type 'NutritionLog' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property 'id' is missing in type '{ loggedAt: string; meals: NutritionLogEntry[]; userId: string; water?: number; date: Date; targets: MacroTargets; notes?: string; syncedAt?: Date; totals: Macros; }' but required in type 'NutritionLog'.
+src/services/nutritionService.ts(212,7): error TS2353: Object literal may only specify known properties, and 'mealType' does not exist in type 'Omit<NutritionLog, "id">'.
+src/services/offlineQueueService.ts(179,11): error TS2554: Expected 1-2 arguments, but got 3.
+src/services/offlineQueueService.ts(184,40): error TS2339: Property 'updateWater' does not exist on type 'FirebaseDailyDataService'.
+src/services/openFoodFactsService.ts(22,11): error TS2451: Cannot redeclare block-scoped variable 'localResults'.
+src/services/openFoodFactsService.ts(23,11): error TS2451: Cannot redeclare block-scoped variable 'localResults'.
+src/services/openFoodFactsService.ts(51,9): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(53,16): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(54,21): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(155,28): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(159,31): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(163,19): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(173,16): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(174,21): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(184,14): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(184,49): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/openFoodFactsService.ts(185,19): error TS2304: Cannot find name 'convertedLocalResults'.
+src/services/planSelectionService.ts(208,38): error TS2339: Property 'dietaryPreferences' does not exist on type 'OnboardingData'.
+src/services/planSelectionService.ts(208,63): error TS2339: Property 'allergens' does not exist on type 'OnboardingData'.
+src/services/progressService.ts(169,33): error TS2304: Cannot find name 'streakService'.
+src/services/progressService.ts(183,42): error TS2339: Property 'totalCalories' does not exist on type 'WorkoutLog'.
+src/services/progressService.ts(229,22): error TS2339: Property 'getUserStreak' does not exist on type 'WorkoutService'.
+src/services/realtimeService.ts(358,36): error TS2345: Argument of type '{ sql: string; args: any[]; }[]' is not assignable to parameter of type 'string'.
+src/services/realtimeService.ts(372,36): error TS2345: Argument of type '{ sql: string; args: string[]; }[]' is not assignable to parameter of type 'string'.
+src/services/syncManager.ts(211,59): error TS2345: Argument of type '{ sql: string; args: undefined[]; }[]' is not assignable to parameter of type 'string'.
+src/services/syncManager.ts(230,44): error TS2345: Argument of type '{ sql: string; args: any[]; }[]' is not assignable to parameter of type 'string'.
+src/services/wearableService.ts(65,63): error TS2304: Cannot find name 'error'.
+src/services/wearableService.ts(152,56): error TS2304: Cannot find name 'error'.
+src/services/workoutDatabaseService.ts(13,11): error TS2322: Type '{ id: number; name: string; goal: string; experience: string; duration: string; daysPerWeek: number; equipment: string; description: string; days: { day: string; exercises: string[]; }[]; }[]' is not assignable to type 'WorkoutPlan[]'.
+  Type '{ id: number; name: string; goal: string; experience: string; duration: string; daysPerWeek: number; equipment: string; description: string; days: { day: string; exercises: string[]; }[]; }' is missing the following properties from type 'WorkoutPlan': plan_id, title
+src/services/workoutService.ts(115,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/services/workoutService.ts(525,18): error TS2339: Property 'userId' does not exist on type 'PersonalRecord'.
+src/services/workoutService.ts(528,18): error TS2339: Property 'weight' does not exist on type 'PersonalRecord'.
+src/services/workoutService.ts(529,18): error TS2339: Property 'reps' does not exist on type 'PersonalRecord'.
+src/services/workoutService.ts(531,18): error TS2339: Property 'previousRecord' does not exist on type 'PersonalRecord'.
+src/services/workoutService.ts(532,18): error TS2339: Property 'improvement' does not exist on type 'PersonalRecord'.
+src/utils/importHebrewWorkouts.ts(2,20): error TS2305: Module '"../types"' has no exported member 'CustomWorkout'.
+src/utils/nutritionValidation.ts(127,71): error TS2345: Argument of type 'keyof NutritionInfo' is not assignable to parameter of type '"weight" | "distance" | "protein" | "carbs" | "height" | "calories" | "fat" | "fiber" | "sugar" | "saturatedFat" | "sodium" | "water" | "steps"'.
+  Type '"servingSize"' is not assignable to type '"weight" | "distance" | "protein" | "carbs" | "height" | "calories" | "fat" | "fiber" | "sugar" | "saturatedFat" | "sodium" | "water" | "steps"'.
