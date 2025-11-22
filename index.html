@@ -8,9 +8,7 @@
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
       /* These styles make the body full-height */
-      html,
-      body {
-        height: 100%;
+      html, body { min-height: 100%; height: auto;
       }
       /* These styles disable body scrolling if you are using <ScrollView> */
       body { overflow: auto;
@@ -18,9 +16,8 @@
       /* These styles make the root element full-height */
       #root {
         display: flex;
-        min-height: 100%;
-        flex: 1;
-        overflow: auto;
+        width: 100%;
+        min-height: 100vh;
       }
     </style>
   <link rel="icon" href="/transfer/favicon.ico" /></head>
