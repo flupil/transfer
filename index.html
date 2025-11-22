@@ -8,22 +8,35 @@
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
       /* Web-friendly styles that allow scrolling */
-      html, body {
+      * {
+        -webkit-overflow-scrolling: touch;
+      }
+      html {
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
-      }
-      body {
-        overflow-y: auto;
+        overflow-y: scroll !important;
         overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
+        position: fixed;
+        overscroll-behavior: contain;
       }
       #root {
         display: flex;
         flex-direction: column;
         width: 100%;
-        min-height: 100%;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      #root > div {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
     </style>
   <link rel="icon" href="/transfer/favicon.ico" /></head>
