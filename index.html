@@ -7,17 +7,19 @@
     <title>Fit&Power</title>
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
-      /* These styles make the body full-height */
-      html, body { min-height: 100%; height: auto;
-      }
-      /* These styles disable body scrolling if you are using <ScrollView> */
-      body { overflow: auto;
-      }
-      /* These styles make the root element full-height */
-      #root {
-        display: flex;
+      /* Web-friendly styles that allow scrolling */
+      html, body {
+        margin: 0;
+        padding: 0;
         width: 100%;
-        min-height: 100vh;
+      }
+      body {
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+      #root {
+        width: 100%;
       }
     </style>
   <link rel="icon" href="/transfer/favicon.ico" /></head>
