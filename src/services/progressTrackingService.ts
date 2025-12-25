@@ -216,6 +216,7 @@ export const getWorkoutHistory = async (limit?: number): Promise<WorkoutPerforma
 // Streak Tracking
 export const updateWorkoutStreak = async (): Promise<void> => {
   try {
+    console.log('🔥 updateWorkoutStreak called');
     const data = await AsyncStorage.getItem(STORAGE_KEYS.STREAK_DATA);
     let streakData: StreakData = data ? JSON.parse(data) : {
       workoutStreak: 0,
@@ -230,6 +231,8 @@ export const updateWorkoutStreak = async (): Promise<void> => {
       lastFreezeUsedDate: null,
     };
 
+    console.log('🔥 Current streak data:', streakData);
+
     // Ensure new fields exist for existing data
     if (streakData.availableFreezes === undefined) streakData.availableFreezes = 1;
     if (!streakData.lastFreezeUsedDate) streakData.lastFreezeUsedDate = null;
@@ -237,23 +240,29 @@ export const updateWorkoutStreak = async (): Promise<void> => {
     const today = new Date().toDateString();
     const lastWorkout = streakData.lastWorkoutDate ? new Date(streakData.lastWorkoutDate).toDateString() : null;
 
+    console.log('🔥 Today:', today);
+    console.log('🔥 Last workout date:', lastWorkout);
+
     if (lastWorkout !== today) {
       const yesterday = new Date(Date.now() - 86400000).toDateString();
+      console.log('🔥 Yesterday:', yesterday);
 
       if (lastWorkout === yesterday) {
         // Continue streak
         streakData.workoutStreak++;
+        console.log('🔥 Continuing streak, new value:', streakData.workoutStreak);
       } else {
         // Streak would break - check if we can use a freeze
         if (streakData.workoutStreak > 0 && streakData.availableFreezes > 0) {
           // Use a freeze to maintain the streak
           streakData.availableFreezes--;
           streakData.lastFreezeUsedDate = new Date().toISOString();
-          console.log('Streak freeze used! Remaining freezes:', streakData.availableFreezes);
+          console.log('🔥 Streak freeze used! Remaining freezes:', streakData.availableFreezes);
           // Keep the streak alive but don't increment it
         } else {
           // No freeze available, reset streak
           streakData.workoutStreak = 1;
+          console.log('🔥 Streak reset to 1');
         }
       }
 
@@ -267,18 +276,20 @@ export const updateWorkoutStreak = async (): Promise<void> => {
       // Earn a new freeze every 7 days of streak
       if (streakData.workoutStreak > 0 && streakData.workoutStreak % 7 === 0) {
         streakData.availableFreezes++;
-        console.log('Earned a new freeze! Total freezes:', streakData.availableFreezes);
+        console.log('🔥 Earned a new freeze! Total freezes:', streakData.availableFreezes);
       }
 
+      console.log('🔥 Saving updated streak data:', streakData);
       await AsyncStorage.setItem(STORAGE_KEYS.STREAK_DATA, JSON.stringify(streakData));
 
       // Check streak achievements
       await checkStreakAchievements(streakData);
+    } else {
+      console.log('🔥 Already worked out today, no streak update needed');
     }
   } catch (error) {
-    Alert.alert('Error', 'Failed to update workout streak. Please try again.');
-
-    console.error('Failed to update workout streak:', error);
+    console.error('🔥 Failed to update workout streak:', error);
+    // Don't show alert - silently log the error
   }
 };
 

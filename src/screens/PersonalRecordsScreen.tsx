@@ -237,13 +237,13 @@ const PersonalRecordsScreen = ({ navigation }: any) => {
             <View style={styles.bestRecords}>
               {item.bestWeight && (
                 <View style={styles.bestRecord}>
-                  <MaterialCommunityIcons name="weight-kilogram" size={16} color="#FF9800" />
+                  <MaterialCommunityIcons name="weight-kilogram" size={16} color="#E94E1B" />
                   <Text style={styles.bestRecordText}>{item.bestWeight}kg</Text>
                 </View>
               )}
               {item.bestReps && (
                 <View style={styles.bestRecord}>
-                  <MaterialCommunityIcons name="repeat" size={16} color="#2196F3" />
+                  <MaterialCommunityIcons name="repeat" size={16} color="#3B82F6" />
                   <Text style={styles.bestRecordText}>{item.bestReps} reps</Text>
                 </View>
               )}
@@ -255,7 +255,7 @@ const PersonalRecordsScreen = ({ navigation }: any) => {
               )}
               {item.bestDistance && (
                 <View style={styles.bestRecord}>
-                  <MaterialCommunityIcons name="map-marker-distance" size={16} color="#4CAF50" />
+                  <MaterialCommunityIcons name="map-marker-distance" size={16} color="#E94E1B" />
                   <Text style={styles.bestRecordText}>{item.bestDistance}m</Text>
                 </View>
               )}
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   muscleChip: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     height: 24,
   },
   muscleChipText: {
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
   latestRecordValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: '#E94E1B',
   },
   latestRecordType: {
     fontSize: 12,
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
   },
   improvement: {
     fontSize: 12,
-    color: '#4CAF50',
+    color: '#E94E1B',
     fontWeight: '500',
   },
   emptyContainer: {

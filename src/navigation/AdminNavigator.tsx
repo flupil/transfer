@@ -3,11 +3,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import DashboardScreen from '../screens/DashboardScreen';
+import TryScreen from '../screens/TryScreen';
 import UsersManagementScreen from '../screens/admin/UsersManagementScreen';
 import PlansManagementScreen from '../screens/admin/PlansManagementScreen';
 import AnalyticsScreen from '../screens/admin/AnalyticsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -39,12 +40,12 @@ const AdminTabNavigator = () => {
 
           return <MaterialCommunityIcons name={iconName as any} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#4CAF50',
+        tabBarActiveTintColor: '#E94E1B',
         tabBarInactiveTintColor: 'gray',
         headerShown: true,
       })}
     >
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Dashboard" component={TryScreen} />
       <Tab.Screen name="Users" component={UsersManagementScreen} />
       <Tab.Screen name="Plans" component={PlansManagementScreen} />
       <Tab.Screen name="Analytics" component={AnalyticsScreen} />

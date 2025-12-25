@@ -238,11 +238,11 @@ const NotificationsScreen = ({ navigation }: any) => {
       case 'high':
         return '#F44336';
       case 'normal':
-        return '#2196F3';
+        return '#3B82F6';
       case 'low':
         return '#757575';
       default:
-        return '#2196F3';
+        return '#3B82F6';
     }
   };
 
@@ -392,7 +392,7 @@ const NotificationsScreen = ({ navigation }: any) => {
               style={styles.markAllButton}
               onPress={markAllAsRead}
             >
-              <MaterialCommunityIcons name="check-all" size={20} color="#4CAF50" />
+              <MaterialCommunityIcons name="check-all" size={20} color="#E94E1B" />
             </TouchableOpacity>
           )}
         </View>
@@ -536,7 +536,7 @@ const styles = StyleSheet.create({
   },
   unreadCard: {
     borderLeftWidth: 4,
-    borderLeftColor: '#4CAF50',
+    borderLeftColor: '#E94E1B',
   },
   announcementHeader: {
     flexDirection: 'row',
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   unreadBadge: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
   },
   announcementTitle: {
     fontSize: 16,

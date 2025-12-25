@@ -15,10 +15,23 @@
     },
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease",
+        "withoutCredentials": false
       },
       "autoIncrement": false,
-      "channel": "preview"
+      "env": {
+        "HUGGING_FACE_TOKEN": "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",
+        "FIREBASE_API_KEY": "AIzaSyBgSL4oK4dwtw5yUKwTRXxwZtKtHo43nB0",
+        "FIREBASE_AUTH_DOMAIN": "fit-and-power.firebaseapp.com",
+        "FIREBASE_PROJECT_ID": "fit-and-power",
+        "FIREBASE_STORAGE_BUCKET": "fit-and-power.firebasestorage.app",
+        "FIREBASE_MESSAGING_SENDER_ID": "861114584019",
+        "FIREBASE_APP_ID": "1:861114584019:web:cc85de1847835c09027d26",
+        "NUTRITIONIX_APP_ID": "f7a8c1e0",
+        "NUTRITIONIX_API_KEY": "3eb38c7e134b318d734f1ebe4065c7d6",
+        "GEMINI_API_KEY": "AIzaSyCHqG_iaKa5Pzzh_KlJERu9E4gWq1VNfc4"
+      }
     },
     "production": {
       "android": {
@@ -28,7 +41,17 @@
         "buildConfiguration": "Release"
       },
       "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "HUGGING_FACE_TOKEN": "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",
+        "FIREBASE_API_KEY": "AIzaSyBgSL4oK4dwtw5yUKwTRXxwZtKtHo43nB0",
+        "FIREBASE_AUTH_DOMAIN": "fit-and-power.firebaseapp.com",
+        "FIREBASE_PROJECT_ID": "fit-and-power",
+        "FIREBASE_STORAGE_BUCKET": "fit-and-power.firebasestorage.app",
+        "FIREBASE_MESSAGING_SENDER_ID": "861114584019",
+        "FIREBASE_APP_ID": "1:861114584019:web:cc85de1847835c09027d26",
+        "NUTRITIONIX_APP_ID": "f7a8c1e0",
+        "NUTRITIONIX_API_KEY": "3eb38c7e134b318d734f1ebe4065c7d6",
+        "GEMINI_API_KEY": "AIzaSyCHqG_iaKa5Pzzh_KlJERu9E4gWq1VNfc4"
       }
     }
   },

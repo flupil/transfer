@@ -50,7 +50,7 @@ const OnboardingHeightScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -78,7 +78,7 @@ const OnboardingHeightScreen = () => {
               value={height}
               onChangeText={setHeight}
               keyboardType="numeric"
-              placeholderTextColor="#4a5a6a"
+              placeholderTextColor="#4E4E50"
               placeholder={t('onboarding.enterHeight')}
             />
           ) : (
@@ -88,7 +88,7 @@ const OnboardingHeightScreen = () => {
                 value={feet}
                 onChangeText={setFeet}
                 keyboardType="numeric"
-                placeholderTextColor="#4a5a6a"
+                placeholderTextColor="#4E4E50"
                 placeholder={t('onboarding.feet')}
               />
               <Text style={styles.feetSeparator}>′</Text>
@@ -97,7 +97,7 @@ const OnboardingHeightScreen = () => {
                 value={inches}
                 onChangeText={setInches}
                 keyboardType="numeric"
-                placeholderTextColor="#4a5a6a"
+                placeholderTextColor="#4E4E50"
                 placeholder={t('onboarding.inches')}
               />
               <Text style={styles.inchesSeparator}>″</Text>
@@ -144,7 +144,7 @@ const OnboardingHeightScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -164,12 +164,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#fff',
     borderBottomWidth: 2,
-    borderBottomColor: '#3a4a5a',
+    borderBottomColor: '#3A3A3A',
     paddingVertical: 15,
     paddingHorizontal: 10,
     textAlign: 'center',
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
   unitToggle: {
     flexDirection: 'row',
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 8,
     padding: 2,
   },
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   unitButtonActive: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
   },
   unitText: {
     fontSize: 16,
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

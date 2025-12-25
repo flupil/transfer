@@ -40,7 +40,7 @@ export const SimpleWorkoutPlansScreen: React.FC = () => {
       frequency: '3x/week',
       difficulty: t('simpleWorkout.easy'),
       focus: [t('simpleWorkout.fullBody'), t('simpleWorkout.foundation')],
-      color: '#4ECDC4',
+      color: '#E94E1B',
       icon: 'walk',
     },
     {
@@ -62,7 +62,7 @@ export const SimpleWorkoutPlansScreen: React.FC = () => {
       frequency: '5x/week',
       difficulty: t('simpleWorkout.hard'),
       focus: [t('simpleWorkout.cardio'), t('simpleWorkout.fatLoss')],
-      color: '#FF6B6B',
+      color: '#E94E1B',
       icon: 'fire',
     },
     {
@@ -146,9 +146,9 @@ export const SimpleWorkoutPlansScreen: React.FC = () => {
     const hardText = t('simpleWorkout.hard');
     const advancedText = t('simpleWorkout.advanced');
 
-    if (difficulty === easyText) return '#4ECDC4';
+    if (difficulty === easyText) return '#E94E1B';
     if (difficulty === mediumText) return '#FDCB6E';
-    if (difficulty === hardText) return '#FF6B6B';
+    if (difficulty === hardText) return '#E94E1B';
     if (difficulty === advancedText) return '#6C5CE7';
     return '#999';
   };

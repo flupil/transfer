@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../contexts/AuthContext';
 import customFoodsService from '../../services/customFoodsService';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const CreateCustomFoodScreen = () => {
   const navigation = useNavigation();
@@ -97,7 +98,7 @@ const CreateCustomFoodScreen = () => {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.infoCard}>
-            <Ionicons name="information-circle-outline" size={24} color="#4ECDC4" />
+            <Ionicons name="information-circle-outline" size={24} color={BRAND_COLORS.accent} />
             <Text style={styles.infoText}>
               Create a custom food that you can quickly log later from "My Foods"
             </Text>
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
   infoText: {
     flex: 1,
     fontSize: 14,
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     lineHeight: 20,
   },
   inputGroup: {
@@ -256,10 +257,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   required: {
-    color: '#FF6B6B',
+    color: BRAND_COLORS.accent,
   },
   input: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -274,7 +275,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#2C3A47',
   },
   button: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

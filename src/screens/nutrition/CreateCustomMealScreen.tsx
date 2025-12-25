@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../contexts/AuthContext';
 import customFoodsService, { CustomFood } from '../../services/customFoodsService';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 interface MealFood {
   foodId: string;
@@ -174,7 +175,7 @@ const CreateCustomMealScreen = () => {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.infoCard}>
-            <Ionicons name="information-circle-outline" size={24} color="#4ECDC4" />
+            <Ionicons name="information-circle-outline" size={24} color={BRAND_COLORS.accent} />
             <Text style={styles.infoText}>
               Create a meal by combining multiple foods. Perfect for recipes or regular meals!
             </Text>
@@ -202,7 +203,7 @@ const CreateCustomMealScreen = () => {
                 onPress={() => setShowFoodSelector(!showFoodSelector)}
                 accessibilityLabel="Add food to meal"
               >
-                <Ionicons name="add-circle" size={20} color="#4ECDC4" />
+                <Ionicons name="add-circle" size={20} color={BRAND_COLORS.accent} />
                 <Text style={styles.addButtonText}>Add Food</Text>
               </TouchableOpacity>
             </View>
@@ -294,7 +295,7 @@ const CreateCustomMealScreen = () => {
                       </Text>
                     </View>
                     <TouchableOpacity onPress={() => handleRemoveFood(index)} accessibilityLabel={`Remove ${food.foodName} from meal`}>
-                      <Ionicons name="close-circle" size={24} color="#FF6B6B" />
+                      <Ionicons name="close-circle" size={24} color={BRAND_COLORS.accent} />
                     </TouchableOpacity>
                   </View>
                 ))}
@@ -383,7 +384,7 @@ const styles = StyleSheet.create({
   infoText: {
     flex: 1,
     fontSize: 14,
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     lineHeight: 20,
   },
   inputGroup: {
@@ -396,10 +397,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   required: {
-    color: '#FF6B6B',
+    color: BRAND_COLORS.accent,
   },
   input: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -428,12 +429,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   addButtonText: {
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     fontSize: 14,
     fontWeight: '600',
   },
   foodSelector: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
@@ -447,7 +448,7 @@ const styles = StyleSheet.create({
   foodOption: {
     paddingVertical: 10,
     paddingHorizontal: 12,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: '#4E4E50',
     borderRadius: 6,
     marginBottom: 6,
   },
@@ -474,7 +475,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   smallInput: {
-    backgroundColor: '#1C1C1E',
+    backgroundColor: '#4E4E50',
     borderRadius: 6,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -487,7 +488,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   quickAddButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     paddingVertical: 10,
     borderRadius: 6,
     alignItems: 'center',
@@ -504,7 +505,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 12,
     borderRadius: 8,
   },
@@ -531,7 +532,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   totalsCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 16,
     borderRadius: 12,
     marginTop: 8,
@@ -552,7 +553,7 @@ const styles = StyleSheet.create({
   totalValue: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     marginBottom: 4,
   },
   totalLabel: {
@@ -565,7 +566,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#2C3A47',
   },
   button: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

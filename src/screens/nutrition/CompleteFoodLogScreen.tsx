@@ -27,13 +27,14 @@ import {
   ProgressBar,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+// import { BarCodeScanner } from 'expo-barcode-scanner'; // Temporarily disabled due to build issues
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { foodDatabaseService } from '../../services/foodDatabaseService';
 import { nutritionService } from '../../services/nutritionService';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const { width, height } = Dimensions.get('window');
 
@@ -200,11 +201,16 @@ export const CompleteFoodLogScreen: React.FC = () => {
   };
 
   const requestCameraPermission = async () => {
-    const { status } = await BarCodeScanner.requestPermissionsAsync();
-    setHasPermission(status === 'granted');
+    // Barcode scanner temporarily disabled
+    setHasPermission(false);
   };
 
   const openScanner = async () => {
+    // Barcode scanner temporarily disabled
+    Alert.alert('Feature Unavailable', 'Barcode scanner is temporarily disabled in this build');
+    return;
+
+    /* Original code:
     setScanned(false); // Reset scanned state
     if (hasPermission === null) {
       await requestCameraPermission();
@@ -213,6 +219,7 @@ export const CompleteFoodLogScreen: React.FC = () => {
       Alert.alert(t('alert.error'), t('foodLog.noCameraAccess'));
       return;
     }
+    */
     setShowAddModal(false);
     setShowScanner(true);
   };
@@ -516,7 +523,7 @@ export const CompleteFoodLogScreen: React.FC = () => {
 
           <ProgressBar
             progress={Math.min(1, dailyTotals.calories / nutritionTargets.calories)}
-            color={dailyTotals.calories > nutritionTargets.calories ? '#FF5252' : '#4CAF50'}
+            color={dailyTotals.calories > nutritionTargets.calories ? '#FF5252' : BRAND_COLORS.accent}
             style={styles.progressBar}
           />
 
@@ -550,7 +557,7 @@ export const CompleteFoodLogScreen: React.FC = () => {
           </View>
           <ProgressBar
             progress={Math.min(1, waterIntake / waterGoal)}
-            color="#2196F3"
+            color="#3B82F6"
             style={styles.waterProgress}
           />
           <View style={styles.waterButtons}>
@@ -898,7 +905,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   remainingCalories: {
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
   },
   progressBar: {
     height: 8,
@@ -940,7 +947,7 @@ const styles = StyleSheet.create({
   },
   waterAmount: {
     fontSize: 16,
-    color: '#2196F3',
+    color: '#3B82F6',
   },
   waterProgress: {
     height: 8,
@@ -1097,7 +1104,7 @@ const styles = StyleSheet.create({
   },
   foodItemCalories: {
     fontSize: 14,
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
     fontWeight: '600',
   },
   scannerContainer: {
@@ -1155,6 +1162,6 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
   },
 });

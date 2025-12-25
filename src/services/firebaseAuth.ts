@@ -1,6 +1,8 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithCredential,
+  GoogleAuthProvider,
   signOut,
   sendPasswordResetEmail,
   updateProfile,
@@ -70,6 +72,7 @@ class FirebaseAuthService {
 
       await setDoc(doc(db, COLLECTIONS.USERS, firebaseUser.uid), {
         ...userData,
+        appInterest: 'both', // Default to both workouts and nutrition
         createdAt: serverTimestamp(),
         lastActiveAt: serverTimestamp()
       });
@@ -89,6 +92,79 @@ class FirebaseAuthService {
     } catch (error: any) {
       console.error('Firebase signup error:', error);
       throw new Error(error.message || 'Failed to create account');
+    }
+  }
+
+  /**
+   * Sign in with Google
+   * Authenticates user with Google OAuth, creates/fetches profile from Firestore
+   * @param idToken - Google ID token from OAuth
+   * @param accessToken - Google access token from OAuth
+   * @returns Promise with user object and authentication token
+   * @throws Error if signin fails
+   */
+  async signInWithGoogle(idToken: string, accessToken: string): Promise<{ user: User; token: string }> {
+    try {
+      // Create Google credential
+      const credential = GoogleAuthProvider.credential(idToken, accessToken);
+
+      // Sign in with credential
+      const userCredential = await signInWithCredential(auth, credential);
+      const firebaseUser = userCredential.user;
+
+      // Check if user exists in Firestore
+      let userDoc = await getDoc(doc(db, COLLECTIONS.USERS, firebaseUser.uid));
+
+      // If user doesn't exist, create their profile
+      if (!userDoc.exists()) {
+        const userData: Omit<User, 'id'> = {
+          email: firebaseUser.email || '',
+          name: firebaseUser.displayName || 'Google User',
+          role: 'user',
+          gymId: 'gym_1',
+          units: { weight: 'kg', height: 'cm' },
+          notificationPreferences: {
+            workoutReminders: true,
+            mealReminders: true,
+            announcements: true,
+            progressUpdates: true,
+          },
+          lastActiveAt: new Date(),
+          createdAt: new Date(),
+          isActive: true,
+        };
+
+        await setDoc(doc(db, COLLECTIONS.USERS, firebaseUser.uid), {
+          ...userData,
+          appInterest: 'both',
+          createdAt: serverTimestamp(),
+          lastActiveAt: serverTimestamp()
+        });
+
+        userDoc = await getDoc(doc(db, COLLECTIONS.USERS, firebaseUser.uid));
+      } else {
+        // Update last active
+        await updateDoc(doc(db, COLLECTIONS.USERS, firebaseUser.uid), {
+          lastActiveAt: serverTimestamp()
+        });
+      }
+
+      const userData = userDoc.data() as Omit<User, 'id'>;
+      const token = await firebaseUser.getIdToken();
+
+      const user: User = {
+        id: firebaseUser.uid,
+        ...userData
+      };
+
+      // Store auth info locally
+      await AsyncStorage.setItem('authToken', token);
+      await AsyncStorage.setItem('userId', firebaseUser.uid);
+
+      return { user, token };
+    } catch (error: any) {
+      console.error('Firebase Google signin error:', error);
+      throw new Error(error.message || 'Failed to sign in with Google');
     }
   }
 

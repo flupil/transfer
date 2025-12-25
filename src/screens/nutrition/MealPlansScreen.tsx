@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { getSafeDatabase } from '../../database/databaseHelper';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 interface MealPlan {
   id: string;
@@ -614,16 +615,16 @@ const styles = StyleSheet.create({
     height: 28,
   },
   gymChip: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#3B82F6',
   },
   tagChip: {
     backgroundColor: '#9C27B0',
   },
   activeChip: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
   },
   sectionTitle: {
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
     marginBottom: 8,
   },
   activeStats: {

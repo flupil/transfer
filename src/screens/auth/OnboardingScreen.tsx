@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import { Button } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const { width } = Dimensions.get('window');
 
@@ -12,7 +13,7 @@ const OnboardingScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.logoSection}>
-        <MaterialCommunityIcons name="dumbbell" size={100} color="#4CAF50" />
+        <MaterialCommunityIcons name="dumbbell" size={100} color={BRAND_COLORS.accent} />
         <Text style={styles.title}>FitGym</Text>
         <Text style={styles.subtitle}>Your Complete Fitness Companion</Text>
       </View>
@@ -27,7 +28,7 @@ const OnboardingScreen = ({ navigation }: any) => {
       <View style={styles.buttons}>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate('SignUp')}
           style={styles.button}
           contentStyle={styles.buttonContent}
         >
@@ -47,7 +48,7 @@ const OnboardingScreen = ({ navigation }: any) => {
 
 const Feature = ({ icon, title }: { icon: string; title: string }) => (
   <View style={styles.feature}>
-    <MaterialCommunityIcons name={icon as any} size={24} color="#4CAF50" />
+    <MaterialCommunityIcons name={icon as any} size={24} color={BRAND_COLORS.accent} />
     <Text style={styles.featureText}>{title}</Text>
   </View>
 );

@@ -23,6 +23,7 @@ import { useForm, Controller } from 'react-hook-form';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as LocalAuthentication from 'expo-local-authentication';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 interface SignInFormData {
   email: string;
@@ -85,17 +86,7 @@ const SignInScreen = ({ navigation }: any) => {
 
   const handleGoogleSignIn = async () => {
     try {
-      Alert.alert(
-        t('auth.demoMode'),
-        t('auth.googleDemoMessage'),
-        [{ text: t('button.continue'), onPress: async () => {
-          try {
-            await signInWithGoogle();
-          } catch (error: any) {
-            Alert.alert(t('auth.signInFailed'), error.message);
-          }
-        }}]
-      );
+      await signInWithGoogle();
     } catch (error: any) {
       Alert.alert(t('auth.googleSignInFailed'), error.message);
     }
@@ -131,7 +122,7 @@ const SignInScreen = ({ navigation }: any) => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <MaterialCommunityIcons name="dumbbell" size={60} color="#4CAF50" />
+          <MaterialCommunityIcons name="dumbbell" size={60} color={BRAND_COLORS.accent} />
           <Text variant="headlineLarge" style={styles.title}>
             FitGym
           </Text>
@@ -225,7 +216,7 @@ const SignInScreen = ({ navigation }: any) => {
               onPress={handleBiometricSignIn}
               style={styles.biometricButton}
             >
-              <MaterialCommunityIcons name="fingerprint" size={32} color="#4CAF50" />
+              <MaterialCommunityIcons name="fingerprint" size={32} color={BRAND_COLORS.accent} />
               <Text variant="bodyMedium" style={styles.biometricText}>
                 Sign in with fingerprint
               </Text>
@@ -243,7 +234,7 @@ const SignInScreen = ({ navigation }: any) => {
               onPress={handleGoogleSignIn}
               style={styles.socialButton}
               icon={() => (
-                <MaterialCommunityIcons name="google" size={20} color="#4285F4" />
+                <MaterialCommunityIcons name="google" size={20} color="#3B82F6" />
               )}
             >
               Google
@@ -341,7 +332,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   link: {
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
     fontWeight: '600',
   },
   biometricButton: {
@@ -352,10 +343,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
   },
   biometricText: {
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
     fontWeight: '600',
     marginTop: 5,
   },

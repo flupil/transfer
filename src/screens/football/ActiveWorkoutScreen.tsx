@@ -12,7 +12,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import type { FootballWorkout, FootballExercise } from '../../data/footballWorkouts';
+import { logWorkoutPerformance, addExperience, updateWorkoutStreak } from '../../services/progressTrackingService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,7 +23,11 @@ const ActiveWorkoutScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { user } = useAuth();
+  const { colors } = useTheme();
   const workout = (route.params as any)?.workout as FootballWorkout;
+
+  // Generate styles with theme colors
+  const styles = React.useMemo(() => getStyles(colors), [colors]);
 
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -80,22 +87,63 @@ const ActiveWorkoutScreen: React.FC = () => {
   };
 
   const handleWorkoutComplete = async () => {
-    // Save workout completion
-    // TODO: Integrate with progressTrackingService
-    // - Add XP
-    // - Update streak
-    // - Save to workout history
+    try {
+      // Save workout to history
+      await logWorkoutPerformance({
+        workoutId: workout.id,
+        workoutName: workout.name,
+        exercises: workout.exercises.map(exercise => ({
+          exerciseId: exercise.id,
+          exerciseName: exercise.name,
+          sets: exercise.sets || 1,
+          reps: exercise.reps || 0,
+          duration: exercise.duration,
+          notes: exercise.notes,
+        })),
+        duration: workout.duration,
+        caloriesBurned: Math.round(workout.duration * 8), // Rough estimate
+      });
 
-    Alert.alert(
-      'Workout Complete!',
-      `Great job! You completed ${workout.name}`,
-      [
-        {
-          text: 'Done',
-          onPress: () => navigation.goBack()
-        }
-      ]
-    );
+      // Add XP based on workout difficulty and duration
+      const xpAmount = workout.difficulty === 'beginner' ? 50 :
+                      workout.difficulty === 'intermediate' ? 75 : 100;
+      await addExperience(xpAmount);
+
+      // Save to workout history for weekly stats
+      const workoutHistoryKey = `workout_history_${user?.id}`;
+      const historyStr = await AsyncStorage.getItem(workoutHistoryKey);
+      const history = historyStr ? JSON.parse(historyStr) : [];
+      history.push({
+        date: new Date().toISOString(),
+        workoutId: workout.id,
+        workoutName: workout.name,
+        type: 'football',
+      });
+      await AsyncStorage.setItem(workoutHistoryKey, JSON.stringify(history));
+
+      Alert.alert(
+        'Workout Complete!',
+        `Great job! You completed ${workout.name}\n\n+${xpAmount} XP earned!`,
+        [
+          {
+            text: 'Done',
+            onPress: () => navigation.goBack()
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Error saving workout:', error);
+      Alert.alert(
+        'Workout Complete!',
+        `Great job! You completed ${workout.name}`,
+        [
+          {
+            text: 'Done',
+            onPress: () => navigation.goBack()
+          }
+        ]
+      );
+    }
   };
 
   const handlePause = () => {
@@ -158,7 +206,7 @@ const ActiveWorkoutScreen: React.FC = () => {
 
   if (!workout || !currentExercise) {
     return (
-      <View style={[styles.container, { backgroundColor: '#0A1628' }]}>
+      <View style={styles.container}>
         <Text style={styles.errorText}>Workout not found</Text>
       </View>
     );
@@ -167,7 +215,7 @@ const ActiveWorkoutScreen: React.FC = () => {
   if (isCompleted) {
     return (
       <View style={[styles.container, styles.completedContainer]}>
-        <MaterialCommunityIcons name="trophy" size={120} color="#FFB800" />
+        <MaterialCommunityIcons name="trophy" size={120} color="#E94E1B" />
         <Text style={styles.completedTitle}>Workout Complete!</Text>
         <Text style={styles.completedSubtitle}>{workout.name}</Text>
         <Text style={styles.completedStats}>
@@ -187,7 +235,7 @@ const ActiveWorkoutScreen: React.FC = () => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: '#0A1628' }]}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.closeButton} onPress={handleQuit}>
@@ -299,9 +347,10 @@ const ActiveWorkoutScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -315,7 +364,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -324,7 +373,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 14,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     fontWeight: '500',
   },
   progressBarContainer: {
@@ -333,13 +382,13 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 6,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: colors.surface,
     borderRadius: 3,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#22C55E',
+    backgroundColor: colors.success,
     borderRadius: 3,
   },
   content: {
@@ -356,24 +405,24 @@ const styles = StyleSheet.create({
     width: 240,
     height: 240,
     borderRadius: 120,
-    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+    backgroundColor: `${colors.success}1A`,
     borderWidth: 8,
-    borderColor: '#22C55E',
+    borderColor: colors.success,
     alignItems: 'center',
     justifyContent: 'center',
   },
   timerCirclePaused: {
-    borderColor: '#FFB800',
-    backgroundColor: 'rgba(255, 184, 0, 0.1)',
+    borderColor: colors.warning,
+    backgroundColor: `${colors.warning}1A`,
   },
   timerText: {
     fontSize: 64,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
   },
   timerSubtext: {
     fontSize: 16,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     marginTop: 8,
   },
   exerciseInfoContainer: {
@@ -383,13 +432,13 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
     textAlign: 'center',
     marginBottom: 4,
   },
   exerciseNameHe: {
     fontSize: 20,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     textAlign: 'center',
     marginBottom: 16,
   },
@@ -401,24 +450,24 @@ const styles = StyleSheet.create({
   },
   exerciseMetaText: {
     fontSize: 16,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
   },
   notesContainer: {
     marginTop: 20,
     padding: 16,
-    backgroundColor: 'rgba(30, 58, 95, 0.5)',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     width: '100%',
   },
   notesTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     marginBottom: 8,
   },
   notesText: {
     fontSize: 14,
-    color: '#B0B0B0',
+    color: colors.textSecondary,
     lineHeight: 20,
   },
   controls: {
@@ -433,7 +482,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -444,11 +493,11 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#22C55E',
+    backgroundColor: colors.success,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 5,
-    shadowColor: '#22C55E',
+    shadowColor: colors.success,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -460,12 +509,12 @@ const styles = StyleSheet.create({
   },
   nextExerciseLabel: {
     fontSize: 12,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   nextExerciseName: {
     fontSize: 16,
-    color: 'white',
+    color: colors.text,
     fontWeight: '500',
   },
   completedContainer: {
@@ -476,23 +525,23 @@ const styles = StyleSheet.create({
   completedTitle: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
     marginTop: 24,
     marginBottom: 8,
   },
   completedSubtitle: {
     fontSize: 20,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     marginBottom: 32,
     textAlign: 'center',
   },
   completedStats: {
     fontSize: 16,
-    color: '#B0B0B0',
+    color: colors.textSecondary,
     marginBottom: 8,
   },
   doneButton: {
-    backgroundColor: '#22C55E',
+    backgroundColor: colors.success,
     paddingHorizontal: 48,
     paddingVertical: 16,
     borderRadius: 12,
@@ -501,11 +550,11 @@ const styles = StyleSheet.create({
   doneButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
   },
   errorText: {
     fontSize: 16,
-    color: 'white',
+    color: colors.text,
     textAlign: 'center',
   },
 });

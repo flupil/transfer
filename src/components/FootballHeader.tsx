@@ -44,7 +44,7 @@ const FootballHeader: React.FC<FootballHeaderProps> = ({ navigation }) => {
             <MaterialCommunityIcons
               name="fire"
               size={30}
-              color={hasTrainedToday ? "#22C55E" : "#999999"}
+              color={hasTrainedToday ? "#E94E1B" : "#999999"}
             />
             <Text style={[
               styles.duolingoItemText,
@@ -58,7 +58,7 @@ const FootballHeader: React.FC<FootballHeaderProps> = ({ navigation }) => {
             style={styles.workoutIcon}
             onPress={() => navigation.navigate('Workout' as never)}
           >
-            <MaterialCommunityIcons name="soccer" size={28} color="#22C55E" />
+            <MaterialCommunityIcons name="soccer" size={28} color="#E94E1B" />
           </TouchableOpacity>
         </View>
 
@@ -79,7 +79,7 @@ const FootballHeader: React.FC<FootballHeaderProps> = ({ navigation }) => {
             onPress={() => navigation.navigate('Progress' as never)}
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons name="diamond" size={30} color="#FFB800" />
+            <MaterialCommunityIcons name="diamond" size={30} color="#E94E1B" />
             <Text style={[styles.duolingoItemText, { color: colors.text }]}>
               {userXP}
             </Text>
@@ -90,7 +90,7 @@ const FootballHeader: React.FC<FootballHeaderProps> = ({ navigation }) => {
             onPress={() => {}}
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons name="account-group" size={30} color="#22C55E" />
+            <MaterialCommunityIcons name="account-group" size={30} color="#E94E1B" />
           </TouchableOpacity>
         </View>
       </View>
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   footballTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#22C55E',
+    color: '#E94E1B',
     letterSpacing: 2,
   },
   footballSubtitle: {

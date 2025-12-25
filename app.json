@@ -19,7 +19,8 @@
       "buildNumber": "1",
       "infoPlist": {
         "NSMotionUsageDescription": "This app uses motion data to count your steps and track your fitness activity.",
-        "NSCameraUsageDescription": "This app needs camera access to scan food barcodes for nutrition tracking."
+        "NSCameraUsageDescription": "This app needs camera access to scan food barcodes for nutrition tracking.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -31,13 +32,28 @@
       "versionCode": 1,
       "permissions": [
         "android.permission.ACTIVITY_RECOGNITION",
-        "android.permission.CAMERA"
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE"
       ],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "Fit&Power",
+      "shortName": "FitPower",
+      "lang": "en",
+      "scope": "/transfer/",
+      "startUrl": "/transfer/",
+      "backgroundColor": "#202124",
+      "themeColor": "#FF6B35",
+      "display": "standalone",
+      "orientation": "portrait",
+      "description": "Your complete fitness companion for workouts, nutrition tracking, and progress monitoring.",
+      "preferRelatedApplications": false,
+      "crossOrigin": "anonymous",
+      "bundler": "metro"
     },
     "extra": {
       "eas": {
@@ -46,7 +62,13 @@
     },
     "plugins": [
       "expo-sqlite",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-font",
+      "expo-calendar",
+      "expo-local-authentication",
+      "expo-notifications",
+      "expo-media-library",
+      "expo-image-picker"
     ]
   }
 }

@@ -74,7 +74,7 @@ const OnboardingGoalsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -118,7 +118,7 @@ const OnboardingGoalsScreen = () => {
               <Ionicons
                 name={goal.icon as any}
                 size={32}
-                color={selectedGoals.includes(goal.id) ? '#3b9eff' : '#8e9bab'}
+                color={selectedGoals.includes(goal.id) ? '#3B82F6' : '#8e9bab'}
               />
               <Text
                 style={[
@@ -155,7 +155,7 @@ const OnboardingGoalsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -175,12 +175,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   selectionText: {
     fontSize: 14,
-    color: '#3b9eff',
+    color: '#3B82F6',
     fontWeight: '600',
   },
   optionsGrid: {
@@ -221,15 +221,15 @@ const styles = StyleSheet.create({
   goalCard: {
     width: '48%',
     padding: 20,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#1e2e3e',
+    borderColor: '#2A2A2A',
     alignItems: 'center',
     position: 'relative',
   },
   goalCardSelected: {
-    borderColor: '#3b9eff',
+    borderColor: '#3B82F6',
     backgroundColor: '#1a3048',
   },
   goalCardDisabled: {
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   goalTitleSelected: {
-    color: '#3b9eff',
+    color: '#3B82F6',
   },
   checkmark: {
     position: 'absolute',
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

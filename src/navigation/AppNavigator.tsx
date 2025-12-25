@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { TouchableOpacity, View, Text, StyleSheet, Platform, I18nManager } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Platform, I18nManager, Dimensions, ScrollView, Image } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useTheme } from '../contexts/ThemeContext';
 import { useUserPreferences } from '../contexts/UserPreferencesContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { BRAND_COLORS } from '../constants/brandColors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getStreakData, getUserLevel } from '../services/progressTrackingService';
 
 import AuthNavigator from './AuthNavigator';
 import AdminNavigator from './AdminNavigator';
@@ -20,18 +22,19 @@ import SimpleWorkoutScreen from '../screens/SimpleWorkoutScreen';
 import WorkoutScreen from '../screens/WorkoutScreen';
 import NutritionScreen from '../screens/nutrition/NutritionScreen';
 import ProgressScreen from '../screens/ProgressScreen';
-import CalendarScreen from '../screens/CalendarScreen';
+import CalendarScreen from '../screens/CalendarScreenNew';
 import ProfileScreen from '../screens/ProfileScreen';
 import StreakScreen from '../screens/StreakScreen';
 import TestingScreen from '../screens/TestingScreen';
 import TryScreen from '../screens/TryScreen';
+import FriendStreakCard from '../components/FriendStreakCard';
 
 // Workout screens
 import { WorkoutLogScreen } from '../screens/workout/WorkoutLogScreen';
 import SimpleWorkoutPlansScreen from '../screens/workout/SimpleWorkoutPlansScreen';
 import { ExerciseLibraryScreen } from '../screens/workout/ExerciseLibraryScreen';
 import AIWorkoutGeneratorScreen from '../screens/workout/AIWorkoutGeneratorScreen';
-import FootballTrainingScreen from '../screens/football/FootballTrainingScreen';
+import FootballTrainingScreen from '../screens/football/FootballTrainingScreen3';
 import FootballHomeScreen from '../screens/football/FootballHomeScreen';
 import FootballWorkoutDetailScreen from '../screens/football/FootballWorkoutDetailScreen';
 import ActiveWorkoutScreen from '../screens/football/ActiveWorkoutScreen';
@@ -90,8 +93,10 @@ import OnboardingDietsScreen from '../screens/onboarding/OnboardingDietsScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const { width } = Dimensions.get('window');
+
 const HomeStack = () => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   const { t } = useLanguage();
   const [appPurpose, setAppPurpose] = useState<'gym' | 'football'>('gym');
 
@@ -113,9 +118,9 @@ const HomeStack = () => {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isDark ? '#202124' : 'white',
+          backgroundColor: colors.background,
         },
-        headerTintColor: isDark ? 'white' : 'black',
+        headerTintColor: colors.text,
       }}
     >
       <Stack.Screen
@@ -138,15 +143,15 @@ const HomeStack = () => {
 };
 
 const WorkoutStack = () => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   const { t } = useLanguage();
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isDark ? '#202124' : 'white',
+          backgroundColor: colors.background,
         },
-        headerTintColor: isDark ? 'white' : 'black',
+        headerTintColor: colors.text,
       }}
     >
       <Stack.Screen
@@ -189,20 +194,25 @@ const WorkoutStack = () => {
         component={ProgressPhotosScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="ExerciseLibrary"
+        component={ExerciseLibraryScreen}
+        options={{ title: t('nav.exerciseLibrary') }}
+      />
     </Stack.Navigator>
   );
 };
 
 const FootballStack = () => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   const { t } = useLanguage();
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isDark ? '#202124' : 'white',
+          backgroundColor: colors.background,
         },
-        headerTintColor: isDark ? 'white' : 'black',
+        headerTintColor: colors.text,
       }}
     >
       <Stack.Screen
@@ -231,15 +241,15 @@ const FootballStack = () => {
 
 
 const NutritionStack = () => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   const { t } = useLanguage();
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isDark ? '#202124' : 'white',
+          backgroundColor: colors.background,
         },
-        headerTintColor: isDark ? 'white' : 'black',
+        headerTintColor: colors.text,
       }}
     >
       <Stack.Screen
@@ -312,14 +322,14 @@ const NutritionStack = () => {
 };
 
 const CalendarStack = () => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isDark ? '#202124' : 'white',
+          backgroundColor: colors.background,
         },
-        headerTintColor: isDark ? 'white' : 'black',
+        headerTintColor: colors.text,
       }}
     >
       <Stack.Screen
@@ -337,14 +347,14 @@ const CalendarStack = () => {
 };
 
 const ProgressStack = () => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isDark ? '#202124' : 'white',
+          backgroundColor: colors.background,
         },
-        headerTintColor: isDark ? 'white' : 'black',
+        headerTintColor: colors.text,
       }}
     >
       <Stack.Screen
@@ -369,6 +379,7 @@ const ProgressStack = () => {
 const ProfileButton = () => {
   const { user } = useAuth();
   const navigation = useNavigation();
+  const { colors } = useTheme();
 
   return (
     <TouchableOpacity
@@ -378,20 +389,20 @@ const ProfileButton = () => {
       <Avatar.Text
         size={36}
         label={user?.name?.charAt(0) || 'U'}
-        style={{ backgroundColor: '#4CAF50' }}
+        style={{ backgroundColor: colors.primaryAction }}
       />
     </TouchableOpacity>
   );
 };
 
 const OnboardingStack = () => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
 
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: '#1a2a3a' }
+        cardStyle: { backgroundColor: colors.background }
       }}
     >
       <Stack.Screen name="OnboardingWelcome" component={OnboardingWelcomeScreen} />
@@ -412,7 +423,7 @@ const OnboardingStack = () => {
 
 const UserNavigator = () => {
   const { user } = useAuth();
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -466,7 +477,7 @@ const UserNavigator = () => {
       key={`navigator-${refreshKey}`}
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: isDark ? '#1a2a3a' : '#fff' }
+        cardStyle: { backgroundColor: colors.background }
       }}
     >
       {!hasCompletedOnboarding ? (
@@ -479,15 +490,15 @@ const UserNavigator = () => {
 };
 
 const MainStack = () => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
   const { t } = useLanguage();
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isDark ? '#202124' : 'white',
+          backgroundColor: colors.background,
         },
-        headerTintColor: isDark ? 'white' : 'black',
+        headerTintColor: colors.text,
       }}
     >
       <Stack.Screen
@@ -541,8 +552,73 @@ const MainStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="MyActivity"
+        component={MyActivityScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="Onboarding"
         component={OnboardingStack}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WorkoutLog"
+        component={WorkoutLogScreen}
+        options={{ title: t('nav.logWorkout') }}
+      />
+      <Stack.Screen
+        name="PersonalRecords"
+        component={PersonalRecordsScreen}
+        options={{ title: t('nav.personalRecords') }}
+      />
+      <Stack.Screen
+        name="EditWeek"
+        component={EditWeekScreen}
+        options={{ title: t('nav.editWeek'), headerShown: false }}
+      />
+      <Stack.Screen
+        name="ExerciseLibrary"
+        component={ExerciseLibraryScreen}
+        options={{ title: t('nav.exerciseLibrary') }}
+      />
+      <Stack.Screen
+        name="WorkoutPlanSelection"
+        component={WorkoutPlanSelectionScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AIWorkoutGenerator"
+        component={AIWorkoutGeneratorScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WorkoutDetail"
+        component={WorkoutDetailScreen}
+        options={{ title: t('nav.workoutDetails') }}
+      />
+      <Stack.Screen
+        name="MealLog"
+        component={MealLogScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PhotoMealLog"
+        component={PhotoMealLogScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FoodSearch"
+        component={FoodSearchScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ManualFoodEntry"
+        component={ManualFoodEntryScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CreateCustomFood"
+        component={CreateCustomFoodScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -553,7 +629,33 @@ const UserTabNavigator = () => {
   const { colors, isDark } = useTheme();
   const { preferences } = useUserPreferences();
   const { t } = useLanguage();
+  const navigation = useNavigation();
   const [appPurpose, setAppPurpose] = useState<'gym' | 'football'>('gym');
+  const [currentTabIndex, setCurrentTabIndex] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // Header state (from TryScreen)
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [userXP, setUserXP] = useState(0);
+  const [hasWorkedOutToday, setHasWorkedOutToday] = useState(false);
+  const [showFriendStreak, setShowFriendStreak] = useState(false);
+
+  // Load header data
+  useEffect(() => {
+    const loadHeaderData = async () => {
+      try {
+        const streakData = await getStreakData();
+        setCurrentStreak(streakData.workoutStreak);
+        setHasWorkedOutToday(!!streakData.lastWorkoutDate && new Date(streakData.lastWorkoutDate).toDateString() === new Date().toDateString());
+
+        const levelData = await getUserLevel();
+        setUserXP(levelData.xp);
+      } catch (error) {
+        console.error('Error loading header data:', error);
+      }
+    };
+    loadHeaderData();
+  }, []);
 
   const loadAppPurpose = async () => {
     try {
@@ -587,6 +689,47 @@ const UserTabNavigator = () => {
   // Default to 'both' if preferences not loaded yet
   const appInterest = preferences?.appInterest || 'both';
 
+  // Get list of active tabs with their screens
+  const getActiveTabs = () => {
+    const tabs = [
+      { name: 'Home', screen: TryScreen, icon: 'home' }
+    ];
+
+    if (appInterest === 'workouts' || appInterest === 'both') {
+      tabs.push({
+        name: 'Workout',
+        screen: appPurpose === 'football' ? FootballHomeScreen : TestingScreen,
+        icon: appPurpose === 'football' ? 'soccer' : 'dumbbell'
+      });
+    }
+
+    if (appInterest === 'nutrition' || appInterest === 'both') {
+      tabs.push({ name: 'Nutrition', screen: FoodDiaryScreenNew, icon: 'food-apple' });
+    }
+
+    tabs.push({ name: 'Calendar', screen: CalendarScreen, icon: 'calendar' });
+    tabs.push({ name: 'Kira', screen: AIAssistantScreen, icon: 'robot' });
+
+    return tabs;
+  };
+
+  const activeTabs = getActiveTabs();
+
+  // Handle scroll events to update current tab index
+  const handleScroll = (event: any) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(offsetX / width);
+    if (index !== currentTabIndex && index >= 0 && index < activeTabs.length) {
+      setCurrentTabIndex(index);
+    }
+  };
+
+  // Handle tab bar tap
+  const handleTabPress = (index: number) => {
+    scrollViewRef.current?.scrollTo({ x: index * width, animated: true });
+    setCurrentTabIndex(index);
+  };
+
   const getTabLabel = (routeName: string) => {
     switch (routeName) {
       case 'Home':
@@ -607,54 +750,90 @@ const UserTabNavigator = () => {
   };
 
   return (
-    <Tab.Navigator
-      key={appPurpose} // Force remount when app purpose changes
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: string = 'home';
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      {/* Fixed Header with Logo, Streak, Diamond */}
+      <View style={styles.fixedHeader}>
+        {/* Left Side - Streak */}
+        <View style={styles.topBarLeft}>
+          <TouchableOpacity
+            style={styles.headerIcon}
+            onPress={() => navigation.navigate('Streak' as never)}
+            activeOpacity={0.7}
+            accessibilityLabel={`Workout streak: ${currentStreak} days`}
+          >
+            <MaterialCommunityIcons
+              name="fire"
+              size={32}
+              color={hasWorkedOutToday ? BRAND_COLORS.accent : "#999999"}
+            />
+            <Text style={[
+              styles.headerIconText,
+              { color: hasWorkedOutToday ? colors.text : '#999999' }
+            ]}>
+              {currentStreak}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-          switch (route.name) {
-            case 'Home':
-              iconName = 'home';
-              break;
-            case 'Workout':
-              iconName = appPurpose === 'football' ? 'soccer' : 'dumbbell';
-              break;
-            case 'Nutrition':
-              iconName = 'food-apple';
-              break;
-            case 'Calendar':
-              iconName = 'calendar';
-              break;
-            case 'Progress':
-              iconName = 'chart-line';
-              break;
-            case 'Kira':
-              iconName = 'robot';
-              break;
-          }
+        {/* Center - Logo */}
+        <TouchableOpacity
+          style={styles.topBarCenter}
+          onPress={() => navigation.navigate('Settings' as never)}
+          activeOpacity={0.7}
+          accessibilityLabel="Open settings"
+        >
+          <View style={styles.logoPlaceholder}>
+            <Text style={styles.logoPlaceholderText}>LOGO</Text>
+          </View>
+        </TouchableOpacity>
 
+        {/* Right Side - Account */}
+        <View style={styles.topBarRight}>
+          <TouchableOpacity
+            style={styles.headerIcon}
+            onPress={() => setShowFriendStreak(true)}
+            activeOpacity={0.7}
+            accessibilityLabel="View friend streaks"
+          >
+            <MaterialCommunityIcons
+              name="account-group"
+              size={32}
+              color={BRAND_COLORS.accent}
+            />
+            <Text style={styles.headerIconText}>{' '}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Horizontal ScrollView for tabs - 1:1 dragging like carousel */}
+      <ScrollView
+        ref={scrollViewRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={handleScroll}
+        bounces={false}
+        style={{ flex: 1 }}
+      >
+        {activeTabs.map((tab, index) => {
+          const ScreenComponent = tab.screen;
           return (
-            <View style={styles.tabIconContainer}>
-              <MaterialCommunityIcons
-                name={iconName as any}
-                size={24}
-                color="#fff"
-              />
-              <Text style={[styles.tabLabel, { color: '#fff' }]}>{getTabLabel(route.name)}</Text>
+            <View key={tab.name} style={{ width: width }}>
+              <ScreenComponent navigation={navigation} route={{ params: {} }} />
             </View>
           );
-        },
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: '#FF6B35',
-        tabBarInactiveTintColor: colors.textSecondary,
-        headerShown: false,
-        tabBarStyle: {
+        })}
+      </ScrollView>
+
+      {/* Custom Tab Bar */}
+      <View
+        style={{
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: '#1A1A1A',
+          backgroundColor: colors.tabBarBackground,
           borderTopWidth: 0,
           height: Platform.OS === 'ios' ? 85 : 70,
           paddingTop: 5,
@@ -665,50 +844,43 @@ const UserTabNavigator = () => {
           shadowOffset: { width: 0, height: -5 },
           shadowOpacity: 0.3,
           shadowRadius: 15,
-        },
-        tabBarBackground: () => (
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: '#1A1A1A',
-            }}
-          />
-        ),
-      })}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeStack}
-        options={{
-          headerShown: false,
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          alignItems: 'flex-start',
         }}
+      >
+        {activeTabs.map((tab, index) => {
+          const isFocused = currentTabIndex === index;
+          return (
+            <TouchableOpacity
+              key={tab.name}
+              onPress={() => handleTabPress(index)}
+              style={styles.tabIconContainer}
+            >
+              <MaterialCommunityIcons
+                name={tab.icon as any}
+                size={24}
+                color={isFocused ? colors.tabBarActive : colors.tabBarInactive}
+              />
+              <Text
+                style={[
+                  styles.tabLabel,
+                  { color: isFocused ? colors.tabBarActive : colors.tabBarInactive }
+                ]}
+              >
+                {getTabLabel(tab.name)}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* Friend Streak Modal */}
+      <FriendStreakCard
+        visible={showFriendStreak}
+        onClose={() => setShowFriendStreak(false)}
       />
-
-      {/* Show Workout/Football tab only if user selected workouts, football, or both */}
-      {((appInterest === 'workouts' || appInterest === 'both')) && (
-        <Tab.Screen
-          name="Workout"
-          component={appPurpose === 'football' ? FootballStack : WorkoutStack}
-        />
-      )}
-
-      {/* Show Nutrition tab only if user selected nutrition or both */}
-      {(appInterest === 'nutrition' || appInterest === 'both') && (
-        <Tab.Screen name="Nutrition" component={NutritionStack} />
-      )}
-
-      {/* Calendar is useful for both workouts and nutrition tracking */}
-      <Tab.Screen name="Calendar" component={CalendarStack} />
-
-      {/* Progress tab removed - feature still accessible from Profile/Settings */}
-
-      {/* Kira AI tab */}
-      <Tab.Screen name="Kira" component={AIAssistantScreen} />
-    </Tab.Navigator>
+    </View>
   );
 };
 
@@ -748,6 +920,65 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.3,
     textTransform: 'capitalize',
+  },
+  fixedHeader: {
+    height: 120,
+    backgroundColor: '#2A2A2A',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    paddingHorizontal: 10,
+    paddingTop: Platform.OS === 'ios' ? 40 : 10,
+  },
+  topBarLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingRight: 40,
+  },
+  topBarCenter: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  topBarRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingLeft: 40,
+  },
+  topBarLogo: {
+    width: 100,
+    height: 100,
+  },
+  logoPlaceholder: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#CCCCCC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+  },
+  logoPlaceholderText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#666666',
+  },
+  headerIcon: {
+    width: 45,
+    height: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerIconText: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: 2,
   },
 });
 

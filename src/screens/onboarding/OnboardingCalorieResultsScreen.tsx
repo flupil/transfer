@@ -45,12 +45,13 @@ const OnboardingCalorieResultsScreen = () => {
     const activityMultiplier = activityMultipliers[activityLevel || 'moderately-active'] || 1.55;
     const tdee = bmr * activityMultiplier;
 
-    // All scenarios (removed extreme weight loss)
+    // All scenarios (using proper calorie deficits/surpluses)
     const maintainCalories = Math.round(tdee);
-    const mildWeightLoss = Math.round(tdee * 0.90);
-    const weightLoss = Math.round(tdee * 0.79);
-    const mildWeightGain = Math.round(tdee * 1.10);
-    const weightGain = Math.round(tdee * 1.21);
+    const mildWeightLoss = Math.round(tdee - 250); // 0.25 kg/week loss (250 cal deficit)
+    const weightLoss = Math.round(tdee - 500); // 0.5 kg/week loss (500 cal deficit)
+    const extremeWeightLoss = Math.round(tdee - 1000); // 1 kg/week loss (1000 cal deficit)
+    const mildWeightGain = Math.round(tdee + 250); // 0.25 kg/week gain (250 cal surplus)
+    const weightGain = Math.round(tdee + 500); // 0.5 kg/week gain (500 cal surplus)
 
     // Determine recommended based on goal
     const weightDiff = weightKg - targetWeightKg;
@@ -58,7 +59,10 @@ const OnboardingCalorieResultsScreen = () => {
     let recommendedType = 'maintain';
 
     if (onboardingData.goals?.includes('lose-weight') || weightDiff > 0) {
-      if (weightDiff > 5) {
+      if (weightDiff > 10) {
+        recommendedCalories = extremeWeightLoss;
+        recommendedType = 'extreme-loss';
+      } else if (weightDiff > 5) {
         recommendedCalories = weightLoss;
         recommendedType = 'weight-loss';
       } else {
@@ -76,12 +80,22 @@ const OnboardingCalorieResultsScreen = () => {
       }
     }
 
+    // Calculate time to reach goal for each option (in weeks)
+    // 1 kg fat = ~7700 calories, time = (weight diff * 7700) / (weekly deficit)
+    const calculateTimeToGoal = (dailyDeficit: number) => {
+      if (weightDiff === 0 || dailyDeficit === 0) return 0;
+      const weeklyDeficit = Math.abs(dailyDeficit * 7);
+      const totalCaloriesNeeded = Math.abs(weightDiff) * 7700;
+      return Math.ceil(totalCaloriesNeeded / weeklyDeficit);
+    };
+
     setCalorieData({
       bmr: Math.round(bmr),
       tdee: Math.round(tdee),
       maintainCalories,
       mildWeightLoss,
       weightLoss,
+      extremeWeightLoss,
       mildWeightGain,
       weightGain,
       recommendedCalories,
@@ -90,6 +104,13 @@ const OnboardingCalorieResultsScreen = () => {
       currentWeight: weightKg,
       targetWeight: targetWeightKg,
       activityLevel: activityLevel || 'moderately-active',
+      // Time estimates in weeks
+      extremeLossTime: calculateTimeToGoal(-1000),
+      weightLossTime: calculateTimeToGoal(-500),
+      mildLossTime: calculateTimeToGoal(-250),
+      maintainTime: 0,
+      mildGainTime: calculateTimeToGoal(250),
+      weightGainTime: calculateTimeToGoal(500),
     });
 
     // Auto-select the recommended calorie target
@@ -108,17 +129,23 @@ const OnboardingCalorieResultsScreen = () => {
       'maintain': calorieData.maintainCalories,
       'mild-loss': calorieData.mildWeightLoss,
       'weight-loss': calorieData.weightLoss,
+      'extreme-loss': calorieData.extremeWeightLoss,
       'mild-gain': calorieData.mildWeightGain,
       'weight-gain': calorieData.weightGain,
     };
 
     const selectedCalories = calorieMap[selectedCalorieTarget];
+    console.log('🎯 User selected calorie target:', {
+      type: selectedCalorieTarget,
+      calories: selectedCalories
+    });
 
     // Save to context
     updateOnboardingData({
       calorieTarget: selectedCalories,
       calorieTargetType: selectedCalorieTarget,
     });
+    console.log('✅ Saved to onboarding context');
 
     // Route based on user's interest
     if (onboardingData.appInterest === 'nutrition') {
@@ -141,6 +168,15 @@ const OnboardingCalorieResultsScreen = () => {
     return labels[level] || level;
   };
 
+  const formatTimeEstimate = (weeks: number) => {
+    if (weeks === 0) return 'Current weight';
+    if (weeks < 4) return `~${weeks} week${weeks > 1 ? 's' : ''}`;
+    const months = Math.round(weeks / 4);
+    if (months < 12) return `~${months} month${months > 1 ? 's' : ''}`;
+    const years = Math.round(months / 12);
+    return `~${years} year${years > 1 ? 's' : ''}`;
+  };
+
   if (!calorieData) {
     return (
       <SafeAreaView style={styles.container}>
@@ -151,7 +187,7 @@ const OnboardingCalorieResultsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <View style={styles.progressContainer}>
@@ -175,14 +211,34 @@ const OnboardingCalorieResultsScreen = () => {
         {/* Recommended Calorie */}
         <View style={styles.recommendedCard}>
           <MaterialCommunityIcons name="fire" size={40} color="#FF8C42" />
-          <Text style={styles.recommendedLabel}>Recommended</Text>
+          <Text style={styles.recommendedLabel}>
+            {calorieData.recommendedType === 'maintain' ? 'Maintain Weight' : 'Recommended'}
+          </Text>
           <Text style={styles.recommendedCalories}>{calorieData.recommendedCalories}</Text>
           <Text style={styles.recommendedSubtitle}>calories per day</Text>
         </View>
 
         <Text style={styles.sectionTitle}>Or choose a different goal</Text>
 
-        <View style={styles.optionsList}>
+        <View style={styles.optionsGrid}>
+          {/* Extreme Weight Loss */}
+          <TouchableOpacity
+            style={[
+              styles.optionCard,
+              selectedCalorieTarget === 'extreme-loss' && styles.optionCardSelected
+            ]}
+            onPress={() => handleSelectTarget('extreme-loss')}
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons name="chevron-triple-down" size={24} color="#DC2626" />
+            <Text style={styles.optionTitle}>Extreme Loss</Text>
+            <Text style={styles.optionCalories}>{calorieData.extremeWeightLoss}</Text>
+            <Text style={styles.optionSubtitle}>-1 kg/week</Text>
+            {calorieData.extremeLossTime > 0 && (
+              <Text style={styles.optionTime}>{formatTimeEstimate(calorieData.extremeLossTime)}</Text>
+            )}
+          </TouchableOpacity>
+
           {/* Weight Loss */}
           <TouchableOpacity
             style={[
@@ -192,10 +248,31 @@ const OnboardingCalorieResultsScreen = () => {
             onPress={() => handleSelectTarget('weight-loss')}
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons name="arrow-down" size={24} color="#3b9eff" />
-            <Text style={styles.optionTitle}>Lose Weight</Text>
+            <MaterialCommunityIcons name="chevron-double-down" size={24} color="#3B82F6" />
+            <Text style={styles.optionTitle}>Weight Loss</Text>
             <Text style={styles.optionCalories}>{calorieData.weightLoss}</Text>
-            <Text style={styles.optionSubtitle}>cal/day</Text>
+            <Text style={styles.optionSubtitle}>-0.5 kg/week</Text>
+            {calorieData.weightLossTime > 0 && (
+              <Text style={styles.optionTime}>{formatTimeEstimate(calorieData.weightLossTime)}</Text>
+            )}
+          </TouchableOpacity>
+
+          {/* Mild Weight Loss */}
+          <TouchableOpacity
+            style={[
+              styles.optionCard,
+              selectedCalorieTarget === 'mild-loss' && styles.optionCardSelected
+            ]}
+            onPress={() => handleSelectTarget('mild-loss')}
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons name="chevron-down" size={24} color="#60A5FA" />
+            <Text style={styles.optionTitle}>Mild Loss</Text>
+            <Text style={styles.optionCalories}>{calorieData.mildWeightLoss}</Text>
+            <Text style={styles.optionSubtitle}>-0.25 kg/week</Text>
+            {calorieData.mildLossTime > 0 && (
+              <Text style={styles.optionTime}>{formatTimeEstimate(calorieData.mildLossTime)}</Text>
+            )}
           </TouchableOpacity>
 
           {/* Maintain */}
@@ -207,10 +284,29 @@ const OnboardingCalorieResultsScreen = () => {
             onPress={() => handleSelectTarget('maintain')}
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons name="equal" size={24} color="#22C55E" />
-            <Text style={styles.optionTitle}>Maintain Weight</Text>
+            <MaterialCommunityIcons name="equal" size={24} color="#10B981" />
+            <Text style={styles.optionTitle}>Maintain</Text>
             <Text style={styles.optionCalories}>{calorieData.maintainCalories}</Text>
-            <Text style={styles.optionSubtitle}>cal/day</Text>
+            <Text style={styles.optionSubtitle}>0 kg/week</Text>
+            <Text style={styles.optionTime}>{formatTimeEstimate(calorieData.maintainTime)}</Text>
+          </TouchableOpacity>
+
+          {/* Mild Weight Gain */}
+          <TouchableOpacity
+            style={[
+              styles.optionCard,
+              selectedCalorieTarget === 'mild-gain' && styles.optionCardSelected
+            ]}
+            onPress={() => handleSelectTarget('mild-gain')}
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons name="chevron-up" size={24} color="#F59E0B" />
+            <Text style={styles.optionTitle}>Mild Gain</Text>
+            <Text style={styles.optionCalories}>{calorieData.mildWeightGain}</Text>
+            <Text style={styles.optionSubtitle}>+0.25 kg/week</Text>
+            {calorieData.mildGainTime > 0 && (
+              <Text style={styles.optionTime}>{formatTimeEstimate(calorieData.mildGainTime)}</Text>
+            )}
           </TouchableOpacity>
 
           {/* Weight Gain */}
@@ -222,10 +318,13 @@ const OnboardingCalorieResultsScreen = () => {
             onPress={() => handleSelectTarget('weight-gain')}
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons name="arrow-up" size={24} color="#FF8C42" />
-            <Text style={styles.optionTitle}>Gain Weight</Text>
+            <MaterialCommunityIcons name="chevron-double-up" size={24} color="#FF8C42" />
+            <Text style={styles.optionTitle}>Weight Gain</Text>
             <Text style={styles.optionCalories}>{calorieData.weightGain}</Text>
-            <Text style={styles.optionSubtitle}>cal/day</Text>
+            <Text style={styles.optionSubtitle}>+0.5 kg/week</Text>
+            {calorieData.weightGainTime > 0 && (
+              <Text style={styles.optionTime}>{formatTimeEstimate(calorieData.weightGainTime)}</Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -247,7 +346,7 @@ const OnboardingCalorieResultsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     paddingHorizontal: 20,
@@ -261,7 +360,7 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
@@ -303,7 +402,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   recommendedCard: {
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 20,
     padding: 30,
     alignItems: 'center',
@@ -336,16 +435,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  optionsList: {
+  optionsGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
     marginBottom: 20,
   },
   optionCard: {
-    flex: 1,
-    backgroundColor: '#1e2e3e',
+    width: '48%',
+    backgroundColor: '#2A2A2A',
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: 'transparent',
@@ -371,6 +471,12 @@ const styles = StyleSheet.create({
   optionSubtitle: {
     fontSize: 12,
     color: '#8e9bab',
+  },
+  optionTime: {
+    fontSize: 11,
+    color: '#6a7a8a',
+    marginTop: 4,
+    fontStyle: 'italic',
   },
   footer: {
     padding: 20,

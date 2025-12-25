@@ -249,7 +249,7 @@ const ExerciseVideoPlayer: React.FC<ExerciseVideoPlayerProps> = ({
                       <MaterialCommunityIcons
                         name="check-circle"
                         size={20}
-                        color="#4CAF50"
+                        color="#E94E1B"
                       />
                       <Text style={styles.tipText}>{tip}</Text>
                     </View>

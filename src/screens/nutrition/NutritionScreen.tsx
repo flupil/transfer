@@ -24,8 +24,15 @@ import { getSelectedMealPlan, getTodayMealProgress, clearTodayMealProgress } fro
 import { clearTodayMacros } from '../../services/macroTrackingService';
 import firebaseDailyDataService from '../../services/firebaseDailyDataService';
 import CustomHeader from '../../components/CustomHeader';
+import { BRAND_COLORS } from '../../constants/brandColors';
+import { generatePieChartColors } from '../../utils/colorUtils';
 
 const { width } = Dimensions.get('window');
+
+// Helper function to format numbers with commas
+const formatNumber = (num: number): string => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
 
 const NutritionScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -43,6 +50,9 @@ const NutritionScreen: React.FC = () => {
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const [trackedMeals, setTrackedMeals] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+
+  // Generate dynamic pie chart colors
+  const pieColors = React.useMemo(() => generatePieChartColors(BRAND_COLORS.accent), []);
 
   // Helper function to translate meal names
   const translateMealName = (mealName: string): string => {
@@ -63,26 +73,9 @@ const NutritionScreen: React.FC = () => {
     }, [])
   );
 
-  // Initialize tour
+  // Initialize tour - DISABLED
   const checkAndStartTour = async () => {
-    try {
-      console.log('🎯 NutritionScreen: Checking if first visit for tour...');
-      const isFirst = await isFirstVisit('Nutrition');
-      console.log('🎯 NutritionScreen: Is first visit?', isFirst, 'Has plan?', !!selectedPlan);
-      if (isFirst && selectedPlan) {
-        console.log('🎯 NutritionScreen: Starting tour in 1 second...');
-        setTimeout(() => {
-          console.log('🎯 NutritionScreen: SHOWING TOUR NOW!');
-          setShowTour(true);
-        }, 1000);
-      } else if (isFirst && !selectedPlan) {
-        console.log('🎯 NutritionScreen: First visit but no meal plan selected yet');
-      } else {
-        console.log('🎯 NutritionScreen: Tour already completed, skipping');
-      }
-    } catch (error) {
-      console.error('Tour init error:', error);
-    }
+    return; // Tours disabled
   };
 
   // Tour steps
@@ -260,16 +253,16 @@ const NutritionScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={[styles.container, styles.centerContent, { backgroundColor: '#000' }]}>
-        <ActivityIndicator size="large" color="#FF6B35" />
-        <Text style={[styles.loadingText, { color: colors.text }]}>{t('nutrition.loading')}</Text>
+      <View style={[styles.container, styles.centerContent, { backgroundColor: '#2A2A2A' }]}>
+        <ActivityIndicator size="large" color={BRAND_COLORS.accentLight} />
+        <Text style={[styles.loadingText, { color: '#F4F1EF' }]}>{t('nutrition.loading')}</Text>
       </View>
     );
   }
 
   if (!selectedPlan || !selectedPlan.totalCalories) {
     return (
-      <View style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
+      <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
         <CustomHeader />
         <View style={{ flex: 1 }}>
           {renderNoPlanSelected()}
@@ -283,7 +276,7 @@ const NutritionScreen: React.FC = () => {
     : 0;
 
   return (
-    <View style={[styles.container, { backgroundColor: '#000' }]}>
+    <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       <CustomHeader />
 
       <View style={{ flex: 1 }}>
@@ -292,16 +285,7 @@ const NutritionScreen: React.FC = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 100 }}>
           <View style={styles.header}>
-          <Text style={[styles.headerTitle, { color: colors.text }]}>{t('nutrition.mealPlan')}</Text>
-          <TouchableOpacity
-            style={[styles.actionsButton, { borderColor: isDark ? '#3C3C3E' : '#E5E5E5' }]}
-            onPress={() => {
-              // Open actions menu
-            }}
-          >
-            <Text style={[styles.actionsButtonText, { color: colors.text }]}>{t('nutrition.actions')}</Text>
-            <MaterialCommunityIcons name="dots-vertical" size={20} color={colors.text} />
-          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: '#F4F1EF' }]}>{t('nutrition.mealPlan')}</Text>
         </View>
 
         {/* Daily Progress Section */}
@@ -309,10 +293,10 @@ const NutritionScreen: React.FC = () => {
           borderBottomColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#F0F0F0',
         }]}>
           <View style={styles.dailyHeader}>
-            <Text style={[styles.dailyTitle, { color: colors.text }]}>{t('nutrition.todaysProgress')}</Text>
-            <View style={[styles.remainingBadge, { backgroundColor: 'rgba(255, 107, 53, 0.9)' }]}>
+            <Text style={[styles.dailyTitle, { color: '#F4F1EF' }]}>{t('nutrition.todaysProgress')}</Text>
+            <View style={[styles.remainingBadge, { backgroundColor: BRAND_COLORS.accent }]}>
               <Text style={[styles.remainingText, { color: '#FFFFFF' }]}>
-                {todayProgress?.remaining.calories || selectedPlan?.totalCalories || 0} {t('nutrition.calLeft')}
+                {formatNumber(todayProgress?.remaining.calories || selectedPlan?.totalCalories || 0)} {t('nutrition.calLeft')}
               </Text>
             </View>
           </View>
@@ -325,7 +309,7 @@ const NutritionScreen: React.FC = () => {
                   cx={60}
                   cy={60}
                   r={50}
-                  stroke={'rgba(255, 107, 53, 0.15)'}
+                  stroke={`${BRAND_COLORS.accentLight}26`}
                   strokeWidth={16}
                   fill="none"
                 />
@@ -334,7 +318,7 @@ const NutritionScreen: React.FC = () => {
                   cx={60}
                   cy={60}
                   r={50}
-                  stroke={caloriesPercentage > 100 ? '#FF4444' : '#FF6B35'}
+                  stroke={caloriesPercentage > 100 ? '#FF4444' : BRAND_COLORS.accentLight}
                   strokeWidth={16}
                   fill="none"
                   strokeDasharray={`${2 * Math.PI * 50}`}
@@ -347,26 +331,26 @@ const NutritionScreen: React.FC = () => {
                 <MaterialCommunityIcons
                   name="fire"
                   size={32}
-                  color="#FF6B35"
+                  color={BRAND_COLORS.accentLight}
                   style={{ marginBottom: 4 }}
                 />
-                <Text style={[styles.consumedCalories, { color: colors.text }]}>
-                  {todayProgress?.consumed.calories || 0}
+                <Text style={[styles.consumedCalories, { color: '#F4F1EF' }]}>
+                  {formatNumber(todayProgress?.consumed.calories || 0)}
                 </Text>
-                <Text style={[styles.caloriesLabel, { color: colors.textSecondary }]}>{t('nutrition.calories')}</Text>
+                <Text style={[styles.caloriesLabel, { color: '#C5C2BF' }]}>{t('nutrition.calories')}</Text>
               </View>
             </View>
 
             <View style={styles.macrosContainer}>
               <View style={styles.macroItem}>
                 <View style={[styles.macroIcon, { backgroundColor: 'rgba(66, 133, 244, 0.15)' }]}>
-                  <MaterialCommunityIcons name="arm-flex" size={20} color="#4285F4" />
+                  <MaterialCommunityIcons name="arm-flex" size={20} color="#3B82F6" />
                 </View>
-                <Text style={[styles.macroValue, { color: colors.text }]}>
+                <Text style={[styles.macroValue, { color: '#F4F1EF' }]}>
                   {todayProgress?.consumed.protein || 0}g
                 </Text>
-                <Text style={[styles.macroTarget, { color: colors.textSecondary }]}>/ {selectedPlan?.totalProtein || 0}g</Text>
-                <Text style={[styles.macroLabel, { color: colors.textSecondary }]}>{t('nutrition.protein')}</Text>
+                <Text style={[styles.macroTarget, { color: '#C5C2BF' }]}>/ {selectedPlan?.totalProtein || 0}g</Text>
+                <Text style={[styles.macroLabel, { color: '#C5C2BF' }]}>{t('nutrition.protein')}</Text>
                 <View style={styles.macroProgress}>
                   <View
                     style={[
@@ -376,7 +360,7 @@ const NutritionScreen: React.FC = () => {
                           ((todayProgress?.consumed.protein || 0) / (selectedPlan?.totalProtein || 1)) * 100,
                           100
                         ) : 0}%`,
-                        backgroundColor: '#4285F4',
+                        backgroundColor: '#3B82F6',
                       },
                     ]}
                   />
@@ -384,14 +368,14 @@ const NutritionScreen: React.FC = () => {
               </View>
 
               <View style={styles.macroItem}>
-                <View style={[styles.macroIcon, { backgroundColor: 'rgba(255, 107, 53, 0.15)' }]}>
-                  <MaterialCommunityIcons name="grain" size={20} color="#FF6B35" />
+                <View style={[styles.macroIcon, { backgroundColor: `${BRAND_COLORS.accentLight}26` }]}>
+                  <MaterialCommunityIcons name="grain" size={20} color={BRAND_COLORS.accentLight} />
                 </View>
-                <Text style={[styles.macroValue, { color: colors.text }]}>
+                <Text style={[styles.macroValue, { color: '#F4F1EF' }]}>
                   {todayProgress?.consumed.carbs || 0}g
                 </Text>
-                <Text style={[styles.macroTarget, { color: colors.textSecondary }]}>/ {selectedPlan?.totalCarbs || 0}g</Text>
-                <Text style={[styles.macroLabel, { color: colors.textSecondary }]}>{t('nutrition.carbs')}</Text>
+                <Text style={[styles.macroTarget, { color: '#C5C2BF' }]}>/ {selectedPlan?.totalCarbs || 0}g</Text>
+                <Text style={[styles.macroLabel, { color: '#C5C2BF' }]}>{t('nutrition.carbs')}</Text>
                 <View style={styles.macroProgress}>
                   <View
                     style={[
@@ -401,7 +385,7 @@ const NutritionScreen: React.FC = () => {
                           ((todayProgress?.consumed.carbs || 0) / (selectedPlan?.totalCarbs || 1)) * 100,
                           100
                         ) : 0}%`,
-                        backgroundColor: '#FF6B35',
+                        backgroundColor: BRAND_COLORS.accentLight,
                       },
                     ]}
                   />
@@ -412,11 +396,11 @@ const NutritionScreen: React.FC = () => {
                 <View style={[styles.macroIcon, { backgroundColor: '#E8FFE8' }]}>
                   <Ionicons name="water" size={20} color="#66BB6A" />
                 </View>
-                <Text style={[styles.macroValue, { color: colors.text }]}>
+                <Text style={[styles.macroValue, { color: '#F4F1EF' }]}>
                   {todayProgress?.consumed.fat || 0}g
                 </Text>
-                <Text style={[styles.macroTarget, { color: colors.textSecondary }]}>/ {selectedPlan?.totalFat || 0}g</Text>
-                <Text style={[styles.macroLabel, { color: colors.textSecondary }]}>{t('nutrition.fat')}</Text>
+                <Text style={[styles.macroTarget, { color: '#C5C2BF' }]}>/ {selectedPlan?.totalFat || 0}g</Text>
+                <Text style={[styles.macroLabel, { color: '#C5C2BF' }]}>{t('nutrition.fat')}</Text>
                 <View style={styles.macroProgress}>
                   <View
                     style={[
@@ -426,7 +410,7 @@ const NutritionScreen: React.FC = () => {
                           ((todayProgress?.consumed.fat || 0) / (selectedPlan?.totalFat || 1)) * 100,
                           100
                         ) : 0}%`,
-                        backgroundColor: '#4285F4',
+                        backgroundColor: '#3B82F6',
                       },
                     ]}
                   />
@@ -443,7 +427,7 @@ const NutritionScreen: React.FC = () => {
               style={[
                 styles.toggleButton,
                 viewMode === 'day' && styles.toggleButtonActive,
-                { backgroundColor: viewMode === 'day' ? colors.text : isDark ? '#2C2C2E' : '#E5E5E5' }
+                { backgroundColor: viewMode === 'day' ? colors.text : isDark ? '#4E4E50' : '#E5E5E5' }
               ]}
               onPress={() => setViewMode('day')}
             >
@@ -456,7 +440,7 @@ const NutritionScreen: React.FC = () => {
               style={[
                 styles.toggleButton,
                 viewMode === 'week' && styles.toggleButtonActive,
-                { backgroundColor: viewMode === 'week' ? colors.text : isDark ? '#2C2C2E' : '#E5E5E5' }
+                { backgroundColor: viewMode === 'week' ? colors.text : isDark ? '#4E4E50' : '#E5E5E5' }
               ]}
               onPress={() => setViewMode('week')}
             >
@@ -475,7 +459,7 @@ const NutritionScreen: React.FC = () => {
             }}>
               <MaterialCommunityIcons name="chevron-left" size={28} color={colors.text} />
             </TouchableOpacity>
-            <Text style={[styles.dateText, { color: colors.text }]}>
+            <Text style={[styles.dateText, { color: '#F4F1EF' }]}>
               {format(selectedDate, 'MMMM d, yyyy') === format(new Date(), 'MMMM d, yyyy')
                 ? t('nutrition.today') + ', ' + format(selectedDate, 'MMM d')
                 : format(selectedDate, 'MMM d, yyyy')}
@@ -492,19 +476,19 @@ const NutritionScreen: React.FC = () => {
 
         {/* Summary Card with Pie Chart */}
         <TouchableOpacity
-          style={[styles.summaryCard, { backgroundColor: isDark ? '#1C1C1E' : '#F5F5F5' }]}
+          style={[styles.summaryCard, { backgroundColor: isDark ? '#4E4E50' : '#F5F5F5' }]}
           onPress={() => (navigation as any).navigate('MealPlanSelection')}
         >
           <View style={styles.pieChartContainer}>
             <Svg width={60} height={60}>
               {/* Pie chart segments */}
-              <Circle cx={30} cy={30} r={25} fill="#FFA726" />
+              <Circle cx={30} cy={30} r={25} fill={pieColors.carbs} />
               <Circle
                 cx={30}
                 cy={30}
                 r={25}
                 fill="transparent"
-                stroke="#4285F4"
+                stroke={pieColors.protein}
                 strokeWidth={50}
                 strokeDasharray={`${Math.PI * 50 * 0.3} ${Math.PI * 50 * 0.7}`}
                 transform="rotate(-90 30 30)"
@@ -514,7 +498,7 @@ const NutritionScreen: React.FC = () => {
                 cy={30}
                 r={25}
                 fill="transparent"
-                stroke="#66BB6A"
+                stroke={pieColors.fat}
                 strokeWidth={50}
                 strokeDasharray={`${Math.PI * 50 * 0.25} ${Math.PI * 50 * 0.75}`}
                 transform="rotate(18 30 30)"
@@ -522,10 +506,10 @@ const NutritionScreen: React.FC = () => {
             </Svg>
           </View>
           <View style={styles.summaryInfo}>
-            <Text style={[styles.summaryCalories, { color: colors.text }]}>
-              {selectedPlan?.totalCalories || 0} {t('nutrition.calories')}
+            <Text style={[styles.summaryCalories, { color: '#F4F1EF' }]}>
+              {formatNumber(selectedPlan?.totalCalories || 0)} {t('nutrition.calories')}
             </Text>
-            <Text style={[styles.summaryMacros, { color: colors.textSecondary }]}>
+            <Text style={[styles.summaryMacros, { color: '#C5C2BF' }]}>
               {selectedPlan?.totalCarbs || 0}g {t('nutrition.carbs')}, {selectedPlan?.totalFat || 0}g {t('nutrition.fat')}, {selectedPlan?.totalProtein || 0}g {t('nutrition.protein')}
             </Text>
           </View>
@@ -534,18 +518,18 @@ const NutritionScreen: React.FC = () => {
 
         {/* Progress Bar */}
         <View style={styles.progressBarContainer}>
-          <View style={[styles.progressBar, { backgroundColor: isDark ? '#2C2C2E' : '#E5E5E5' }]}>
+          <View style={[styles.progressBar, { backgroundColor: isDark ? '#4E4E50' : '#E5E5E5' }]}>
             <View
               style={[
                 styles.progressBarFill,
                 {
                   width: `${caloriesPercentage}%`,
-                  backgroundColor: caloriesPercentage > 100 ? '#FF4444' : '#4CAF50'
+                  backgroundColor: caloriesPercentage > 100 ? '#FF4444' : BRAND_COLORS.accent
                 }
               ]}
             />
           </View>
-          <Text style={[styles.progressText, { color: colors.textSecondary }]}>
+          <Text style={[styles.progressText, { color: '#C5C2BF' }]}>
             {t('nutrition.tracked')} {trackedMeals}/{selectedPlan.meals?.length || 0} {t('nutrition.meals')}
           </Text>
         </View>
@@ -559,12 +543,12 @@ const NutritionScreen: React.FC = () => {
               <View style={[
                 styles.timelineDot,
                 {
-                  backgroundColor: trackedMeals > mealIndex ? '#4CAF50' : isDark ? '#3C3C3E' : '#D1D1D6',
-                  borderColor: trackedMeals > mealIndex ? '#4CAF50' : isDark ? '#3C3C3E' : '#D1D1D6'
+                  backgroundColor: trackedMeals > mealIndex ? BRAND_COLORS.accent : isDark ? '#4E4E50' : '#D1D1D6',
+                  borderColor: trackedMeals > mealIndex ? BRAND_COLORS.accent : isDark ? '#4E4E50' : '#D1D1D6'
                 }
               ]} />
               {mealIndex < selectedPlan.meals.length - 1 && (
-                <View style={[styles.timelineLine, { backgroundColor: isDark ? '#3C3C3E' : '#D1D1D6' }]} />
+                <View style={[styles.timelineLine, { backgroundColor: isDark ? '#4E4E50' : '#D1D1D6' }]} />
               )}
             </View>
 
@@ -572,9 +556,9 @@ const NutritionScreen: React.FC = () => {
             <View style={styles.mealContent}>
               <View style={styles.mealHeaderNew}>
                 <View>
-                  <Text style={[styles.mealNameNew, { color: colors.text }]}>{translateMealName(meal.name)}</Text>
-                  <Text style={[styles.mealCaloriesNew, { color: colors.textSecondary }]}>
-                    {meal.calories} {t('nutrition.calories')}
+                  <Text style={[styles.mealNameNew, { color: '#F4F1EF' }]}>{translateMealName(meal.name)}</Text>
+                  <Text style={[styles.mealCaloriesNew, { color: '#C5C2BF' }]}>
+                    {formatNumber(meal.calories)} {t('nutrition.calories')}
                   </Text>
                 </View>
                 <TouchableOpacity>
@@ -586,16 +570,16 @@ const NutritionScreen: React.FC = () => {
               {meal.foods && meal.foods.slice(0, 2).map((food: any, foodIndex: number) => (
                 <TouchableOpacity
                   key={foodIndex}
-                  style={[styles.foodItem, { backgroundColor: isDark ? '#2C2C2E' : '#FFFFFF' }]}
+                  style={[styles.foodItem, { backgroundColor: isDark ? '#4E4E50' : '#FFFFFF' }]}
                   onPress={() => handleMealPress(meal)}
                 >
                   <View style={styles.foodImagePlaceholder}>
-                    <MaterialCommunityIcons name="food-apple" size={32} color="#FF6B35" />
+                    <MaterialCommunityIcons name="food-apple" size={32} color={BRAND_COLORS.accentLight} />
                   </View>
                   <View style={styles.foodDetails}>
-                    <Text style={[styles.foodName, { color: colors.text }]}>{food.name}</Text>
-                    <Text style={[styles.foodServing, { color: colors.textSecondary }]}>
-                      {food.serving} • {food.calories} {t('nutrition.calories')}
+                    <Text style={[styles.foodName, { color: '#F4F1EF' }]}>{food.name}</Text>
+                    <Text style={[styles.foodServing, { color: '#C5C2BF' }]}>
+                      {food.serving} • {formatNumber(food.calories)} {t('nutrition.calories')}
                     </Text>
                   </View>
                   <TouchableOpacity>
@@ -610,7 +594,7 @@ const NutritionScreen: React.FC = () => {
 
         {/* Quick Actions - New Design */}
         <View style={styles.quickActionsNew}>
-          <Text style={[styles.sectionTitle, { color: colors.text, marginBottom: 15 }]}>{t('nutrition.quickActions')}</Text>
+          <Text style={[styles.sectionTitle, { color: '#F4F1EF', marginBottom: 15 }]}>{t('nutrition.quickActions')}</Text>
 
         {/* Main Action Buttons */}
         <View style={styles.mainActionsRow}>
@@ -626,7 +610,7 @@ const NutritionScreen: React.FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.primaryActionButton, { backgroundColor: '#4285F4' }]}
+            style={[styles.primaryActionButton, { backgroundColor: '#3B82F6' }]}
             onPress={() => (navigation as any).navigate('FoodDiary')}
           >
             <View style={[styles.actionIconCircle, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
@@ -642,8 +626,8 @@ const NutritionScreen: React.FC = () => {
           style={[styles.secondaryActionButton, { borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#E0E0E0' }]}
           onPress={() => (navigation as any).navigate('AINutritionAdvisor')}
         >
-          <Ionicons name="sparkles" size={20} color="#4ECDC4" />
-          <Text style={[styles.secondaryActionText, { color: colors.text }]}>AI Nutrition Advisor</Text>
+          <Ionicons name="sparkles" size={20} color={BRAND_COLORS.accent} />
+          <Text style={[styles.secondaryActionText, { color: '#F4F1EF' }]}>AI Nutrition Advisor</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -651,7 +635,7 @@ const NutritionScreen: React.FC = () => {
           onPress={handleResetToday}
         >
           <MaterialCommunityIcons name="delete-sweep" size={20} color="#F44336" />
-          <Text style={[styles.secondaryActionText, { color: colors.text }]}>{t('nutrition.resetToday')}</Text>
+          <Text style={[styles.secondaryActionText, { color: '#F4F1EF' }]}>{t('nutrition.resetToday')}</Text>
         </TouchableOpacity>
         </View>
         </ScrollView>
@@ -728,7 +712,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
     borderRadius: 16,
     gap: 4,
   },
@@ -746,11 +730,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     gap: 4,
     borderWidth: 1,
-    borderColor: '#FF6B35',
+    borderColor: BRAND_COLORS.accentLight,
   },
   changePlanText: {
     fontSize: 14,
-    color: '#FF6B35',
+    color: BRAND_COLORS.accentLight,
     fontWeight: '500',
   },
   emptyContainer: {
@@ -777,7 +761,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#FF6B35',
+    backgroundColor: BRAND_COLORS.accentLight,
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 25,
@@ -812,7 +796,7 @@ const styles = StyleSheet.create({
   },
   remainingText: {
     fontSize: 12,
-    color: '#FF6B35',
+    color: BRAND_COLORS.accentLight,
     fontWeight: '600',
   },
   progressSection: {
@@ -840,7 +824,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: BRAND_COLORS.accentLight,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 10,
@@ -955,7 +939,7 @@ const styles = StyleSheet.create({
   },
   mealCaloriesText: {
     fontSize: 13,
-    color: '#FF6B6B',
+    color: BRAND_COLORS.accent,
     fontWeight: '500',
   },
   mealMacros: {
@@ -1032,7 +1016,7 @@ const styles = StyleSheet.create({
   },
   primaryActionButton: {
     flex: 1,
-    backgroundColor: '#FF6B35',
+    backgroundColor: BRAND_COLORS.accentLight,
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',

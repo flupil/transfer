@@ -1,8 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from './AuthContext';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 interface UserPreferences {
@@ -45,6 +44,20 @@ export const UserPreferencesProvider: React.FC<{ children: ReactNode }> = ({ chi
         if (userData.appInterest) {
           appInterest = userData.appInterest;
           console.log('Found appInterest in Firebase:', appInterest);
+
+          // TEMPORARY FIX: If it's nutrition-only, change to both
+          if (appInterest === 'nutrition') {
+            console.log('Overriding nutrition-only to both');
+            appInterest = 'both';
+
+            // Update Firebase to persist this change
+            try {
+              await updateDoc(doc(db, 'users', user.id), { appInterest: 'both' });
+              console.log('Updated Firebase with appInterest: both');
+            } catch (error) {
+              console.error('Failed to update Firebase:', error);
+            }
+          }
         }
       } else {
         console.log('No user document found in Firebase, defaulting to both');

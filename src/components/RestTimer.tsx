@@ -264,7 +264,7 @@ const RestTimer: React.FC<RestTimerProps> = ({
 
   const getProgressColor = () => {
     const progress = 1 - (timeLeft / selectedDuration);
-    if (progress < 0.5) return '#4CAF50';
+    if (progress < 0.5) return '#E94E1B';
     if (progress < 0.8) return '#FFC107';
     return '#FF5722';
   };
@@ -355,7 +355,7 @@ const RestTimer: React.FC<RestTimerProps> = ({
                     style={styles.controlButton}
                     onPress={resumeTimer}
                   >
-                    <MaterialCommunityIcons name="play" size={32} color="#4CAF50" />
+                    <MaterialCommunityIcons name="play" size={32} color="#E94E1B" />
                   </TouchableOpacity>
                 )}
 
@@ -377,7 +377,7 @@ const RestTimer: React.FC<RestTimerProps> = ({
               {timeLeft === 0 && (
                 <TouchableOpacity onPress={handleClose}>
                   <LinearGradient
-                    colors={['#4CAF50', '#45B839']}
+                    colors={['#E94E1B', '#45B839']}
                     style={styles.doneButton}
                   >
                     <Text style={styles.doneButtonText}>{t('timer.done')}</Text>

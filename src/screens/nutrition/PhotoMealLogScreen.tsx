@@ -18,6 +18,7 @@ import { aiService, FoodAnalysis } from '../../services/aiService';
 import { useAuth } from '../../contexts/AuthContext';
 import firebaseDailyDataService from '../../services/firebaseDailyDataService';
 import { validateNutritionInfo, showValidationErrors } from '../../utils/nutritionValidation';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const PhotoMealLogScreen = () => {
   const navigation = useNavigation();
@@ -171,12 +172,12 @@ const PhotoMealLogScreen = () => {
         {/* Total Macros */}
         <View style={styles.macrosGrid}>
           <View style={styles.macroCard}>
-            <Ionicons name="flame" size={24} color="#FF6B35" />
+            <Ionicons name="flame" size={24} color={BRAND_COLORS.accent} />
             <Text style={styles.macroValue}>{analysis.totalCalories}</Text>
             <Text style={styles.macroLabel}>Calories</Text>
           </View>
           <View style={styles.macroCard}>
-            <Ionicons name="fitness" size={24} color="#4ECDC4" />
+            <Ionicons name="fitness" size={24} color={BRAND_COLORS.accent} />
             <Text style={styles.macroValue}>{analysis.totalProtein}g</Text>
             <Text style={styles.macroLabel}>Protein</Text>
           </View>
@@ -186,7 +187,7 @@ const PhotoMealLogScreen = () => {
             <Text style={styles.macroLabel}>Carbs</Text>
           </View>
           <View style={styles.macroCard}>
-            <Ionicons name="water" size={24} color="#FFD93D" />
+            <Ionicons name="water" size={24} color={BRAND_COLORS.accent} />
             <Text style={styles.macroValue}>{analysis.totalFat}g</Text>
             <Text style={styles.macroLabel}>Fat</Text>
           </View>
@@ -255,7 +256,7 @@ const PhotoMealLogScreen = () => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <Ionicons name="camera" size={32} color="#4ECDC4" />
+          <Ionicons name="camera" size={32} color={BRAND_COLORS.accent} />
           <Text style={styles.infoText}>
             Take a photo of your meal and AI will analyze the nutritional content
           </Text>
@@ -294,7 +295,7 @@ const PhotoMealLogScreen = () => {
         {/* Analyzing Indicator */}
         {analyzing && (
           <View style={styles.analyzingContainer}>
-            <ActivityIndicator size="large" color="#4ECDC4" />
+            <ActivityIndicator size="large" color={BRAND_COLORS.accent} />
             <Text style={styles.analyzingText}>Analyzing your meal...</Text>
             <Text style={styles.analyzingSubtext}>This may take a few seconds</Text>
           </View>
@@ -334,7 +335,7 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -353,7 +354,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   captureButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     borderRadius: 16,
     padding: 32,
     alignItems: 'center',
@@ -365,13 +366,13 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   galleryButton: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 16,
     padding: 24,
     alignItems: 'center',
     gap: 12,
     borderWidth: 2,
-    borderColor: '#3C3C3E',
+    borderColor: '#4E4E50',
   },
   galleryButtonText: {
     fontSize: 16,
@@ -386,13 +387,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     borderRadius: 12,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
   },
   retakeButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginTop: 12,
     padding: 12,
     borderRadius: 8,
@@ -463,7 +464,7 @@ const styles = StyleSheet.create({
   macroCard: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -485,7 +486,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   foodItem: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -509,11 +510,11 @@ const styles = StyleSheet.create({
   },
   foodMacroText: {
     fontSize: 12,
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     fontWeight: '500',
   },
   suggestionsContainer: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 12,
     padding: 16,
     marginTop: 12,
@@ -534,7 +535,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     marginTop: 24,
     padding: 16,
     borderRadius: 12,

@@ -26,7 +26,7 @@ const OnboardingGenderScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -47,7 +47,7 @@ const OnboardingGenderScreen = () => {
         <Text style={styles.title}>{t('onboarding.genderQuestion')}</Text>
 
         <View style={styles.infoBox}>
-          <Ionicons name="settings-outline" size={20} color="#3b9eff" />
+          <Ionicons name="settings-outline" size={20} color="#3B82F6" />
           <Text style={styles.infoText}>
             {t('onboarding.genderInfo')}
           </Text>
@@ -66,7 +66,7 @@ const OnboardingGenderScreen = () => {
               <Ionicons
                 name={gender.icon as any}
                 size={24}
-                color={selectedGender === gender.id ? '#3b9eff' : '#8e9bab'}
+                color={selectedGender === gender.id ? '#3B82F6' : '#8e9bab'}
               />
               <Text
                 style={[
@@ -98,7 +98,7 @@ const OnboardingGenderScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   infoBox: {
     flexDirection: 'row',
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     padding: 15,
     borderRadius: 10,
     marginBottom: 30,
@@ -163,14 +163,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#1e2e3e',
+    borderColor: '#2A2A2A',
     gap: 15,
   },
   optionButtonSelected: {
-    borderColor: '#3b9eff',
+    borderColor: '#3B82F6',
   },
   optionText: {
     fontSize: 18,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

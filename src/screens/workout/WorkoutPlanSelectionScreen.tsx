@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -16,6 +17,7 @@ import { useTour } from '../../contexts/TourContext';
 import { CustomTourOverlay, TourStep } from '../../components/tour/CustomTourOverlay';
 import professionalPlans from '../../data/professionalWorkoutPlans.json';
 import { selectWorkoutPlan, getSelectedWorkoutPlan } from '../../services/workoutPlanService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface WorkoutPlan {
   id: number;
@@ -28,6 +30,9 @@ interface WorkoutPlan {
   description: string;
 }
 
+type FilterType = 'all' | 'beginner' | 'intermediate' | 'advanced' | 'home';
+const FILTER_OPTIONS: FilterType[] = ['all', 'beginner', 'intermediate', 'advanced', 'home'];
+
 const WorkoutPlanSelectionScreen = () => {
   const navigation = useNavigation();
   const { colors, isDark } = useTheme();
@@ -35,7 +40,8 @@ const WorkoutPlanSelectionScreen = () => {
   const { isFirstVisit, markTourComplete } = useTour();
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [filter, setFilter] = useState<FilterType>('all');
   const [showTour, setShowTour] = useState(false);
   const [tourStep, setTourStep] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -50,24 +56,9 @@ const WorkoutPlanSelectionScreen = () => {
     }
   }, [loading]);
 
-  // Initialize tour
+  // Initialize tour - DISABLED
   const checkAndStartTour = async () => {
-    try {
-      console.log('🎯 WorkoutPlanSelection: Checking if first visit for tour...');
-      const isFirst = await isFirstVisit('WorkoutPlanSelection');
-      console.log('🎯 WorkoutPlanSelection: Is first visit?', isFirst);
-      if (isFirst) {
-        console.log('🎯 WorkoutPlanSelection: Starting tour in 1 second...');
-        setTimeout(() => {
-          console.log('🎯 WorkoutPlanSelection: SHOWING TOUR NOW!');
-          setShowTour(true);
-        }, 1000);
-      } else {
-        console.log('🎯 WorkoutPlanSelection: Tour already completed, skipping');
-      }
-    } catch (error) {
-      console.error('Tour init error:', error);
-    }
+    return; // Tours disabled
   };
 
   // Tour steps
@@ -123,12 +114,103 @@ const WorkoutPlanSelectionScreen = () => {
   };
 
   const handleSelectPlan = async (plan: WorkoutPlan) => {
+    // Prevent multiple selections at once
+    if (isSelecting) return;
+
+    // Check if switching from a different plan
+    if (selectedPlanId && selectedPlanId !== plan.id) {
+      // Check if user has progress on current plan
+      const hasProgress = await checkHasProgress(selectedPlanId);
+
+      if (hasProgress) {
+        // Find current plan name - try both number and string comparison
+        const currentPlan = professionalPlans.find((p: any) =>
+          p.id === selectedPlanId || p.id === String(selectedPlanId) || String(p.id) === String(selectedPlanId)
+        );
+
+        console.log('🔍 Looking for plan ID:', selectedPlanId);
+        console.log('📋 Found plan:', currentPlan);
+        console.log('📝 Plan name:', currentPlan?.name);
+
+        const currentPlanName = currentPlan?.name || 'your current plan';
+
+        // Show confirmation dialog
+        Alert.alert(
+          'Switch Workout Plan?',
+          `You have progress on "${currentPlanName}".\n\nSwitching to "${plan.name}" will start fresh.\n\nContinue?`,
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Switch Plan',
+              style: 'destructive',
+              onPress: () => performPlanSwitch(plan),
+            },
+          ]
+        );
+        return;
+      }
+    }
+
+    // No progress or same plan, switch directly
+    await performPlanSwitch(plan);
+  };
+
+  const checkHasProgress = async (planId: number): Promise<boolean> => {
+    try {
+      const completedWorkoutsData = await AsyncStorage.getItem('completedWorkouts');
+
+      if (!completedWorkoutsData) {
+        return false;
+      }
+
+      const completedWorkouts = JSON.parse(completedWorkoutsData);
+
+      // completedWorkouts is an array like ["1-1-0", "1-1-1"]
+      // Format is: planId-week-dayIndex
+      if (!Array.isArray(completedWorkouts)) {
+        return false;
+      }
+
+      // Check if any workouts are completed for this plan
+      const planWorkouts = completedWorkouts.filter((key: string) =>
+        key.startsWith(`${planId}-`)
+      );
+
+      return planWorkouts.length > 0;
+    } catch (error) {
+      console.error('Failed to check progress:', error);
+      return false;
+    }
+  };
+
+  const performPlanSwitch = async (plan: WorkoutPlan) => {
+    setIsSelecting(true);
     try {
       await selectWorkoutPlan(plan.id.toString());
       setSelectedPlanId(plan.id);
-      (navigation as any).goBack();
+
+      // Show success feedback
+      Alert.alert(
+        'Success',
+        `"${plan.name}" is now your active workout plan!`,
+        [
+          {
+            text: 'OK',
+            onPress: () => (navigation as any).goBack(),
+          }
+        ]
+      );
     } catch (error) {
       console.error('Failed to select plan:', error);
+      Alert.alert(
+        t('error.title') || 'Error',
+        t('error.failedToSelectPlan') || 'Failed to select workout plan. Please try again.'
+      );
+    } finally {
+      setIsSelecting(false);
     }
   };
 
@@ -148,9 +230,9 @@ const WorkoutPlanSelectionScreen = () => {
 
   const getGoalColor = (goal: string) => {
     switch (goal) {
-      case 'muscle_building': return '#4285F4';
+      case 'muscle_building': return '#3B82F6';
       case 'fat_loss': return '#FF6B35';
-      case 'strength': return '#8B5CF6';
+      case 'strength': return '#E94E1B';
       case 'tone': return '#EC4899';
       case 'general_fitness': return '#10B981';
       case 'endurance': return '#F59E0B';
@@ -164,7 +246,7 @@ const WorkoutPlanSelectionScreen = () => {
     const badges = {
       beginner: { label: t('workoutPlans.beginner'), color: '#10B981' },
       intermediate: { label: t('workoutPlans.intermediate'), color: '#F59E0B' },
-      advanced: { label: t('workoutPlans.advanced'), color: '#EF4444' }
+      advanced: { label: t('workoutPlans.advanced'), color: '#E94E1B' }
     };
     return badges[experience as keyof typeof badges] || badges.beginner;
   };
@@ -180,14 +262,14 @@ const WorkoutPlanSelectionScreen = () => {
 
   if (loading) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
-        <ActivityIndicator size="large" color="#FF6B35" style={{ marginTop: 50 }} />
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primaryAction} style={{ marginTop: 50 }} />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView
         ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
@@ -211,12 +293,12 @@ const WorkoutPlanSelectionScreen = () => {
           style={styles.aiGeneratorButton}
           onPress={() => (navigation as any).navigate('AIWorkoutGenerator')}
         >
-          <MaterialCommunityIcons name="sparkles" size={24} color="#4ECDC4" />
+          <MaterialCommunityIcons name="sparkles" size={24} color="#E94E1B" />
           <View style={styles.aiGeneratorTextContainer}>
             <Text style={styles.aiGeneratorTitle}>{t('workoutPlans.aiGenerator')}</Text>
             <Text style={styles.aiGeneratorSubtitle}>{t('workoutPlans.aiGeneratorSubtitle')}</Text>
           </View>
-          <MaterialCommunityIcons name="chevron-right" size={24} color="#4ECDC4" />
+          <MaterialCommunityIcons name="chevron-right" size={24} color="#E94E1B" />
         </TouchableOpacity>
 
         {/* Filter Chips */}
@@ -226,7 +308,7 @@ const WorkoutPlanSelectionScreen = () => {
           style={styles.filterContainer}
           contentContainerStyle={styles.filterContent}
         >
-          {['all', 'beginner', 'intermediate', 'advanced', 'home'].map((f) => {
+          {FILTER_OPTIONS.map((f) => {
           const filterLabel = f === 'all' ? t('workoutPlans.all') :
                              f === 'home' ? t('workoutPlans.home') :
                              t(`workoutPlans.${f}`);
@@ -237,7 +319,7 @@ const WorkoutPlanSelectionScreen = () => {
               style={[
                 styles.filterChip,
                 {
-                  backgroundColor: filter === f ? 'rgba(255, 107, 53, 0.9)' : '#2C2C2E',
+                  backgroundColor: filter === f ? colors.primaryAction : colors.cardBackground,
                 }
               ]}
             >
@@ -264,12 +346,14 @@ const WorkoutPlanSelectionScreen = () => {
                 key={plan.id}
                 onPress={() => handleSelectPlan(plan)}
                 activeOpacity={0.7}
+                disabled={isSelecting}
                 style={[
                   styles.planCard,
                   {
-                    backgroundColor: '#2C2C2E',
+                    backgroundColor: colors.cardBackground,
                     borderWidth: isSelected ? 2 : 0,
-                    borderColor: isSelected ? '#FF6B35' : 'transparent',
+                    borderColor: isSelected ? colors.primaryAction : 'transparent',
+                    opacity: isSelecting ? 0.5 : 1,
                   }
                 ]}
               >
@@ -290,7 +374,7 @@ const WorkoutPlanSelectionScreen = () => {
                         {plan.name}
                       </Text>
                       {isSelected && (
-                        <MaterialCommunityIcons name="check-circle" size={18} color="#FF6B35" />
+                        <MaterialCommunityIcons name="check-circle" size={18} color={colors.primaryAction} />
                       )}
                     </View>
 
@@ -329,9 +413,7 @@ const WorkoutPlanSelectionScreen = () => {
                         color={colors.textSecondary}
                       />
                       <Text style={[styles.equipmentText, { color: colors.textSecondary }]}>
-                        {plan.equipment === 'none' ? 'No equipment needed' :
-                         plan.equipment === 'dumbbells' ? 'Dumbbells only' :
-                         plan.equipment === 'minimal' ? 'Minimal equipment' : 'Gym access required'}
+                        {t(`equipment.${plan.equipment}`) || plan.equipment}
                       </Text>
                     </View>
                   </View>
@@ -341,6 +423,18 @@ const WorkoutPlanSelectionScreen = () => {
           })}
         </View>
       </ScrollView>
+
+      {/* Loading Overlay */}
+      {isSelecting && (
+        <View style={styles.loadingOverlay}>
+          <View style={[styles.loadingContent, { backgroundColor: colors.cardBackground }]}>
+            <ActivityIndicator size="large" color={colors.primaryAction} />
+            <Text style={[styles.loadingText, { color: colors.text }]}>
+              Selecting plan...
+            </Text>
+          </View>
+        </View>
+      )}
 
       {/* Custom Tour Overlay */}
       <CustomTourOverlay
@@ -377,13 +471,13 @@ const styles = StyleSheet.create({
   aiGeneratorButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(78, 205, 196, 0.1)',
+    backgroundColor: 'rgba(255, 107, 53, 0.1)',
     marginHorizontal: 20,
     marginBottom: 16,
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(78, 205, 196, 0.3)',
+    borderColor: 'rgba(255, 107, 53, 0.3)',
   },
   aiGeneratorTextContainer: {
     flex: 1,
@@ -409,7 +503,7 @@ const styles = StyleSheet.create({
   },
   filterChip: {
     paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingVertical: 9,
     borderRadius: 16,
     marginRight: 8,
   },
@@ -421,7 +515,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   planCard: {
-    borderRadius: 12,
+    borderRadius: 20,
     padding: 14,
     marginBottom: 10,
   },
@@ -481,6 +575,27 @@ const styles = StyleSheet.create({
   equipmentText: {
     fontSize: 10,
     fontWeight: '500',
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  loadingContent: {
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    gap: 12,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

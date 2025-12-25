@@ -37,9 +37,8 @@ class SyncService {
 
       await this.syncFromServer(token);
     } catch (error) {
-      Alert.alert('Error', 'Sync error. Please try again.');
-
-      console.error('Sync error:', error);
+      // Silently log sync errors - backend server may not be available
+      console.log('Sync error (backend not available):', error);
     } finally {
       this.isSyncing = false;
     }
@@ -152,9 +151,8 @@ class SyncService {
         await AsyncStorage.setItem('lastSyncTime', new Date().toISOString());
       }
     } catch (error) {
-      Alert.alert('Error', 'Pull sync error. Please try again.');
-
-      console.error('Pull sync error:', error);
+      // Silently log sync errors - backend server may not be available
+      console.log('Pull sync error (backend not available):', error);
     }
   }
 

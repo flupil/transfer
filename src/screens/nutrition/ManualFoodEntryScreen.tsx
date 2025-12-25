@@ -17,6 +17,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import firebaseDailyDataService from '../../services/firebaseDailyDataService';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const ManualFoodEntryScreen = () => {
   const navigation = useNavigation();
@@ -98,7 +99,7 @@ const ManualFoodEntryScreen = () => {
           keyboardShouldPersistTaps="handled"
         >
         <View style={styles.infoCard}>
-          <Ionicons name="information-circle-outline" size={24} color="#4ECDC4" />
+          <Ionicons name="information-circle-outline" size={24} color={BRAND_COLORS.accent} />
           <Text style={styles.infoText}>
             Enter at minimum the calories. Macros are optional.
           </Text>
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
   infoText: {
     flex: 1,
     fontSize: 14,
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     lineHeight: 20,
   },
   inputGroup: {
@@ -266,10 +267,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   required: {
-    color: '#FF6B6B',
+    color: BRAND_COLORS.accent,
   },
   input: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -279,7 +280,7 @@ const styles = StyleSheet.create({
     borderColor: '#3A3A3C',
   },
   summaryCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 16,
     borderRadius: 12,
     marginTop: 8,
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
   },
   footer: {
     padding: 16,
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#2C3A47',
   },
   button: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

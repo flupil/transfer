@@ -236,8 +236,8 @@ export const EnhancedExerciseLibraryScreen: React.FC = () => {
 
   const getDifficultyColor = (difficulty?: string) => {
     switch (difficulty) {
-      case 'beginner': return '#4CAF50';
-      case 'intermediate': return '#FF9800';
+      case 'beginner': return '#E94E1B';
+      case 'intermediate': return '#E94E1B';
       case 'advanced': return '#F44336';
       default: return '#9E9E9E';
     }
@@ -384,7 +384,7 @@ export const EnhancedExerciseLibraryScreen: React.FC = () => {
             <IconButton
               icon="plus-circle"
               size={28}
-              iconColor="#4CAF50"
+              iconColor="#E94E1B"
               onPress={() => handleAddToWorkout(item)}
             />
           )}
@@ -396,7 +396,7 @@ export const EnhancedExerciseLibraryScreen: React.FC = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4CAF50" />
+        <ActivityIndicator size="large" color="#E94E1B" />
         <Text style={styles.loadingText}>Loading exercises...</Text>
       </View>
     );
@@ -527,7 +527,7 @@ export const EnhancedExerciseLibraryScreen: React.FC = () => {
                         <Text style={styles.sectionTitle}>Tips</Text>
                         {selectedExercise.tips.map((tip, index) => (
                           <View key={index} style={styles.tipItem}>
-                            <MaterialCommunityIcons name="lightbulb-outline" size={16} color="#4CAF50" />
+                            <MaterialCommunityIcons name="lightbulb-outline" size={16} color="#E94E1B" />
                             <Text style={styles.tipText}>{tip}</Text>
                           </View>
                         ))}
@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
   activeWorkoutBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -859,7 +859,7 @@ const styles = StyleSheet.create({
   },
   videoPlaceholder: {
     height: 200,
-    backgroundColor: '#000',
+    backgroundColor: '#2A2A2A',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -895,7 +895,7 @@ const styles = StyleSheet.create({
   secondaryMuscleChip: {
     marginRight: 8,
     marginBottom: 8,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
   },
   instructionText: {
     fontSize: 14,
@@ -964,6 +964,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
   },
 });

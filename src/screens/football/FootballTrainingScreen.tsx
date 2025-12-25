@@ -25,10 +25,10 @@ const { width } = Dimensions.get('window');
 // Map programs to icons and colors
 const programConfig: { [key: string]: { icon: string; color: string } } = {
   explosive_power: { icon: 'flash', color: '#FF6B35' },
-  agility_speed: { icon: 'run-fast', color: '#22C55E' },
+  agility_speed: { icon: 'run-fast', color: '#E94E1B' },
   cardio_endurance: { icon: 'heart-pulse', color: '#FF6B35' },
-  strength_endurance: { icon: 'dumbbell', color: '#8B5CF6' },
-  leg_power: { icon: 'soccer-field', color: '#FFB800' }
+  strength_endurance: { icon: 'dumbbell', color: '#E94E1B' },
+  leg_power: { icon: 'soccer-field', color: '#E94E1B' }
 };
 const FootballTrainingScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -71,7 +71,7 @@ const FootballTrainingScreen: React.FC = () => {
           date: 'Yesterday',
           duration: 30,
           icon: 'soccer',
-          color: '#8B5CF6'
+          color: '#E94E1B'
         }
       ]);
 
@@ -121,7 +121,7 @@ const FootballTrainingScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
         <ActivityIndicator size="large" color="#FF6B35" />
       </View>
     );
@@ -150,7 +150,7 @@ const FootballTrainingScreen: React.FC = () => {
                 <MaterialCommunityIcons
                   name="fire"
                   size={24}
-                  color={hasTrainedToday ? "#22C55E" : "#999999"}
+                  color={hasTrainedToday ? "#E94E1B" : "#999999"}
                 />
               </View>
               <Text style={[
@@ -165,7 +165,7 @@ const FootballTrainingScreen: React.FC = () => {
           {/* Center - Football Logo/Text */}
           <View style={styles.topBarCenter}>
             <View style={styles.headerBadge}>
-              <MaterialCommunityIcons name="soccer" size={24} color="#22C55E" />
+              <MaterialCommunityIcons name="soccer" size={24} color="#E94E1B" />
             </View>
             <Text style={styles.footballTitle}>FOOTBALL</Text>
             <Text style={styles.footballSubtitle}>TRAINING PRO</Text>
@@ -182,7 +182,7 @@ const FootballTrainingScreen: React.FC = () => {
                 {userXP}
               </Text>
               <View style={[styles.iconBadge, { backgroundColor: 'rgba(255, 184, 0, 0.2)' }]}>
-                <MaterialCommunityIcons name="diamond" size={24} color="#FFB800" />
+                <MaterialCommunityIcons name="diamond" size={24} color="#E94E1B" />
               </View>
             </TouchableOpacity>
           </View>
@@ -205,7 +205,7 @@ const FootballTrainingScreen: React.FC = () => {
           >
             <View style={styles.statsHeader}>
               <View style={[styles.iconBadge, { backgroundColor: 'rgba(34, 197, 94, 0.2)' }]}>
-                <MaterialCommunityIcons name="soccer" size={24} color="#22C55E" />
+                <MaterialCommunityIcons name="soccer" size={24} color="#E94E1B" />
               </View>
               <Text style={[styles.cardTitle, { color: 'white' }]}>
                 This Week's Training
@@ -215,7 +215,7 @@ const FootballTrainingScreen: React.FC = () => {
             <View style={styles.progressContainer}>
               <View style={styles.progressBar}>
                 <LinearGradient
-                  colors={['#22C55E', '#16A34A']}
+                  colors={['#E94E1B', '#FF6B35']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={[
@@ -241,7 +241,7 @@ const FootballTrainingScreen: React.FC = () => {
               style={styles.statBoxGradient}
             >
               <View style={[styles.statIconContainer, { backgroundColor: 'rgba(255, 184, 0, 0.2)' }]}>
-                <MaterialCommunityIcons name="trophy" size={28} color="#FFB800" />
+                <MaterialCommunityIcons name="trophy" size={28} color="#E94E1B" />
               </View>
               <Text style={[styles.statNumber, { color: 'white' }]}>
                 {totalSessions}
@@ -279,7 +279,7 @@ const FootballTrainingScreen: React.FC = () => {
               style={styles.statBoxGradient}
             >
               <View style={[styles.statIconContainer, { backgroundColor: 'rgba(34, 197, 94, 0.2)' }]}>
-                <MaterialCommunityIcons name="chart-line" size={28} color="#22C55E" />
+                <MaterialCommunityIcons name="chart-line" size={28} color="#E94E1B" />
               </View>
               <Text style={[styles.statNumber, { color: 'white' }]}>
                 {Math.round((weeklyStats.completed / weeklyStats.target) * 100)}%
@@ -305,7 +305,7 @@ const FootballTrainingScreen: React.FC = () => {
             {footballPrograms.map((program) => {
               const config = programConfig[program.id];
               const iconName = config?.icon || 'dumbbell';
-              const iconColor = config?.color || '#8B5CF6';
+              const iconColor = config?.color || '#E94E1B';
 
               return (
                 <TouchableOpacity
@@ -327,7 +327,7 @@ const FootballTrainingScreen: React.FC = () => {
                   <Text style={[styles.categorySubtitle, { color: '#B0B0B0' }]} numberOfLines={2}>
                     {language === 'he' ? program.descriptionHe : program.description}
                   </Text>
-                  <Text style={[styles.workoutCountText, { color: '#22C55E' }]}>
+                  <Text style={[styles.workoutCountText, { color: '#E94E1B' }]}>
                     {program.workouts.length} {language === 'he' ? 'אימונים' : 'workouts'}
                   </Text>
                 </TouchableOpacity>
@@ -355,7 +355,7 @@ const FootballTrainingScreen: React.FC = () => {
                   45 min • Cardio + ball skills
                 </Text>
               </View>
-              <MaterialCommunityIcons name="play-circle" size={48} color="#22C55E" />
+              <MaterialCommunityIcons name="play-circle" size={48} color="#E94E1B" />
             </View>
           </TouchableOpacity>
         </View>
@@ -392,7 +392,7 @@ const FootballTrainingScreen: React.FC = () => {
                     <MaterialCommunityIcons
                       name="check-circle"
                       size={24}
-                      color="#22C55E"
+                      color="#E94E1B"
                     />
                   </View>
                 </Card.Content>
@@ -411,7 +411,7 @@ const FootballTrainingScreen: React.FC = () => {
         activeOpacity={0.9}
       >
         <LinearGradient
-          colors={['#22C55E', '#16A34A']}
+          colors={['#E94E1B', '#FF6B35']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.fabGradient}
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
   },
   footballSubtitle: {
     fontSize: 9,
-    color: '#22C55E',
+    color: '#E94E1B',
     letterSpacing: 2,
     fontWeight: '600',
   },
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#22C55E',
+    backgroundColor: '#E94E1B',
     borderRadius: 4,
   },
   progressText: {
@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     bottom: 20,
     borderRadius: 30,
     overflow: 'hidden',
-    shadowColor: '#22C55E',
+    shadowColor: '#E94E1B',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 12,

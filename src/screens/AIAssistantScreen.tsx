@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
   KeyboardAvoidingView,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,6 +18,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNutrition } from '../contexts/NutritionContext';
+import { BRAND_COLORS } from '../constants/brandColors';
 import { geminiAIService } from '../services/geminiAIService';
 import { freeAIService } from '../services/freeAIService';
 import { workoutService } from '../services/workoutService';
@@ -46,6 +48,7 @@ const AIAssistantScreen = () => {
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Removed quick actions for pure chat experience
@@ -195,6 +198,22 @@ const AIAssistantScreen = () => {
     }
   };
 
+  // Pull-to-refresh handler
+  const onRefresh = async () => {
+    console.log('🔄 [KIRA AI TAB] Pull-to-refresh triggered');
+    setRefreshing(true);
+    try {
+      // For chat app, we just show refresh animation
+      // Could potentially reload chat history from storage if needed
+      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('✅ [KIRA AI TAB] Refresh completed successfully');
+    } catch (error) {
+      console.error('❌ [KIRA AI TAB] Error refreshing chat:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={[
       styles.messageContainer,
@@ -202,7 +221,7 @@ const AIAssistantScreen = () => {
     ]}>
       {item.sender === 'ai' && (
         <View style={styles.aiAvatar}>
-          <Ionicons name="fitness" size={20} color="#FF6B35" />
+          <Ionicons name="fitness" size={20} color={BRAND_COLORS.accent} />
         </View>
       )}
       <View style={[
@@ -226,9 +245,7 @@ const AIAssistantScreen = () => {
   }, [messages]);
 
   return (
-    <View style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
-      <CustomHeader />
-
+    <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       <KeyboardAvoidingView
         style={styles.keyboardAvoid}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -240,6 +257,14 @@ const AIAssistantScreen = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={BRAND_COLORS.accent}
+              colors={[BRAND_COLORS.accent]}
+            />
+          }
         >
           {messages.map((item) => (
             <View
@@ -251,12 +276,12 @@ const AIAssistantScreen = () => {
             >
               {item.sender === 'ai' && (
                 <View style={styles.aiAvatar}>
-                  <Ionicons name="fitness" size={20} color="#FF6B35" />
+                  <Ionicons name="fitness" size={20} color={BRAND_COLORS.accent} />
                 </View>
               )}
               <View style={[
                 styles.messageBubble,
-                item.sender === 'user' ? styles.userBubble : styles.aiBubble
+                item.sender === 'user' ? [styles.userBubble, { backgroundColor: BRAND_COLORS.accent }] : styles.aiBubble
               ]}>
                 <Text style={[
                   styles.messageText,
@@ -271,7 +296,7 @@ const AIAssistantScreen = () => {
           {isTyping && (
             <View style={styles.typingIndicator}>
               <Text style={styles.typingText}>{t('ai.thinking')}</Text>
-              <ActivityIndicator size="small" color="#FF6B35" />
+              <ActivityIndicator size="small" color={BRAND_COLORS.accent} />
             </View>
           )}
         </ScrollView>
@@ -286,7 +311,11 @@ const AIAssistantScreen = () => {
             multiline
           />
           <TouchableOpacity
-            style={[styles.sendButton, !inputText.trim() && styles.sendButtonDisabled]}
+            style={[
+              styles.sendButton,
+              { backgroundColor: BRAND_COLORS.accent },
+              !inputText.trim() && styles.sendButtonDisabled
+            ]}
             onPress={sendMessage}
             disabled={!inputText.trim() || isTyping}
           >
@@ -360,7 +389,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   userBubble: {
-    backgroundColor: '#FF6B35',
     borderBottomRightRadius: 5,
   },
   aiBubble: {
@@ -447,7 +475,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#FF6B35',
     justifyContent: 'center',
     alignItems: 'center',
   },

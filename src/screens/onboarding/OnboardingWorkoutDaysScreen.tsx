@@ -39,7 +39,7 @@ const OnboardingWorkoutDaysScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -63,7 +63,7 @@ const OnboardingWorkoutDaysScreen = () => {
         </Text>
 
         <View style={styles.infoBox}>
-          <Ionicons name="information-circle-outline" size={20} color="#3b9eff" />
+          <Ionicons name="information-circle-outline" size={20} color="#3B82F6" />
           <Text style={styles.infoText}>
             {t('onboarding.canChangeSettings')}
           </Text>
@@ -119,7 +119,7 @@ const OnboardingWorkoutDaysScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -139,12 +139,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   infoBox: {
     flexDirection: 'row',
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     padding: 15,
     borderRadius: 10,
     marginBottom: 30,
@@ -194,14 +194,14 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 50,
     borderWidth: 2,
-    borderColor: '#1e2e3e',
+    borderColor: '#2A2A2A',
   },
   dayButtonSelected: {
-    borderColor: '#3b9eff',
-    backgroundColor: '#3b9eff',
+    borderColor: '#3B82F6',
+    backgroundColor: '#3B82F6',
   },
   dayText: {
     fontSize: 14,
@@ -217,14 +217,14 @@ const styles = StyleSheet.create({
   },
   summaryText: {
     fontSize: 18,
-    color: '#3b9eff',
+    color: '#3B82F6',
     fontWeight: '600',
   },
   footer: {
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

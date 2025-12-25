@@ -22,9 +22,12 @@ const FootballWorkoutDetailScreen: React.FC = () => {
   const workout = (route.params as any)?.workout as FootballWorkout;
   const [isFavorite, setIsFavorite] = useState(false);
 
+  // Generate styles with theme colors
+  const styles = React.useMemo(() => getStyles(colors), [colors]);
+
   if (!workout) {
     return (
-      <View style={[styles.container, { backgroundColor: '#0A1628' }]}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={styles.errorText}>Workout not found</Text>
       </View>
     );
@@ -32,10 +35,10 @@ const FootballWorkoutDetailScreen: React.FC = () => {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner': return '#22C55E';
-      case 'intermediate': return '#FFB800';
-      case 'advanced': return '#FF6B35';
-      default: return '#8B9AA5';
+      case 'beginner': return colors.success;
+      case 'intermediate': return colors.warning;
+      case 'advanced': return colors.secondaryAction;
+      default: return colors.textSecondary;
     }
   };
 
@@ -62,7 +65,7 @@ const FootballWorkoutDetailScreen: React.FC = () => {
   const totalDuration = workout.exercises.reduce((sum, ex) => sum + ex.duration, 0);
 
   return (
-    <View style={[styles.container, { backgroundColor: '#0A1628' }]}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -89,8 +92,13 @@ const FootballWorkoutDetailScreen: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {/* Header Title */}
+        <View style={styles.pageHeader}>
+          <Text style={styles.pageTitle}>Training</Text>
+        </View>
+
         {/* Workout Info Card */}
-        <View style={[styles.infoCard, { backgroundColor: '#1E3A5F' }]}>
+        <View style={styles.infoCard}>
           <Text style={styles.workoutTitle}>{workout.name}</Text>
           <Text style={styles.workoutTitleHe}>{workout.nameHe}</Text>
 
@@ -130,7 +138,7 @@ const FootballWorkoutDetailScreen: React.FC = () => {
           {workout.exercises.map((exercise, index) => (
             <View
               key={exercise.id}
-              style={[styles.exerciseCard, { backgroundColor: '#1E3A5F' }]}
+              style={styles.exerciseCard}
             >
               <View style={styles.exerciseHeader}>
                 <View style={[styles.exerciseNumber, {
@@ -193,7 +201,7 @@ const FootballWorkoutDetailScreen: React.FC = () => {
           ))}
         </View>
 
-        <View style={{ height: 120 }} />
+        <View style={{ height: 180 }} />
       </ScrollView>
 
       {/* Start Workout Button */}
@@ -211,7 +219,7 @@ const FootballWorkoutDetailScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -227,7 +235,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(30, 58, 95, 0.8)',
+    backgroundColor: `${colors.cardBackground}CC`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -235,7 +243,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(30, 58, 95, 0.8)',
+    backgroundColor: `${colors.cardBackground}CC`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -245,20 +253,31 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
   },
+  pageHeader: {
+    paddingTop: 20,
+    paddingBottom: 0,
+    paddingHorizontal: 4,
+  },
+  pageTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
   infoCard: {
     padding: 20,
     borderRadius: 16,
     marginBottom: 16,
+    backgroundColor: colors.cardBackground,
   },
   workoutTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
     marginBottom: 4,
   },
   workoutTitleHe: {
     fontSize: 20,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     marginBottom: 16,
   },
   metaRow: {
@@ -284,17 +303,17 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 13,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
   },
   descriptionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'white',
+    color: colors.text,
     marginBottom: 8,
   },
   descriptionText: {
     fontSize: 14,
-    color: '#B0B0B0',
+    color: colors.textSecondary,
     lineHeight: 20,
     marginBottom: 4,
   },
@@ -304,13 +323,14 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
     marginBottom: 16,
   },
   exerciseCard: {
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
+    backgroundColor: colors.cardBackground,
   },
   exerciseHeader: {
     flexDirection: 'row',
@@ -335,12 +355,12 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'white',
+    color: colors.text,
     marginBottom: 2,
   },
   exerciseNameHe: {
     fontSize: 13,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
   },
   categoryIcon: {
     width: 36,
@@ -361,40 +381,40 @@ const styles = StyleSheet.create({
   },
   exerciseDetailText: {
     fontSize: 13,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
   },
   notesSection: {
     marginTop: 8,
     padding: 12,
-    backgroundColor: 'rgba(139, 154, 165, 0.1)',
+    backgroundColor: `${colors.textSecondary}1A`,
     borderRadius: 8,
   },
   notesLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   notesText: {
     fontSize: 13,
-    color: '#B0B0B0',
+    color: colors.textSecondary,
     lineHeight: 18,
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 80,
     left: 0,
     right: 0,
     padding: 16,
-    backgroundColor: '#0D1B2A',
+    backgroundColor: colors.backgroundDark,
     borderTopWidth: 1,
-    borderTopColor: '#1E3A5F',
+    borderTopColor: colors.border,
   },
   startButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#22C55E',
+    backgroundColor: colors.success,
     paddingVertical: 16,
     borderRadius: 12,
     gap: 8,
@@ -402,11 +422,11 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
   },
   errorText: {
     fontSize: 16,
-    color: 'white',
+    color: colors.text,
     textAlign: 'center',
     marginTop: 100,
   },

@@ -23,11 +23,12 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useUserPreferences } from '../contexts/UserPreferencesContext';
 import { useNutrition } from '../contexts/NutritionContext';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { getSafeDatabase } from '../database/databaseHelper';
 import { format } from 'date-fns';
 import SimpleHealthTracking from '../components/SimpleHealthTracking';
 import { getTodayMacros, quickAddMacro, getFoodDatabase } from '../services/macroTrackingService';
+import { BRAND_COLORS } from '../constants/brandColors';
 import { waterTrackingService } from '../services/waterTrackingService';
 import { workoutService } from '../services/workoutService';
 import { getSelectedWorkoutPlan } from '../services/workoutPlanService';
@@ -46,6 +47,7 @@ const { width } = Dimensions.get('window');
 
 
 const TryScreen = ({ navigation }: any) => {
+  const route = useRoute();
   const { user } = useAuth();
   const { colors, isDark } = useTheme();
   const { t } = useLanguage();
@@ -99,6 +101,8 @@ const TryScreen = ({ navigation }: any) => {
   // Pedometer subscription
   const [pedometerSubscription, setPedometerSubscription] = useState<any>(null);
   const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
+  const lastStepUpdateTime = useRef(0);
+  const stepUpdateDebounce = useRef<NodeJS.Timeout | null>(null);
 
   // Tour state
   const { isFirstVisit, markTourComplete } = useTour();
@@ -154,6 +158,10 @@ const TryScreen = ({ navigation }: any) => {
       if (pedometerSubscription && pedometerSubscription.remove) {
         pedometerSubscription.remove();
       }
+      // Clear debounce timeout
+      if (stepUpdateDebounce.current) {
+        clearTimeout(stepUpdateDebounce.current);
+      }
       // Clear interval
       clearInterval(stepInterval);
     };
@@ -192,6 +200,16 @@ const TryScreen = ({ navigation }: any) => {
       refreshStepCount();
     }, [])
   );
+
+  // Check if we should show friend streak modal from navigation params
+  useEffect(() => {
+    const params = route.params as any;
+    if (params?.showFriendStreak) {
+      setShowFriendStreak(true);
+      // Clear the param so it doesn't trigger again
+      navigation.setParams({ showFriendStreak: undefined });
+    }
+  }, [route.params]);
 
   const loadStreakData = async () => {
     try {
@@ -282,37 +300,70 @@ const TryScreen = ({ navigation }: any) => {
         const today = new Date().toDateString();
         const savedStepsKey = `steps_${today}`;
         const savedSteps = await AsyncStorage.getItem(savedStepsKey);
+        const initialSteps = savedSteps ? parseInt(savedSteps) : 0;
 
-        if (savedSteps) {
-          setSteps(parseInt(savedSteps) || 0);
-          console.log('Loaded saved steps:', savedSteps);
-        } else {
-          // Start fresh if no saved steps
-          setSteps(0);
-          await AsyncStorage.setItem(savedStepsKey, '0');
-        }
+        setSteps(initialSteps);
+        console.log('Loaded initial steps for today:', initialSteps);
 
-        // Get initial steps if iOS
         if (Platform.OS === 'ios') {
+          // iOS: Use getStepCountAsync to get total steps from midnight
           await getTodaySteps();
-        }
 
-        // Subscribe to step updates (works on both iOS and Android)
-        const subscription = Pedometer.watchStepCount(result => {
-          console.log('Step update received:', result.steps, 'steps since last update');
-          setSteps(prevSteps => {
-            const newSteps = prevSteps + result.steps;
+          // Poll every 10 seconds to update with latest steps from health data
+          const pollInterval = setInterval(async () => {
+            try {
+              const start = new Date();
+              start.setHours(0, 0, 0, 0);
+              const end = new Date();
+
+              const stepData = await Pedometer.getStepCountAsync(start, end);
+              if (stepData && stepData.steps >= 0) {
+                const totalSteps = stepData.steps;
+                console.log('iOS: Polled total steps for today:', totalSteps);
+
+                setSteps(totalSteps);
+
+                // Save to AsyncStorage
+                await AsyncStorage.setItem(savedStepsKey, totalSteps.toString());
+
+                // Sync to Firebase
+                if (user?.id) {
+                  await firebaseDailyDataService.updateSteps(user.id, totalSteps);
+                  console.log('iOS: Synced steps to Firebase:', totalSteps);
+                }
+              }
+            } catch (error) {
+              console.log('Error polling iOS step count:', error);
+            }
+          }, 10000); // Poll every 10 seconds
+
+          setPedometerSubscription({ remove: () => clearInterval(pollInterval) } as any);
+          console.log('iOS step counter polling started');
+
+        } else if (Platform.OS === 'android') {
+          // Android: Use watchStepCount which gives delta since subscription started
+          // watchStepCount returns the step count delta since subscription started
+          const subscription = Pedometer.watchStepCount(async result => {
+            // result.steps is the delta since subscription started
+            // Add this to our initial steps to get total steps for today
+            const totalSteps = initialSteps + result.steps;
+            console.log(`Android: Initial=${initialSteps}, Delta=${result.steps}, Total=${totalSteps}`);
+
+            setSteps(totalSteps);
+
             // Save to AsyncStorage
-            const today = new Date().toDateString();
-            const savedStepsKey = `steps_${today}`;
-            AsyncStorage.setItem(savedStepsKey, newSteps.toString());
-            console.log('Total steps now:', newSteps);
-            return newSteps;
-          });
-        });
+            await AsyncStorage.setItem(savedStepsKey, totalSteps.toString());
 
-        setPedometerSubscription(subscription);
-        console.log('Step counter subscription started');
+            // Sync to Firebase
+            if (user?.id) {
+              await firebaseDailyDataService.updateSteps(user.id, totalSteps);
+              console.log('Android: Synced steps to Firebase:', totalSteps);
+            }
+          });
+
+          setPedometerSubscription(subscription);
+          console.log('Android step counter watchStepCount started');
+        }
       } else {
         // Load saved steps if pedometer not available
         console.log('Pedometer not available, loading saved steps');
@@ -350,6 +401,12 @@ const TryScreen = ({ navigation }: any) => {
         const today = new Date().toDateString();
         const savedStepsKey = `steps_${today}`;
         await AsyncStorage.setItem(savedStepsKey, pastStepCount.steps.toString());
+
+        // Sync to Firebase
+        if (user?.id) {
+          await firebaseDailyDataService.updateSteps(user.id, pastStepCount.steps);
+          console.log('iOS: Initial steps synced to Firebase:', pastStepCount.steps);
+        }
       }
     } catch (error) {
       console.log('Error getting today steps:', error);
@@ -404,9 +461,19 @@ const TryScreen = ({ navigation }: any) => {
     const lastReset = await AsyncStorage.getItem(lastResetKey);
 
     if (lastReset !== today) {
+      console.log('Date changed! Resetting steps and restarting pedometer subscription');
       setSteps(0);
       await AsyncStorage.setItem(lastResetKey, today);
       await AsyncStorage.setItem(`steps_${today}`, '0');
+
+      // Restart pedometer subscription to reset the delta counter on Android
+      if (pedometerSubscription && pedometerSubscription.remove) {
+        pedometerSubscription.remove();
+        console.log('Removed old pedometer subscription');
+      }
+
+      // Restart the pedometer with fresh initial steps (0)
+      await subscribeToPedometer();
     }
   };
 
@@ -662,7 +729,20 @@ const TryScreen = ({ navigation }: any) => {
         target: todayData.fat.target
       });
       setWater(todayData.water.consumed * 250); // Convert glasses to ml
-      setSteps(todayData.steps.count);
+
+      // Steps are loaded from AsyncStorage by the pedometer initialization
+      // We DON'T load steps from Firebase to avoid overwriting real device data
+      // Instead, pedometer syncs TO Firebase
+      const today = new Date().toDateString();
+      const savedStepsKey = `steps_${today}`;
+      const savedSteps = await AsyncStorage.getItem(savedStepsKey);
+      if (savedSteps) {
+        const stepCount = parseInt(savedSteps) || 0;
+        setSteps(stepCount);
+        console.log('TryScreen: Loaded steps from AsyncStorage:', stepCount);
+      } else {
+        console.log('TryScreen: No saved steps found in AsyncStorage');
+      }
 
       console.log('TryScreen: Set calories from Firebase:', todayData.calories.consumed);
 
@@ -743,7 +823,16 @@ const TryScreen = ({ navigation }: any) => {
   };
 
   const openFoodModal = (meal: 'breakfast' | 'lunch' | 'dinner' | 'snack') => {
-    navigation.navigate('Nutrition' as never);
+    const mealTimes = {
+      breakfast: '8:00 AM',
+      lunch: '12:30 PM',
+      dinner: '6:30 PM',
+      snack: '3:00 PM'
+    };
+    (navigation as any).navigate('MealTracking', {
+      mealType: meal.charAt(0).toUpperCase() + meal.slice(1),
+      mealTime: mealTimes[meal]
+    });
   };
 
   // Tour functions
@@ -783,18 +872,8 @@ const TryScreen = ({ navigation }: any) => {
     setTourStep(0);
   };
 
-  // TEST: Force show tour after 2 seconds
-  useEffect(() => {
-    console.log('🔥 TryScreen: FORCING TOUR TO SHOW IN 2 SECONDS!');
-    const timer = setTimeout(() => {
-      console.log('🔥 TryScreen: SHOWING TOUR NOW!');
-      setShowTour(true);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <View style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
+    <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       {/* Custom Refresh Indicator with Logo */}
       {(refreshing || pullDistance > 0) && (
         <Animated.View
@@ -812,112 +891,6 @@ const TryScreen = ({ navigation }: any) => {
           <CustomRefreshControl refreshing={refreshing} size={60} color="#FF6B35" />
         </Animated.View>
       )}
-
-      {/* Collapsible Header with Logo - Bar Hides but Icons Stay */}
-      <Animated.View
-        style={[
-          styles.stickyHeader,
-          {
-            height: 120,
-          }
-        ]}
-        pointerEvents="box-none"
-      >
-        {/* Background that shrinks in height */}
-        <Animated.View
-          style={[
-            styles.headerBackground,
-            {
-              backgroundColor: '#000',
-              height: scrollY.interpolate({
-                inputRange: [0, 120],
-                outputRange: [120, 100],
-                extrapolate: 'clamp',
-              })
-            }
-          ]}
-          pointerEvents="none"
-        />
-
-        {/* Icons stay in place */}
-        <View style={styles.duolingoTopBar}>
-        {/* Left Side - Streak and Workout Icon */}
-        <View style={[styles.topBarLeft, { marginTop: 15 }]}>
-          <TouchableOpacity
-            style={styles.duolingoItem}
-            onPress={() => navigation.navigate('Streak' as never)}
-            activeOpacity={0.7}
-            accessibilityLabel={`Workout streak: ${currentStreak} days`}
-          >
-            <MaterialCommunityIcons
-              name="fire"
-              size={30}
-              color={hasWorkedOutToday ? "#FF6B35" : "#999999"}
-            />
-            <Text style={[
-              styles.duolingoItemText,
-              { color: hasWorkedOutToday ? colors.text : '#999999' }
-            ]}>
-              {currentStreak}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.workoutIcon}
-            onPress={() => navigation.navigate('Workout' as never)}
-            accessibilityLabel="Go to workout"
-          >
-            <MaterialCommunityIcons name="dumbbell" size={28} color="#FF6B6B" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Center - Logo */}
-        <TouchableOpacity
-          style={styles.topBarCenter}
-          onPress={() => navigation.navigate('Settings' as never)}
-          activeOpacity={0.7}
-          accessibilityLabel="Open settings"
-        >
-          <Image
-            source={require('../assets/logotransparent.png')}
-            style={styles.topBarLogo}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-
-        {/* Right Side - XP and Account */}
-        <View style={[styles.topBarRight, { marginTop: 15 }]}>
-          <TouchableOpacity
-            style={styles.duolingoItem}
-            onPress={() => navigation.navigate('Progress' as never)}
-            activeOpacity={0.7}
-            accessibilityLabel={`Experience points: ${userXP}`}
-          >
-            <MaterialCommunityIcons
-              name="diamond"
-              size={30}
-              color="#1CB0F6"
-            />
-            <Text style={[styles.duolingoItemText, { color: colors.text }]}>
-              {userXP}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.duolingoItem}
-            onPress={() => setShowFriendStreak(true)}
-            activeOpacity={0.7}
-            accessibilityLabel="View friend streaks"
-          >
-            <MaterialCommunityIcons
-              name="account-group"
-              size={30}
-              color="#FFB800"
-            />
-          </TouchableOpacity>
-        </View>
-        </View>
-      </Animated.View>
 
       {/* Scrollable Content */}
       <Animated.ScrollView
@@ -951,9 +924,6 @@ const TryScreen = ({ navigation }: any) => {
         scrollEventThrottle={16}
         bounces={true} // Ensure bounce is enabled for pull-to-refresh
       >
-      {/* Add padding to compensate for header */}
-      <View style={{ height: 120 }} />
-
       {/* Calories Section - No Border/Card */}
       <View style={styles.newCaloriesSection}>
         {/* Top Row - Eaten, Remaining */}
@@ -971,7 +941,7 @@ const TryScreen = ({ navigation }: any) => {
                 cx={80}
                 cy={80}
                 r={75}
-                stroke={isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'}
+                stroke={`${BRAND_COLORS.accent}${isDark ? '33' : '26'}`}
                 strokeWidth={6}
                 fill="none"
               />
@@ -980,7 +950,7 @@ const TryScreen = ({ navigation }: any) => {
                 cx={80}
                 cy={80}
                 r={75}
-                stroke={isDark ? 'rgba(255, 107, 53, 0.7)' : 'rgba(255, 107, 53, 0.6)'}
+                stroke={`${BRAND_COLORS.accent}${isDark ? 'B3' : '99'}`}
                 strokeWidth={6}
                 fill="none"
                 strokeDasharray={`${2 * Math.PI * 75}`}
@@ -993,7 +963,7 @@ const TryScreen = ({ navigation }: any) => {
                 cx={80}
                 cy={80}
                 r={60}
-                stroke={isDark ? 'rgba(66, 133, 244, 0.2)' : 'rgba(66, 133, 244, 0.15)'}
+                stroke={isDark ? `${BRAND_COLORS.secondary}33` : `${BRAND_COLORS.secondary}26`}
                 strokeWidth={6}
                 fill="none"
               />
@@ -1002,7 +972,7 @@ const TryScreen = ({ navigation }: any) => {
                 cx={80}
                 cy={80}
                 r={60}
-                stroke={isDark ? 'rgba(66, 133, 244, 0.7)' : 'rgba(66, 133, 244, 0.6)'}
+                stroke={BRAND_COLORS.secondaryMuted}
                 strokeWidth={6}
                 fill="none"
                 strokeDasharray={`${2 * Math.PI * 60}`}
@@ -1015,7 +985,7 @@ const TryScreen = ({ navigation }: any) => {
             <View style={styles.logoContainer}>
               {/* Background Logo (grayscale/faded) */}
               <Image
-                source={require('../assets/logotransparent.png')}
+                source={require('../../assets/gym-branding/logo.png')}
                 style={[styles.circleLogo, { opacity: 0.3 }]}
                 resizeMode="contain"
               />
@@ -1028,11 +998,8 @@ const TryScreen = ({ navigation }: any) => {
                 }
               ]}>
                 <Image
-                  source={require('../assets/logotransparent.png')}
-                  style={[styles.circleLogo, {
-                    position: 'absolute',
-                    bottom: 0,
-                  }]}
+                  source={require('../../assets/gym-branding/logo.png')}
+                  style={[styles.circleLogo, { position: 'absolute', bottom: 0 }]}
                   resizeMode="contain"
                 />
               </View>
@@ -1052,7 +1019,7 @@ const TryScreen = ({ navigation }: any) => {
           <View style={styles.activityStatItem}>
             <Image
               source={require('../assets/calories-icon.png')}
-              style={[styles.activityIcon, { tintColor: '#FF6B35' }]}
+              style={[styles.activityIcon, { tintColor: BRAND_COLORS.accentLight }]}
             />
             <Text style={[styles.activityStatValue, { color: isDark ? 'white' : '#333' }]}>{calories.consumed}</Text>
             <Text style={[styles.activityStatLabel, { color: isDark ? '#B0B0B0' : '#666' }]}>{t('nutrition.calories')}</Text>
@@ -1060,7 +1027,7 @@ const TryScreen = ({ navigation }: any) => {
           <View style={styles.activityStatItem}>
             <Image
               source={require('../assets/steps-icon.png')}
-              style={[styles.activityIcon, { tintColor: '#4285F4' }]}
+              style={[styles.activityIcon, { tintColor: BRAND_COLORS.secondaryMuted }]}
             />
             <Text style={[styles.activityStatValue, { color: isDark ? 'white' : '#333' }]}>{steps.toLocaleString()}</Text>
             <Text style={[styles.activityStatLabel, { color: isDark ? '#B0B0B0' : '#666' }]}>
@@ -1072,19 +1039,19 @@ const TryScreen = ({ navigation }: any) => {
         {/* Bottom Row - Macro Numbers */}
         <View style={styles.macrosBottomSection}>
           <View style={styles.macroItem}>
-            <Text style={[styles.macroNumber, { color: '#66B2FF' }]}>
+            <Text style={[styles.macroNumber, { color: BRAND_COLORS.secondaryMuted }]}>
               {Math.round(carbs.consumed)}
             </Text>
             <Text style={[styles.macroLabel, { color: isDark ? 'white' : 'white' }]}>{t('nutrition.carbs')}</Text>
           </View>
           <View style={styles.macroItem}>
-            <Text style={[styles.macroNumber, { color: '#66B2FF' }]}>
+            <Text style={[styles.macroNumber, { color: BRAND_COLORS.secondaryMuted }]}>
               {Math.round(protein.consumed)}
             </Text>
             <Text style={[styles.macroLabel, { color: isDark ? 'white' : 'white' }]}>{t('nutrition.protein')}</Text>
           </View>
           <View style={styles.macroItem}>
-            <Text style={[styles.macroNumber, { color: '#66B2FF' }]}>
+            <Text style={[styles.macroNumber, { color: BRAND_COLORS.secondaryMuted }]}>
               {Math.round(fat.consumed)}
             </Text>
             <Text style={[styles.macroLabel, { color: isDark ? 'white' : 'white' }]}>{t('nutrition.fat')}</Text>
@@ -1094,11 +1061,14 @@ const TryScreen = ({ navigation }: any) => {
 
       {/* Weekly Goals Tracker */}
       <TouchableOpacity
-        style={[styles.weeklyGoalsCard, { backgroundColor: '#2C2C2E' }]}
-        onPress={() => navigation.navigate('MyActivity' as never)}
+        style={[styles.weeklyGoalsCard, { backgroundColor: '#4E4E50' }]}
+        onPress={() => {
+          console.log('Weekly Goals card tapped - navigating to MyActivity');
+          navigation.navigate('MyActivity' as never);
+        }}
         activeOpacity={0.7}
       >
-        <View style={styles.weeklyGoalsHeader}>
+        <View style={styles.weeklyGoalsHeader} pointerEvents="none">
           <Text style={[styles.weeklyGoalsTitle, { color: isDark ? 'white' : '#333' }]}>
             {t('home.yourDailyGoals')}
           </Text>
@@ -1109,10 +1079,10 @@ const TryScreen = ({ navigation }: any) => {
           {t('home.last7Days')}
         </Text>
 
-        <View style={styles.weeklyGoalsContent}>
+        <View style={styles.weeklyGoalsContent} pointerEvents="none">
           {/* Left side - Achievement count */}
           <View style={styles.achievementCount}>
-            <Text style={[styles.achievementNumber, { color: '#4285F4' }]}>
+            <Text style={[styles.achievementNumber, { color: BRAND_COLORS.secondaryMuted }]}>
               {weeklyGoalsData.filter(d => d.achieved).length}/7
             </Text>
             <Text style={[styles.achievementLabel, { color: isDark ? '#B0B0B0' : '#666' }]}>
@@ -1132,7 +1102,7 @@ const TryScreen = ({ navigation }: any) => {
                       cx={16}
                       cy={16}
                       r={13}
-                      stroke={isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'}
+                      stroke={`${BRAND_COLORS.accent}${isDark ? '33' : '26'}`}
                       strokeWidth={2}
                       fill="none"
                     />
@@ -1141,7 +1111,7 @@ const TryScreen = ({ navigation }: any) => {
                       cx={16}
                       cy={16}
                       r={13}
-                      stroke={isDark ? 'rgba(255, 107, 53, 0.7)' : 'rgba(255, 107, 53, 0.6)'}
+                      stroke={`${BRAND_COLORS.accent}${isDark ? 'B3' : '99'}`}
                       strokeWidth={2}
                       fill="none"
                       strokeDasharray={`${2 * Math.PI * 13}`}
@@ -1154,7 +1124,7 @@ const TryScreen = ({ navigation }: any) => {
                       cx={16}
                       cy={16}
                       r={9}
-                      stroke={isDark ? 'rgba(66, 133, 244, 0.2)' : 'rgba(66, 133, 244, 0.15)'}
+                      stroke={isDark ? `${BRAND_COLORS.secondary}33` : `${BRAND_COLORS.secondary}26`}
                       strokeWidth={2}
                       fill="none"
                     />
@@ -1163,7 +1133,7 @@ const TryScreen = ({ navigation }: any) => {
                       cx={16}
                       cy={16}
                       r={9}
-                      stroke="#4285F4"
+                      stroke={BRAND_COLORS.secondaryMuted}
                       strokeWidth={2}
                       fill="none"
                       strokeDasharray={`${2 * Math.PI * 9}`}
@@ -1189,6 +1159,8 @@ const TryScreen = ({ navigation }: any) => {
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
+          scrollEnabled={true}
+          nestedScrollEnabled={true}
           onScroll={(event) => {
             const offsetX = event.nativeEvent.contentOffset.x;
             const index = Math.round(offsetX / width);
@@ -1203,13 +1175,11 @@ const TryScreen = ({ navigation }: any) => {
           {(preferences?.appInterest === 'workouts' || preferences?.appInterest === 'football' || preferences?.appInterest === 'both') && (
             <View style={{ width: width, position: 'relative' }}>
               <TouchableOpacity
-                style={[styles.workoutBlock, { backgroundColor: '#2C2C2E', marginHorizontal: 16, position: 'relative' }]}
+                style={[styles.workoutBlock, { backgroundColor: '#4E4E50', marginHorizontal: 16, position: 'relative' }]}
                 activeOpacity={0.7}
                 onPress={() => {
-                  console.log('Workout block tapped - navigating to Workout tab');
-                  (navigation as any).navigate('Workout', {
-                    screen: 'WorkoutMain'
-                  });
+                  console.log('Workout block tapped - navigating to WorkoutPlanSelection');
+                  navigation.navigate('WorkoutPlanSelection' as never);
                 }}
                 accessibilityLabel="View today's workout"
               >
@@ -1222,12 +1192,12 @@ const TryScreen = ({ navigation }: any) => {
               <View key={day} style={styles.dayColumn}>
                 <View style={[
                   styles.dayDot,
-                  isToday && { backgroundColor: '#4285F4' },
+                  isToday && { backgroundColor: BRAND_COLORS.secondaryMuted },
                   !isToday && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
                 ]} />
                 <Text style={[
                   styles.dayText,
-                  { color: isToday ? '#4285F4' : (isDark ? '#B0B0B0' : '#999') }
+                  { color: isToday ? BRAND_COLORS.secondaryMuted : (isDark ? '#B0B0B0' : '#999') }
                 ]}>
                   {day}
                 </Text>
@@ -1286,14 +1256,14 @@ const TryScreen = ({ navigation }: any) => {
         {/* Workout Info Pills */}
         <View style={styles.workoutInfoRow}>
           <View style={styles.infoPill}>
-            <Ionicons name="time-outline" size={16} color="#4285F4" />
+            <Ionicons name="time-outline" size={16} color={BRAND_COLORS.secondaryMuted} />
             <Text style={[styles.infoPillText, { color: isDark ? 'white' : '#333' }]} numberOfLines={1}>
               {todayWorkout?.duration || '35-45 min'}
             </Text>
           </View>
           {todayWorkout?.exercises && todayWorkout.exercises.length > 0 && (
             <View style={[styles.infoPill, { flex: 1 }]}>
-              <Ionicons name="barbell-outline" size={16} color="#FF6B35" />
+              <Ionicons name="barbell-outline" size={16} color={BRAND_COLORS.accent} />
               <Text
                 style={[styles.infoPillText, { color: isDark ? 'white' : '#333', flex: 1 }]}
                 numberOfLines={1}
@@ -1311,11 +1281,11 @@ const TryScreen = ({ navigation }: any) => {
                   <View style={{ position: 'absolute', bottom: 12, left: 0, right: 0, flexDirection: 'row', justifyContent: 'center', gap: 8 }}>
                     <View style={[
                       styles.carouselDot,
-                      { backgroundColor: carouselIndex === 0 ? '#4285F4' : 'rgba(255, 255, 255, 0.3)' }
+                      { backgroundColor: carouselIndex === 0 ? BRAND_COLORS.secondaryMuted : 'rgba(255, 255, 255, 0.3)' }
                     ]} />
                     <View style={[
                       styles.carouselDot,
-                      { backgroundColor: carouselIndex === 1 ? '#4285F4' : 'rgba(255, 255, 255, 0.3)' }
+                      { backgroundColor: carouselIndex === 1 ? BRAND_COLORS.secondaryMuted : 'rgba(255, 255, 255, 0.3)' }
                     ]} />
                   </View>
                 )}
@@ -1327,11 +1297,14 @@ const TryScreen = ({ navigation }: any) => {
           {(preferences?.appInterest === 'nutrition' || preferences?.appInterest === 'both') && (
             <View style={{ width: width, position: 'relative' }}>
               <TouchableOpacity
-                style={[styles.workoutBlock, { backgroundColor: '#2C2C2E', marginHorizontal: 16, position: 'relative' }]}
+                style={[styles.workoutBlock, { backgroundColor: '#4E4E50', marginHorizontal: 16, position: 'relative' }]}
                 activeOpacity={0.7}
                 onPress={() => {
-                  console.log('Nutrition block tapped - navigating to Nutrition tab');
-                  (navigation as any).navigate('Nutrition');
+                  console.log('Nutrition block tapped - navigating to MealTracking');
+                  (navigation as any).navigate('MealTracking', {
+                    mealType: 'Lunch',
+                    mealTime: '12:30 PM'
+                  });
                 }}
                 accessibilityLabel="View nutrition plan"
               >
@@ -1344,12 +1317,12 @@ const TryScreen = ({ navigation }: any) => {
                     <View key={day} style={styles.dayColumn}>
                       <View style={[
                         styles.dayDot,
-                        isToday && { backgroundColor: '#4285F4' },
+                        isToday && { backgroundColor: '#3B82F6' },
                         !isToday && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
                       ]} />
                       <Text style={[
                         styles.dayText,
-                        { color: isToday ? '#4285F4' : (isDark ? '#B0B0B0' : '#999') }
+                        { color: isToday ? '#3B82F6' : (isDark ? '#B0B0B0' : '#999') }
                       ]}>
                         {day}
                       </Text>
@@ -1359,7 +1332,7 @@ const TryScreen = ({ navigation }: any) => {
               </View>
 
               {/* Session Label with Log Meal Button */}
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }} pointerEvents="box-none">
                 <Text style={[styles.sessionLabel, { color: isDark ? '#B0B0B0' : '#999', marginBottom: 0 }]}>
                   TODAY'S NUTRITION
                 </Text>
@@ -1367,7 +1340,7 @@ const TryScreen = ({ navigation }: any) => {
                 {/* Log Meal Button */}
                 <TouchableOpacity
                   style={{
-                    backgroundColor: '#4285F4',
+                    backgroundColor: '#3B82F6',
                     paddingVertical: 8,
                     paddingHorizontal: 16,
                     borderRadius: 8,
@@ -1375,11 +1348,12 @@ const TryScreen = ({ navigation }: any) => {
                     alignItems: 'center',
                     gap: 6
                   }}
-                  onPress={() => {
-                    console.log('Log meal tapped - navigating to NutritionMain');
-                    (navigation as any).navigate('Nutrition', {
-                      screen: 'NutritionMain',
-                      params: { scrollToLogMeal: true }
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    console.log('Log meal tapped - navigating to MealTracking');
+                    (navigation as any).navigate('MealTracking', {
+                      mealType: 'Lunch',
+                      mealTime: '12:30 PM'
                     });
                   }}
                   activeOpacity={0.8}
@@ -1491,11 +1465,11 @@ const TryScreen = ({ navigation }: any) => {
                   <View style={{ position: 'absolute', bottom: 12, left: 0, right: 0, flexDirection: 'row', justifyContent: 'center', gap: 8 }}>
                     <View style={[
                       styles.carouselDot,
-                      { backgroundColor: carouselIndex === 0 ? '#4285F4' : 'rgba(255, 255, 255, 0.3)' }
+                      { backgroundColor: carouselIndex === 0 ? BRAND_COLORS.secondaryMuted : 'rgba(255, 255, 255, 0.3)' }
                     ]} />
                     <View style={[
                       styles.carouselDot,
-                      { backgroundColor: carouselIndex === 1 ? '#4285F4' : 'rgba(255, 255, 255, 0.3)' }
+                      { backgroundColor: carouselIndex === 1 ? BRAND_COLORS.secondaryMuted : 'rgba(255, 255, 255, 0.3)' }
                     ]} />
                   </View>
                 )}
@@ -1515,9 +1489,9 @@ const TryScreen = ({ navigation }: any) => {
         onRequestClose={() => setShowFoodModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.cardBackground }]}>
+          <View style={[styles.modalContent, { backgroundColor: '#4A4A4A' }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.text }]}>{t('nutrition.addTo')} {selectedMeal.charAt(0).toUpperCase() + selectedMeal.slice(1)}</Text>
+              <Text style={[styles.modalTitle, { color: '#F4F1EF' }]}>{t('nutrition.addTo')} {selectedMeal.charAt(0).toUpperCase() + selectedMeal.slice(1)}</Text>
               <TouchableOpacity onPress={() => setShowFoodModal(false)} accessibilityLabel="Close modal">
                 <MaterialCommunityIcons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
@@ -1530,7 +1504,7 @@ const TryScreen = ({ navigation }: any) => {
                   style={[
                     styles.mealTypeButton,
                     selectedMeal === meal && styles.mealTypeButtonActive,
-                    { borderColor: colors.border }
+                    { borderColor: '#5A5A5A' }
                   ]}
                   onPress={() => setSelectedMeal(meal)}
                   accessibilityLabel={`Select ${meal} meal type`}
@@ -1538,7 +1512,7 @@ const TryScreen = ({ navigation }: any) => {
                   <Text
                     style={[
                       styles.mealTypeText,
-                      { color: colors.textSecondary },
+                      { color: '#C5C2BF' },
                       selectedMeal === meal && { color: '#FF6B35', fontWeight: '600' }
                     ]}
                   >
@@ -1558,13 +1532,13 @@ const TryScreen = ({ navigation }: any) => {
                   accessibilityLabel={`Add ${item.name} to ${selectedMeal}`}
                 >
                   <View style={styles.foodInfo}>
-                    <Text style={[styles.foodName, { color: colors.text }]}>{item.name}</Text>
-                    <Text style={[styles.foodServing, { color: colors.textSecondary }]}>
+                    <Text style={[styles.foodName, { color: '#F4F1EF' }]}>{item.name}</Text>
+                    <Text style={[styles.foodServing, { color: '#C5C2BF' }]}>
                       {item.serving}
                     </Text>
                   </View>
                   <View style={styles.foodMacros}>
-                    <Text style={[styles.foodCalories, { color: colors.text }]}>
+                    <Text style={[styles.foodCalories, { color: '#F4F1EF' }]}>
                       {item.calories} {t('nutrition.cal')}
                     </Text>
                     <View style={styles.foodMacroRow}>
@@ -1605,7 +1579,7 @@ const TryScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#2A2A2A',
     marginTop: 0,
     paddingTop: 0,
   },
@@ -1662,7 +1636,7 @@ const styles = StyleSheet.create({
   },
   waterCard: {
     flex: 1,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     padding: 20,
     height: 140,
@@ -1714,7 +1688,7 @@ const styles = StyleSheet.create({
     lineHeight: 30,
   },
   progressCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     padding: 20,
     width: 120,
@@ -1735,7 +1709,7 @@ const styles = StyleSheet.create({
     borderColor: '#B3E5FC',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
   },
   progressText: {
     fontSize: 20,
@@ -1747,7 +1721,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   distanceCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     padding: 20,
     width: 120,
@@ -1768,7 +1742,7 @@ const styles = StyleSheet.create({
   },
   stepsCard: {
     flex: 1,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     paddingLeft: 20,
     paddingRight: 12,
@@ -1978,21 +1952,26 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   proteinBar: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#E94E1B',
   },
   carbsBar: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#E94E1B',
   },
   fatBar: {
-    backgroundColor: '#FFD93D',
+    backgroundColor: '#E94E1B',
   },
   newCaloriesSection: {
     marginHorizontal: 16,
     marginTop: 20,
     marginBottom: 20,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   caloriesTopRow: {
     flexDirection: 'row',
@@ -2074,7 +2053,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#4285F4',
+    backgroundColor: '#3B82F6',
     zIndex: 10,
   },
   logoContainer: {
@@ -2121,7 +2100,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#E94E1B',
   },
   remainingValue: {
     fontSize: 24,
@@ -2176,11 +2155,16 @@ const styles = StyleSheet.create({
   },
   // Weekly Goals Tracker styles
   weeklyGoalsCard: {
-    margin: 16,
-    marginTop: 8,
+    marginHorizontal: 16,
+    marginBottom: 20,
     borderRadius: 20,
     padding: 16,
     paddingVertical: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   weeklyGoalsHeader: {
     flexDirection: 'row',
@@ -2260,7 +2244,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   addWaterButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#3B82F6',
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -2286,7 +2270,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   waterFill: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#3B82F6',
     width: '100%',
   },
   quickActions: {
@@ -2297,7 +2281,7 @@ const styles = StyleSheet.create({
   },
   quickActionCard: {
     flex: 1,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 15,
     borderRadius: 15,
     flexDirection: 'row',
@@ -2316,7 +2300,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   workoutBlock: {
-    marginTop: 20,
     marginHorizontal: 16,
     marginBottom: 20,
     paddingTop: 20,
@@ -2324,6 +2307,11 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     borderRadius: 20,
     height: 220,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   weekCalendar: {
     flexDirection: 'row',
@@ -2453,7 +2441,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   progressSection: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginTop: 16,
     paddingTop: 20,
     borderTopLeftRadius: 20,
@@ -2494,14 +2482,14 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
   },
   statCardLarge: {
     flex: 1.5,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
@@ -2536,7 +2524,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 20,
@@ -2642,7 +2630,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   streakCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     padding: 20,
     shadowColor: '#000',
@@ -2693,7 +2681,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   levelBadge: {
-    backgroundColor: '#FFB800',
+    backgroundColor: '#E94E1B',
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 6,

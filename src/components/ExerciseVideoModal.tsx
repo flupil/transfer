@@ -54,10 +54,10 @@ const ExerciseVideoModal: React.FC<ExerciseVideoModalProps> = ({
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty?.toLowerCase()) {
-      case 'beginner': return '#4CAF50';
-      case 'intermediate': return '#FF9800';
+      case 'beginner': return '#E94E1B';
+      case 'intermediate': return '#E94E1B';
       case 'expert': return '#F44336';
-      default: return '#2196F3';
+      default: return '#3B82F6';
     }
   };
 
@@ -156,19 +156,19 @@ const ExerciseVideoModal: React.FC<ExerciseVideoModalProps> = ({
               <View style={styles.tipsSection}>
                 <Text style={styles.sectionTitle}>Tips</Text>
                 <View style={styles.tip}>
-                  <MaterialCommunityIcons name="check-circle" size={18} color="#4CAF50" />
+                  <MaterialCommunityIcons name="check-circle" size={18} color="#E94E1B" />
                   <Text style={styles.tipText}>Focus on proper form over heavy weight</Text>
                 </View>
                 <View style={styles.tip}>
-                  <MaterialCommunityIcons name="check-circle" size={18} color="#4CAF50" />
+                  <MaterialCommunityIcons name="check-circle" size={18} color="#E94E1B" />
                   <Text style={styles.tipText}>Control the movement in both directions</Text>
                 </View>
                 <View style={styles.tip}>
-                  <MaterialCommunityIcons name="check-circle" size={18} color="#4CAF50" />
+                  <MaterialCommunityIcons name="check-circle" size={18} color="#E94E1B" />
                   <Text style={styles.tipText}>Breathe properly throughout the exercise</Text>
                 </View>
                 <View style={styles.tip}>
-                  <MaterialCommunityIcons name="alert-circle" size={18} color="#FF9800" />
+                  <MaterialCommunityIcons name="alert-circle" size={18} color="#E94E1B" />
                   <Text style={styles.tipText}>Stop if you feel pain or discomfort</Text>
                 </View>
               </View>

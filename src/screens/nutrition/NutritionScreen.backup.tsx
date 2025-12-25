@@ -231,17 +231,17 @@ const NutritionScreen: React.FC = () => {
 
               <View style={styles.mealActions}>
                 <TouchableOpacity style={styles.markDoneButton}>
-                  <MaterialCommunityIcons name="check-circle" size={16} color="#4CAF50" />
+                  <MaterialCommunityIcons name="check-circle" size={16} color="#E94E1B" />
                   <Text style={styles.markDoneText}>Mark done</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.changeMealButton}>
-                  <MaterialCommunityIcons name="pencil" size={16} color="#2196F3" />
+                  <MaterialCommunityIcons name="pencil" size={16} color="#3B82F6" />
                   <Text style={styles.changeMealText}>Change meal</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.addCommentButton}>
-                  <MaterialCommunityIcons name="comment-text" size={16} color="#FF9800" />
+                  <MaterialCommunityIcons name="comment-text" size={16} color="#E94E1B" />
                   <Text style={styles.addCommentText}>Add comment</Text>
                 </TouchableOpacity>
               </View>
@@ -256,7 +256,7 @@ const NutritionScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
   },
   datePickerContainer: {
     backgroundColor: 'white',
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   markDoneText: {
-    color: '#4CAF50',
+    color: '#E94E1B',
     fontSize: 11,
     fontWeight: '500',
   },
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   changeMealText: {
-    color: '#2196F3',
+    color: '#3B82F6',
     fontSize: 11,
     fontWeight: '500',
   },
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   addCommentText: {
-    color: '#FF9800',
+    color: '#E94E1B',
     fontSize: 11,
     fontWeight: '500',
   },

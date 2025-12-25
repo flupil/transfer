@@ -15,7 +15,7 @@ const PlaceholderScreen: React.FC<PlaceholderScreenProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <MaterialCommunityIcons name={icon as any} size={80} color="#4CAF50" />
+      <MaterialCommunityIcons name={icon as any} size={80} color="#E94E1B" />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
     </View>

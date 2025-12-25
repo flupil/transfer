@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import calendarSyncService from '../services/calendarSyncService';
+import CalendarService from '../services/calendarService';
 
 const SYNC_SETTINGS_KEY = 'calendar_sync_settings';
 
@@ -169,6 +170,27 @@ const CalendarSyncScreen = () => {
     );
   };
 
+  const handleResetCalendar = async () => {
+    Alert.alert(
+      'Reset Calendar Color',
+      'This will delete and recreate the Fit&Power calendar with your gym\'s branding color. All events will be removed. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: async () => {
+            setLoading(true);
+            const success = await CalendarService.resetCalendar();
+            setLoading(false);
+
+            // Calendar service already shows success/error alerts
+          },
+        },
+      ]
+    );
+  };
+
   const reminderOptions = [
     { label: '5 minutes', value: 5 },
     { label: '15 minutes', value: 15 },
@@ -194,7 +216,7 @@ const CalendarSyncScreen = () => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <Ionicons name="calendar" size={32} color="#4ECDC4" />
+          <Ionicons name="calendar" size={32} color="#E94E1B" />
           <Text style={styles.infoText}>
             Sync your workouts and meals to your device calendar to stay organized and get reminders
           </Text>
@@ -212,7 +234,7 @@ const CalendarSyncScreen = () => {
             <Switch
               value={settings.enabled}
               onValueChange={handleEnableSync}
-              trackColor={{ false: '#3C3C3E', true: '#4ECDC4' }}
+              trackColor={{ false: '#4E4E50', true: '#E94E1B' }}
               thumbColor={settings.enabled ? '#fff' : '#B0B0B0'}
             />
           </View>
@@ -236,7 +258,7 @@ const CalendarSyncScreen = () => {
                   onValueChange={(value) =>
                     saveSettings({ ...settings, syncWorkouts: value })
                   }
-                  trackColor={{ false: '#3C3C3E', true: '#4ECDC4' }}
+                  trackColor={{ false: '#4E4E50', true: '#E94E1B' }}
                   thumbColor={settings.syncWorkouts ? '#fff' : '#B0B0B0'}
                 />
               </View>
@@ -253,7 +275,7 @@ const CalendarSyncScreen = () => {
                   onValueChange={(value) =>
                     saveSettings({ ...settings, syncMeals: value })
                   }
-                  trackColor={{ false: '#3C3C3E', true: '#4ECDC4' }}
+                  trackColor={{ false: '#4E4E50', true: '#E94E1B' }}
                   thumbColor={settings.syncMeals ? '#fff' : '#B0B0B0'}
                 />
               </View>
@@ -346,7 +368,7 @@ const CalendarSyncScreen = () => {
                   onValueChange={(value) =>
                     saveSettings({ ...settings, autoSync: value })
                   }
-                  trackColor={{ false: '#3C3C3E', true: '#4ECDC4' }}
+                  trackColor={{ false: '#4E4E50', true: '#E94E1B' }}
                   thumbColor={settings.autoSync ? '#fff' : '#B0B0B0'}
                 />
               </View>
@@ -375,12 +397,29 @@ const CalendarSyncScreen = () => {
                 disabled={loading}
               >
                 {loading ? (
-                  <ActivityIndicator color="#FF6B6B" />
+                  <ActivityIndicator color="#E94E1B" />
                 ) : (
                   <>
-                    <Ionicons name="trash-outline" size={24} color="#FF6B6B" />
-                    <Text style={[styles.actionButtonText, { color: '#FF6B6B' }]}>
+                    <Ionicons name="trash-outline" size={24} color="#E94E1B" />
+                    <Text style={[styles.actionButtonText, { color: '#E94E1B' }]}>
                       Clear All Events
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.actionButton, styles.resetButton]}
+                onPress={handleResetCalendar}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#E94E1B" />
+                ) : (
+                  <>
+                    <Ionicons name="color-palette-outline" size={24} color="#E94E1B" />
+                    <Text style={[styles.actionButtonText, { color: '#E94E1B' }]}>
+                      Reset Calendar Color
                     </Text>
                   </>
                 )}
@@ -420,7 +459,7 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -447,7 +486,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
@@ -484,13 +523,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderWidth: 1,
-    borderColor: '#3C3C3E',
+    borderColor: '#4E4E50',
   },
   reminderChipActive: {
-    backgroundColor: '#4ECDC4',
-    borderColor: '#4ECDC4',
+    backgroundColor: '#E94E1B',
+    borderColor: '#E94E1B',
   },
   reminderChipText: {
     fontSize: 14,
@@ -510,12 +549,17 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   syncButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#E94E1B',
   },
   clearButton: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderWidth: 1,
-    borderColor: '#FF6B6B',
+    borderColor: '#E94E1B',
+  },
+  resetButton: {
+    backgroundColor: '#4E4E50',
+    borderWidth: 1,
+    borderColor: '#E94E1B',
   },
   actionButtonText: {
     fontSize: 16,

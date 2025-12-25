@@ -18,7 +18,7 @@ const OnboardingNotificationsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -37,7 +37,7 @@ const OnboardingNotificationsScreen = () => {
 
       <View style={styles.content}>
         <View style={styles.iconContainer}>
-          <Ionicons name="notifications-outline" size={48} color="#3b9eff" />
+          <Ionicons name="notifications-outline" size={48} color="#3B82F6" />
         </View>
 
         <Text style={styles.title}>{t('onboarding.notificationsTitle')}</Text>
@@ -48,7 +48,7 @@ const OnboardingNotificationsScreen = () => {
         <View style={styles.notificationOptions}>
           <View style={styles.optionRow}>
             <View style={styles.optionInfo}>
-              <Ionicons name="alarm-outline" size={24} color="#3b9eff" />
+              <Ionicons name="alarm-outline" size={24} color="#3B82F6" />
               <View style={styles.optionText}>
                 <Text style={styles.optionTitle}>{t('onboarding.workoutReminders')}</Text>
                 <Text style={styles.optionDescription}>
@@ -59,14 +59,14 @@ const OnboardingNotificationsScreen = () => {
             <Switch
               value={workoutReminders}
               onValueChange={setWorkoutReminders}
-              trackColor={{ false: '#2a3a4a', true: '#3b9eff' }}
+              trackColor={{ false: '#2A2A2A', true: '#3B82F6' }}
               thumbColor="#fff"
             />
           </View>
 
           <View style={styles.optionRow}>
             <View style={styles.optionInfo}>
-              <Ionicons name="trending-up-outline" size={24} color="#3b9eff" />
+              <Ionicons name="trending-up-outline" size={24} color="#3B82F6" />
               <View style={styles.optionText}>
                 <Text style={styles.optionTitle}>{t('onboarding.progressUpdates')}</Text>
                 <Text style={styles.optionDescription}>
@@ -77,14 +77,14 @@ const OnboardingNotificationsScreen = () => {
             <Switch
               value={progressUpdates}
               onValueChange={setProgressUpdates}
-              trackColor={{ false: '#2a3a4a', true: '#3b9eff' }}
+              trackColor={{ false: '#2A2A2A', true: '#3B82F6' }}
               thumbColor="#fff"
             />
           </View>
 
           <View style={styles.optionRow}>
             <View style={styles.optionInfo}>
-              <Ionicons name="happy-outline" size={24} color="#3b9eff" />
+              <Ionicons name="happy-outline" size={24} color="#3B82F6" />
               <View style={styles.optionText}>
                 <Text style={styles.optionTitle}>{t('onboarding.motivationalMessages')}</Text>
                 <Text style={styles.optionDescription}>
@@ -95,7 +95,7 @@ const OnboardingNotificationsScreen = () => {
             <Switch
               value={motivationalMessages}
               onValueChange={setMotivationalMessages}
-              trackColor={{ false: '#2a3a4a', true: '#3b9eff' }}
+              trackColor={{ false: '#2A2A2A', true: '#3B82F6' }}
               thumbColor="#fff"
             />
           </View>
@@ -122,7 +122,7 @@ const OnboardingNotificationsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -142,12 +142,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     padding: 16,
     borderRadius: 12,
   },
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

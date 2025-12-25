@@ -18,6 +18,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { BRAND_COLORS } from '../../constants/brandColors';
 import { useForm, Controller } from 'react-hook-form';
 
 interface ForgotPasswordFormData {
@@ -83,7 +84,7 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
           <MaterialCommunityIcons
             name={emailSent ? "check-circle" : "lock-reset"}
             size={80}
-            color={emailSent ? "#4CAF50" : "#FF6B35"}
+            color={emailSent ? BRAND_COLORS.accent : BRAND_COLORS.accentLight}
           />
           <Text variant="headlineLarge" style={styles.title}>
             {emailSent ? t('auth.checkYourEmail') : t('auth.resetPassword')}

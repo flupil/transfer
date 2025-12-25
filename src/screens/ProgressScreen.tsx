@@ -38,6 +38,10 @@ const ProgressScreen = () => {
   const navigation = useNavigation();
   const { isDark, colors } = useTheme();
   const { t } = useLanguage();
+
+  // Generate styles with theme colors
+  const styles = React.useMemo(() => getStyles(colors), [colors]);
+
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<'weight' | 'measurements' | 'photos' | 'achievements'>('weight');
 
@@ -308,7 +312,7 @@ const ProgressScreen = () => {
       <ScrollView style={styles.tabContent}>
         {/* Level & Streaks Card */}
         <LinearGradient
-          colors={['#4ECDC4', '#44A08D']}
+          colors={['#E94E1B', '#44A08D']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.levelCard}
@@ -360,7 +364,7 @@ const ProgressScreen = () => {
               <View style={styles.achievementGrid}>
                 {unlockedAchievements.map(achievement => (
                   <View key={achievement.id} style={styles.achievementCard}>
-                    <View style={[styles.achievementIcon, { backgroundColor: '#4CAF50' }]}>
+                    <View style={[styles.achievementIcon, { backgroundColor: '#E94E1B' }]}>
                       <MaterialCommunityIcons
                         name={achievement.icon as any}
                         size={28}
@@ -406,10 +410,10 @@ const ProgressScreen = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
+    <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       <CustomHeader />
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: '#1A1A1A' }]}>
+      <View style={[styles.header, { backgroundColor: '#2A2A2A' }]}>
         <View style={styles.headerContent}>
           <View>
             <Text style={styles.headerTitle}>{t('progress.title')}</Text>
@@ -419,7 +423,7 @@ const ProgressScreen = () => {
             style={styles.exportButton}
             onPress={() => (navigation as any).navigate('ExportData')}
           >
-            <MaterialCommunityIcons name="download" size={24} color="#4ECDC4" />
+            <MaterialCommunityIcons name="download" size={24} color="#E94E1B" />
           </TouchableOpacity>
         </View>
       </View>
@@ -588,10 +592,10 @@ const ProgressScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFBFD',
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 20,
@@ -617,7 +621,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -696,7 +700,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   chartCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
@@ -716,7 +720,7 @@ const styles = StyleSheet.create({
     marginLeft: -20,
   },
   historyCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
@@ -749,7 +753,7 @@ const styles = StyleSheet.create({
     color: '#1A1F36',
   },
   measurementAddCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 20,
     padding: 32,
     alignItems: 'center',

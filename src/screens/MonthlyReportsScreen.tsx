@@ -11,6 +11,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { format, subMonths } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 const { width } = Dimensions.get('window');
 
@@ -70,9 +71,9 @@ const MonthlyReportsScreen: React.FC = () => {
               <MaterialCommunityIcons
                 name={trend > 0 ? "trending-up" : "trending-down"}
                 size={14}
-                color={trend > 0 ? '#4CAF50' : '#F44336'}
+                color={trend > 0 ? BRAND_COLORS.accent : '#F44336'}
               />
-              <Text style={[styles.trendText, { color: trend > 0 ? '#4CAF50' : '#F44336' }]}>
+              <Text style={[styles.trendText, { color: trend > 0 ? BRAND_COLORS.accent : '#F44336' }]}>
                 {Math.abs(trend)}%
               </Text>
             </View>
@@ -120,12 +121,12 @@ const MonthlyReportsScreen: React.FC = () => {
         <Text style={styles.summaryTitle}>{t('monthlyReports.monthlySummary')}</Text>
         <View style={styles.summaryGrid}>
           <View style={styles.summaryItem}>
-            <MaterialCommunityIcons name="fire" size={32} color="#FF6B6B" />
+            <MaterialCommunityIcons name="fire" size={32} color={BRAND_COLORS.accent} />
             <Text style={styles.summaryValue}>{currentData.calories.toLocaleString()}</Text>
             <Text style={styles.summaryLabel}>{t('monthlyReports.caloriesBurned')}</Text>
           </View>
           <View style={styles.summaryItem}>
-            <MaterialCommunityIcons name="calendar-check" size={32} color="#4ECDC4" />
+            <MaterialCommunityIcons name="calendar-check" size={32} color={BRAND_COLORS.accent} />
             <Text style={styles.summaryValue}>{currentData.attendance}%</Text>
             <Text style={styles.summaryLabel}>{t('monthlyReports.attendance')}</Text>
           </View>
@@ -144,7 +145,7 @@ const MonthlyReportsScreen: React.FC = () => {
         icon="dumbbell"
         value={currentData.workouts}
         label={t('monthlyReports.totalWorkouts')}
-        color="#4CAF50"
+        color={BRAND_COLORS.accent}
         trend={12}
       />
 
@@ -152,7 +153,7 @@ const MonthlyReportsScreen: React.FC = () => {
         icon="fire"
         value={`${(currentData.calories / 1000).toFixed(1)}k`}
         label={t('monthlyReports.totalCaloriesBurned')}
-        color="#FF6B6B"
+        color={BRAND_COLORS.accent}
         trend={8}
       />
 
@@ -160,14 +161,14 @@ const MonthlyReportsScreen: React.FC = () => {
         icon="scale-bathroom"
         value={`${currentData.weightChange > 0 ? '+' : ''}${currentData.weightChange} kg`}
         label={t('monthlyReports.weightChange')}
-        color={currentData.weightChange < 0 ? '#4CAF50' : '#FF6B6B'}
+        color={currentData.weightChange < 0 ? BRAND_COLORS.accent : BRAND_COLORS.accent}
       />
 
       <StatCard
         icon="percent"
         value={`${currentData.attendance}%`}
         label={t('monthlyReports.gymAttendance')}
-        color="#2196F3"
+        color="#3B82F6"
         trend={5}
       />
 
@@ -193,12 +194,12 @@ const MonthlyReportsScreen: React.FC = () => {
           <Text style={styles.achievementDesc}>{t('monthlyReports.consistentDesc')}</Text>
         </View>
         <View style={styles.achievementCard}>
-          <MaterialCommunityIcons name="fire" size={32} color="#FF6B6B" />
+          <MaterialCommunityIcons name="fire" size={32} color={BRAND_COLORS.accent} />
           <Text style={styles.achievementTitle}>{t('monthlyReports.calorieCrusher')}</Text>
           <Text style={styles.achievementDesc}>{t('monthlyReports.calorieCrusherDesc')}</Text>
         </View>
         <View style={styles.achievementCard}>
-          <MaterialCommunityIcons name="trending-down" size={32} color="#4CAF50" />
+          <MaterialCommunityIcons name="trending-down" size={32} color={BRAND_COLORS.accent} />
           <Text style={styles.achievementTitle}>{t('monthlyReports.weightLoss')}</Text>
           <Text style={styles.achievementDesc}>{t('monthlyReports.weightLossDesc')}</Text>
         </View>
@@ -419,7 +420,7 @@ const styles = StyleSheet.create({
   },
   generateButton: {
     flexDirection: 'row',
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
     marginHorizontal: 20,
     marginVertical: 20,
     paddingVertical: 16,

@@ -253,7 +253,7 @@ interface ProgressBarProps {
 export const AnimatedProgressBar: React.FC<ProgressBarProps> = ({
   progress,
   style,
-  color = '#4CAF50',
+  color = '#E94E1B',
 }) => {
   const widthAnim = useRef(new Animated.Value(0)).current;
 

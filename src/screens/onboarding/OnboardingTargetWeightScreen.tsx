@@ -16,22 +16,10 @@ const OnboardingTargetWeightScreen = () => {
   const handleNext = () => {
     if (targetWeight) {
       updateOnboardingData({ targetWeight: parseFloat(targetWeight), targetWeightUnit: unit });
-
-      // Route based on user's interest selection
-      if (onboardingData.appInterest === 'nutrition') {
-        // Nutrition only - skip workout days, go to plans welcome/complete
-        navigation.navigate('OnboardingPlansWelcome' as never);
-      } else if (onboardingData.appInterest === 'workouts' || onboardingData.appInterest === 'football') {
-        // Workouts/Football only - go to workout days
-        navigation.navigate('OnboardingWorkoutDays' as never);
-      } else {
-        // Both - user provided target weight, so skip calorie results and go to workout days
-        navigation.navigate('OnboardingWorkoutDays' as never);
-      }
-    } else {
-      // Should not reach here since button is disabled without target weight
-      navigation.navigate('OnboardingCalorieResults' as never);
     }
+
+    // ALWAYS show calorie results screen so user can choose their calorie target
+    navigation.navigate('OnboardingCalorieResults' as never);
   };
 
   const convertWeight = () => {
@@ -50,7 +38,7 @@ const OnboardingTargetWeightScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -79,7 +67,7 @@ const OnboardingTargetWeightScreen = () => {
             value={targetWeight}
             onChangeText={setTargetWeight}
             keyboardType="numeric"
-            placeholderTextColor="#4a5a6a"
+            placeholderTextColor="#4E4E50"
             placeholder={t('onboarding.enterTargetPlaceholder')}
           />
           <View style={styles.unitToggle}>
@@ -105,17 +93,8 @@ const OnboardingTargetWeightScreen = () => {
         <TouchableOpacity
           style={styles.skipButton}
           onPress={() => {
-            // Route based on user's interest selection
-            if (onboardingData.appInterest === 'nutrition') {
-              // Nutrition only - need to show calorie results
-              navigation.navigate('OnboardingCalorieResults' as never);
-            } else if (onboardingData.appInterest === 'workouts' || onboardingData.appInterest === 'football') {
-              // Workouts/Football only - skip calorie results, go to workout days
-              navigation.navigate('OnboardingWorkoutDays' as never);
-            } else {
-              // Both - show calorie results
-              navigation.navigate('OnboardingCalorieResults' as never);
-            }
+            // ALWAYS show calorie results screen so user can choose their calorie target
+            navigation.navigate('OnboardingCalorieResults' as never);
           }}
         >
           <Text style={styles.skipText}>{t('onboarding.skipForNow')}</Text>
@@ -139,7 +118,7 @@ const OnboardingTargetWeightScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -159,12 +138,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -198,14 +177,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#fff',
     borderBottomWidth: 2,
-    borderBottomColor: '#3a4a5a',
+    borderBottomColor: '#3A3A3A',
     paddingVertical: 15,
     paddingHorizontal: 10,
     textAlign: 'center',
   },
   unitToggle: {
     flexDirection: 'row',
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 8,
     padding: 2,
   },
@@ -215,7 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   unitButtonActive: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
   },
   unitText: {
     fontSize: 16,
@@ -238,7 +217,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

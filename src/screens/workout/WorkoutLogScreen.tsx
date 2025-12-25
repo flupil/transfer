@@ -321,7 +321,7 @@ export const WorkoutLogScreen: React.FC = () => {
                       key={i}
                       icon="emoticon"
                       size={24}
-                      iconColor={mood >= i ? '#4CAF50' : '#ccc'}
+                      iconColor={mood >= i ? '#E94E1B' : '#ccc'}
                       onPress={() => setMood(i)}
                     />
                   ))}
@@ -333,7 +333,7 @@ export const WorkoutLogScreen: React.FC = () => {
                       key={i}
                       icon="lightning-bolt"
                       size={24}
-                      iconColor={energy >= i ? '#FF9800' : '#ccc'}
+                      iconColor={energy >= i ? '#E94E1B' : '#ccc'}
                       onPress={() => setEnergy(i)}
                     />
                   ))}
@@ -345,7 +345,7 @@ export const WorkoutLogScreen: React.FC = () => {
               mode="contained"
               onPress={finishWorkout}
               style={styles.finishButton}
-              buttonColor="#4CAF50"
+              buttonColor="#E94E1B"
             >
               {t('workoutLog.completeWorkout')}
             </Button>

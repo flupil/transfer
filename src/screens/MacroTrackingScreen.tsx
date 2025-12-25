@@ -105,25 +105,25 @@ const MacroTrackingScreen = () => {
 
   if (!dailyMacros) {
     return (
-      <View style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
-        <Text style={{ color: colors.text }}>Loading...</Text>
+      <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
+        <Text style={{ color: '#F4F1EF' }}>Loading...</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
+    <ScrollView style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>Macro Tracking</Text>
-        <Text style={[styles.date, { color: colors.textSecondary }]}>
+        <Text style={[styles.title, { color: '#F4F1EF' }]}>Macro Tracking</Text>
+        <Text style={[styles.date, { color: '#C5C2BF' }]}>
           {format(new Date(), 'EEEE, MMM d')}
         </Text>
       </View>
 
       {/* Overview Cards */}
       <View style={styles.overviewCards}>
-        <View style={[styles.macroCard, { backgroundColor: '#FF6B6B' }]}>
+        <View style={[styles.macroCard, { backgroundColor: '#E94E1B' }]}>
           <Text style={styles.macroCardTitle}>Calories</Text>
           <Text style={styles.macroCardValue}>
             {dailyMacros.consumed.calories}
@@ -146,7 +146,7 @@ const MacroTrackingScreen = () => {
           </View>
         </View>
 
-        <View style={[styles.macroCard, { backgroundColor: '#4ECDC4' }]}>
+        <View style={[styles.macroCard, { backgroundColor: '#E94E1B' }]}>
           <Text style={styles.macroCardTitle}>Protein</Text>
           <Text style={styles.macroCardValue}>
             {dailyMacros.consumed.protein}g
@@ -192,7 +192,7 @@ const MacroTrackingScreen = () => {
           </View>
         </View>
 
-        <View style={[styles.macroCard, { backgroundColor: '#FFD93D' }]}>
+        <View style={[styles.macroCard, { backgroundColor: '#E94E1B' }]}>
           <Text style={styles.macroCardTitle}>Fat</Text>
           <Text style={styles.macroCardValue}>
             {dailyMacros.consumed.fat}g
@@ -218,32 +218,32 @@ const MacroTrackingScreen = () => {
 
       {/* Weekly Stats */}
       {weeklyStats && (
-        <View style={[styles.statsContainer, { backgroundColor: colors.cardBackground }]}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+        <View style={[styles.statsContainer, { backgroundColor: '#4A4A4A' }]}>
+          <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>
             Weekly Statistics
           </Text>
           <View style={styles.statsGrid}>
             <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              <Text style={[styles.statLabel, { color: '#C5C2BF' }]}>
                 Avg Calories
               </Text>
-              <Text style={[styles.statValue, { color: colors.text }]}>
+              <Text style={[styles.statValue, { color: '#F4F1EF' }]}>
                 {weeklyStats.averageCalories}
               </Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              <Text style={[styles.statLabel, { color: '#C5C2BF' }]}>
                 Avg Protein
               </Text>
-              <Text style={[styles.statValue, { color: colors.text }]}>
+              <Text style={[styles.statValue, { color: '#F4F1EF' }]}>
                 {weeklyStats.averageProtein}g
               </Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              <Text style={[styles.statLabel, { color: '#C5C2BF' }]}>
                 Days on Target
               </Text>
-              <Text style={[styles.statValue, { color: colors.text }]}>
+              <Text style={[styles.statValue, { color: '#F4F1EF' }]}>
                 {weeklyStats.daysOnTarget}/7
               </Text>
             </View>
@@ -252,9 +252,9 @@ const MacroTrackingScreen = () => {
       )}
 
       {/* Today's Entries */}
-      <View style={[styles.entriesContainer, { backgroundColor: colors.cardBackground }]}>
+      <View style={[styles.entriesContainer, { backgroundColor: '#4A4A4A' }]}>
         <View style={styles.entriesHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>
             Today's Food
           </Text>
           <TouchableOpacity onPress={() => setShowTargetModal(true)}>
@@ -263,7 +263,7 @@ const MacroTrackingScreen = () => {
         </View>
 
         {dailyMacros.entries.length === 0 ? (
-          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+          <Text style={[styles.emptyText, { color: '#C5C2BF' }]}>
             {t('macros.noEntriesYet')}
           </Text>
         ) : (
@@ -280,16 +280,16 @@ const MacroTrackingScreen = () => {
                     color={colors.textSecondary}
                   />
                   <View style={styles.entryDetails}>
-                    <Text style={[styles.entryName, { color: colors.text }]}>
+                    <Text style={[styles.entryName, { color: '#F4F1EF' }]}>
                       {item.name}
                     </Text>
-                    <Text style={[styles.entryMeal, { color: colors.textSecondary }]}>
+                    <Text style={[styles.entryMeal, { color: '#C5C2BF' }]}>
                       {item.meal.charAt(0).toUpperCase() + item.meal.slice(1)}
                     </Text>
                   </View>
                 </View>
                 <View style={styles.entryMacros}>
-                  <Text style={[styles.entryCalories, { color: colors.text }]}>
+                  <Text style={[styles.entryCalories, { color: '#F4F1EF' }]}>
                     {item.calories} cal
                   </Text>
                   <View style={styles.entryMacroDetails}>
@@ -312,9 +312,9 @@ const MacroTrackingScreen = () => {
         onRequestClose={() => setShowTargetModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.cardBackground }]}>
+          <View style={[styles.modalContent, { backgroundColor: '#4A4A4A' }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.text }]}>
+              <Text style={[styles.modalTitle, { color: '#F4F1EF' }]}>
                 Daily Targets
               </Text>
               <TouchableOpacity onPress={() => setShowTargetModal(false)}>
@@ -324,7 +324,7 @@ const MacroTrackingScreen = () => {
 
             <View style={styles.targetInputs}>
               <View style={styles.targetRow}>
-                <Text style={[styles.targetLabel, { color: colors.text }]}>
+                <Text style={[styles.targetLabel, { color: '#F4F1EF' }]}>
                   Calories
                 </Text>
                 <View style={styles.targetButtons}>
@@ -335,7 +335,7 @@ const MacroTrackingScreen = () => {
                   >
                     <MaterialCommunityIcons name="minus" size={24} color={colors.text} />
                   </TouchableOpacity>
-                  <Text style={[styles.targetValue, { color: colors.text }]}>
+                  <Text style={[styles.targetValue, { color: '#F4F1EF' }]}>
                     {newTargets.calories}
                   </Text>
                   <TouchableOpacity
@@ -349,7 +349,7 @@ const MacroTrackingScreen = () => {
               </View>
 
               <View style={styles.targetRow}>
-                <Text style={[styles.targetLabel, { color: colors.text }]}>
+                <Text style={[styles.targetLabel, { color: '#F4F1EF' }]}>
                   Protein (g)
                 </Text>
                 <View style={styles.targetButtons}>
@@ -360,7 +360,7 @@ const MacroTrackingScreen = () => {
                   >
                     <MaterialCommunityIcons name="minus" size={24} color={colors.text} />
                   </TouchableOpacity>
-                  <Text style={[styles.targetValue, { color: colors.text }]}>
+                  <Text style={[styles.targetValue, { color: '#F4F1EF' }]}>
                     {newTargets.protein}
                   </Text>
                   <TouchableOpacity
@@ -374,7 +374,7 @@ const MacroTrackingScreen = () => {
               </View>
 
               <View style={styles.targetRow}>
-                <Text style={[styles.targetLabel, { color: colors.text }]}>
+                <Text style={[styles.targetLabel, { color: '#F4F1EF' }]}>
                   Carbs (g)
                 </Text>
                 <View style={styles.targetButtons}>
@@ -385,7 +385,7 @@ const MacroTrackingScreen = () => {
                   >
                     <MaterialCommunityIcons name="minus" size={24} color={colors.text} />
                   </TouchableOpacity>
-                  <Text style={[styles.targetValue, { color: colors.text }]}>
+                  <Text style={[styles.targetValue, { color: '#F4F1EF' }]}>
                     {newTargets.carbs}
                   </Text>
                   <TouchableOpacity
@@ -399,7 +399,7 @@ const MacroTrackingScreen = () => {
               </View>
 
               <View style={styles.targetRow}>
-                <Text style={[styles.targetLabel, { color: colors.text }]}>
+                <Text style={[styles.targetLabel, { color: '#F4F1EF' }]}>
                   Fat (g)
                 </Text>
                 <View style={styles.targetButtons}>
@@ -410,7 +410,7 @@ const MacroTrackingScreen = () => {
                   >
                     <MaterialCommunityIcons name="minus" size={24} color={colors.text} />
                   </TouchableOpacity>
-                  <Text style={[styles.targetValue, { color: colors.text }]}>
+                  <Text style={[styles.targetValue, { color: '#F4F1EF' }]}>
                     {newTargets.fat}
                   </Text>
                   <TouchableOpacity

@@ -16,6 +16,7 @@ import { useAuth } from '../contexts/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 const { width } = Dimensions.get('window');
 
@@ -173,6 +174,19 @@ const AppHeader = () => {
       width: 80,
       height: 80,
     },
+    logoPlaceholder: {
+      width: 80,
+      height: 80,
+      backgroundColor: '#CCCCCC',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 4,
+    },
+    logoPlaceholderText: {
+      fontSize: 12,
+      fontWeight: 'bold',
+      color: '#666666',
+    },
     footballHeader: {
       height: 120,
       position: 'relative',
@@ -221,7 +235,7 @@ const AppHeader = () => {
     footballSubtitle: {
       fontSize: 12,
       fontWeight: '600',
-      color: '#22C55E',
+      color: BRAND_COLORS.accent,
       letterSpacing: 0.5,
       marginTop: -2,
     },
@@ -250,7 +264,7 @@ const AppHeader = () => {
               <MaterialCommunityIcons
                 name="fire"
                 size={30}
-                color={hasWorkedOutToday ? "#22C55E" : "#999999"}
+                color={hasWorkedOutToday ? BRAND_COLORS.accent : "#999999"}
               />
               <Text style={[
                 styles.headerItemText,
@@ -264,7 +278,7 @@ const AppHeader = () => {
               style={styles.workoutIcon}
               onPress={() => navigation.navigate('Workout' as never)}
             >
-              <MaterialCommunityIcons name="soccer" size={28} color="#22C55E" />
+              <MaterialCommunityIcons name="soccer" size={28} color={BRAND_COLORS.accent} />
             </TouchableOpacity>
           </View>
 
@@ -285,7 +299,7 @@ const AppHeader = () => {
               onPress={() => navigation.navigate('Progress' as never)}
               activeOpacity={0.7}
             >
-              <MaterialCommunityIcons name="diamond" size={30} color="#FFB800" />
+              <MaterialCommunityIcons name="diamond" size={30} color={BRAND_COLORS.accent} />
               <Text style={[styles.headerItemText, { color: colors.text }]}>
                 {userXP}
               </Text>
@@ -296,7 +310,7 @@ const AppHeader = () => {
               onPress={() => {}}
               activeOpacity={0.7}
             >
-              <MaterialCommunityIcons name="account-group" size={30} color="#22C55E" />
+              <MaterialCommunityIcons name="account-group" size={30} color={BRAND_COLORS.accent} />
             </TouchableOpacity>
           </View>
         </View>
@@ -319,7 +333,7 @@ const AppHeader = () => {
             <MaterialCommunityIcons
               name="fire"
               size={30}
-              color={hasWorkedOutToday ? "#FF6B35" : "#999999"}
+              color={hasWorkedOutToday ? BRAND_COLORS.accentLight : "#999999"}
             />
             <Text style={[
               styles.headerItemText,
@@ -336,11 +350,9 @@ const AppHeader = () => {
           onPress={() => navigation.navigate('Settings' as never)}
           activeOpacity={0.7}
         >
-          <Image
-            source={require('../assets/logotransparent.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+          <View style={styles.logoPlaceholder}>
+            <Text style={styles.logoPlaceholderText}>LOGO</Text>
+          </View>
         </TouchableOpacity>
 
         {/* Right Side - XP */}

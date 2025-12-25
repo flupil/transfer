@@ -51,7 +51,7 @@ const OnboardingActivityLevelScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -87,7 +87,7 @@ const OnboardingActivityLevelScreen = () => {
               <Ionicons
                 name={level.icon as any}
                 size={28}
-                color={selectedLevel === level.id ? '#3b9eff' : '#8e9bab'}
+                color={selectedLevel === level.id ? '#3B82F6' : '#8e9bab'}
               />
               <View style={styles.optionContent}>
                 <Text
@@ -101,7 +101,7 @@ const OnboardingActivityLevelScreen = () => {
                 <Text style={styles.optionDescription}>{level.description}</Text>
               </View>
               {selectedLevel === level.id && (
-                <Ionicons name="checkmark-circle" size={24} color="#3b9eff" />
+                <Ionicons name="checkmark-circle" size={24} color="#3B82F6" />
               )}
             </TouchableOpacity>
           ))}
@@ -125,7 +125,7 @@ const OnboardingActivityLevelScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -145,12 +145,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -181,14 +181,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 18,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#1e2e3e',
+    borderColor: '#2A2A2A',
     gap: 15,
   },
   optionButtonSelected: {
-    borderColor: '#3b9eff',
+    borderColor: '#3B82F6',
     backgroundColor: '#1a3048',
   },
   optionContent: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   optionTitleSelected: {
-    color: '#3b9eff',
+    color: '#3B82F6',
   },
   optionDescription: {
     fontSize: 14,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

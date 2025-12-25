@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../contexts/AuthContext';
 import { aiService } from '../../services/aiService';
 import firebaseDailyDataService from '../../services/firebaseDailyDataService';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const AINutritionAdvisorScreen = () => {
   const navigation = useNavigation();
@@ -91,7 +92,7 @@ const AINutritionAdvisorScreen = () => {
   const renderAdviceSection = (title: string, items: string[], icon: string) => (
     <View style={styles.adviceSection}>
       <View style={styles.sectionHeader}>
-        <Ionicons name={icon as any} size={24} color="#4ECDC4" />
+        <Ionicons name={icon as any} size={24} color={BRAND_COLORS.accent} />
         <Text style={styles.sectionTitle}>{title}</Text>
       </View>
       {items.map((item, index) => (
@@ -121,7 +122,7 @@ const AINutritionAdvisorScreen = () => {
           <>
             {/* Info Card */}
             <View style={styles.infoCard}>
-              <Ionicons name="nutrition" size={32} color="#4ECDC4" />
+              <Ionicons name="nutrition" size={32} color={BRAND_COLORS.accent} />
               <Text style={styles.infoText}>
                 Get personalized nutrition advice based on your current intake, goals, and progress
               </Text>
@@ -131,23 +132,23 @@ const AINutritionAdvisorScreen = () => {
             <View style={styles.featuresContainer}>
               <Text style={styles.featuresTitle}>What you'll get:</Text>
               <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={20} color="#4ECDC4" />
+                <Ionicons name="checkmark-circle" size={20} color={BRAND_COLORS.accent} />
                 <Text style={styles.featureText}>Analysis of your eating patterns</Text>
               </View>
               <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={20} color="#4ECDC4" />
+                <Ionicons name="checkmark-circle" size={20} color={BRAND_COLORS.accent} />
                 <Text style={styles.featureText}>Personalized macro recommendations</Text>
               </View>
               <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={20} color="#4ECDC4" />
+                <Ionicons name="checkmark-circle" size={20} color={BRAND_COLORS.accent} />
                 <Text style={styles.featureText}>Meal timing suggestions</Text>
               </View>
               <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={20} color="#4ECDC4" />
+                <Ionicons name="checkmark-circle" size={20} color={BRAND_COLORS.accent} />
                 <Text style={styles.featureText}>Food swap recommendations</Text>
               </View>
               <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={20} color="#4ECDC4" />
+                <Ionicons name="checkmark-circle" size={20} color={BRAND_COLORS.accent} />
                 <Text style={styles.featureText}>Supplement guidance</Text>
               </View>
             </View>
@@ -167,7 +168,7 @@ const AINutritionAdvisorScreen = () => {
 
         {analyzing && (
           <View style={styles.analyzingContainer}>
-            <ActivityIndicator size="large" color="#4ECDC4" />
+            <ActivityIndicator size="large" color={BRAND_COLORS.accent} />
             <Text style={styles.analyzingText}>Analyzing your nutrition...</Text>
             <Text style={styles.analyzingSubtext}>This may take a few seconds</Text>
           </View>
@@ -208,7 +209,7 @@ const AINutritionAdvisorScreen = () => {
 
             {/* Get New Advice Button */}
             <TouchableOpacity style={styles.refreshButton} onPress={handleGetAdvice} accessibilityLabel="Get updated nutrition advice">
-              <Ionicons name="refresh" size={20} color="#4ECDC4" />
+              <Ionicons name="refresh" size={20} color={BRAND_COLORS.accent} />
               <Text style={styles.refreshButtonText}>Get Updated Advice</Text>
             </TouchableOpacity>
           </View>
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
   featuresContainer: {
     marginHorizontal: 16,
     marginTop: 24,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 16,
     borderRadius: 12,
   },
@@ -285,7 +286,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     marginHorizontal: 16,
     marginTop: 32,
     padding: 16,
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
   summaryTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     marginBottom: 12,
   },
   summaryText: {
@@ -340,7 +341,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   adviceSection: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
@@ -363,7 +364,7 @@ const styles = StyleSheet.create({
   },
   bulletPoint: {
     fontSize: 16,
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     fontWeight: '600',
   },
   adviceText: {
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 14,
     borderRadius: 12,
     gap: 8,
@@ -385,7 +386,7 @@ const styles = StyleSheet.create({
   refreshButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
   },
 });
 

@@ -122,7 +122,7 @@ const SimpleHealthTracking: React.FC = () => {
                 styles.progressFillInner,
                 {
                   height: `${waterPercentage}%`,
-                  backgroundColor: waterPercentage >= 100 ? '#4CAF50' : '#64B5F6',
+                  backgroundColor: waterPercentage >= 100 ? '#E94E1B' : '#64B5F6',
                 },
               ]}
             />
@@ -184,7 +184,7 @@ const SimpleHealthTracking: React.FC = () => {
                 style={styles.toggleContainer}
                 onPress={() => setIsAddMode(!isAddMode)}
               >
-                <View style={[styles.toggleSwitch, { backgroundColor: isAddMode ? '#4CAF50' : '#FF6B6B' }]}>
+                <View style={[styles.toggleSwitch, { backgroundColor: isAddMode ? '#E94E1B' : '#E94E1B' }]}>
                   <View style={[styles.toggleCircle, { alignSelf: isAddMode ? 'flex-end' : 'flex-start' }]} />
                 </View>
               </TouchableOpacity>
@@ -277,7 +277,7 @@ const SimpleHealthTracking: React.FC = () => {
 
             {/* Add/Remove Button */}
             <TouchableOpacity
-              style={[styles.addButton, { backgroundColor: isAddMode ? '#64B5F6' : '#FF6B6B' }]}
+              style={[styles.addButton, { backgroundColor: isAddMode ? '#64B5F6' : '#E94E1B' }]}
               onPress={() => {
                 const amount = parseInt(customAmount);
                 if (amount && amount > 0) {
@@ -302,8 +302,8 @@ const SimpleHealthTracking: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
   row: {
     flexDirection: 'row',

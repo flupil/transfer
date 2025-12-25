@@ -210,7 +210,7 @@ const ProgressPhotosScreen: React.FC = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Progress Photos</Text>
+        <Text style={[styles.headerTitle, { color: '#F4F1EF' }]}>Progress Photos</Text>
         <TouchableOpacity onPress={() => {
           setCompareMode(!compareMode);
           setSelectedForCompare([]);
@@ -282,10 +282,10 @@ const ProgressPhotosScreen: React.FC = () => {
         {getFilteredPhotos().length === 0 ? (
           <View style={styles.emptyState}>
             <MaterialCommunityIcons name="camera-off" size={64} color={colors.textSecondary} />
-            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            <Text style={[styles.emptyText, { color: '#C5C2BF' }]}>
               No progress photos yet
             </Text>
-            <Text style={[styles.emptySubtext, { color: colors.textSecondary }]}>
+            <Text style={[styles.emptySubtext, { color: '#C5C2BF' }]}>
               Start tracking your journey with photos
             </Text>
           </View>
@@ -310,7 +310,7 @@ const ProgressPhotosScreen: React.FC = () => {
               </View>
               {compareMode && selectedForCompare.find(p => p.id === photo.id) && (
                 <View style={styles.selectedBadge}>
-                  <MaterialCommunityIcons name="check-circle" size={24} color="#4CAF50" />
+                  <MaterialCommunityIcons name="check-circle" size={24} color="#E94E1B" />
                 </View>
               )}
             </TouchableOpacity>
@@ -338,15 +338,15 @@ const ProgressPhotosScreen: React.FC = () => {
         onRequestClose={() => setShowAddModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: isDark ? '#2C2C2E' : 'white' }]}>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>Add Progress Photo</Text>
+          <View style={[styles.modalContent, { backgroundColor: isDark ? '#4E4E50' : 'white' }]}>
+            <Text style={[styles.modalTitle, { color: '#F4F1EF' }]}>Add Progress Photo</Text>
 
             {newPhotoUri && (
               <Image source={{ uri: newPhotoUri }} style={styles.previewImage} />
             )}
 
             {/* Photo Type */}
-            <Text style={[styles.label, { color: colors.text }]}>Photo Type</Text>
+            <Text style={[styles.label, { color: '#F4F1EF' }]}>Photo Type</Text>
             <View style={styles.typeSelector}>
               {(['front', 'side', 'back', 'other'] as ProgressPhoto['type'][]).map(type => (
                 <TouchableOpacity
@@ -368,9 +368,9 @@ const ProgressPhotosScreen: React.FC = () => {
             </View>
 
             {/* Weight (Optional) */}
-            <Text style={[styles.label, { color: colors.text }]}>Weight (kg) - Optional</Text>
+            <Text style={[styles.label, { color: '#F4F1EF' }]}>Weight (kg) - Optional</Text>
             <TextInput
-              style={[styles.input, { backgroundColor: isDark ? '#1A1A1A' : '#F5F5F5', color: colors.text }]}
+              style={[styles.input, { backgroundColor: isDark ? '#1A1A1A' : '#F5F5F5', color: '#F4F1EF' }]}
               value={newPhotoWeight}
               onChangeText={setNewPhotoWeight}
               placeholder="Enter weight"
@@ -379,9 +379,9 @@ const ProgressPhotosScreen: React.FC = () => {
             />
 
             {/* Notes (Optional) */}
-            <Text style={[styles.label, { color: colors.text }]}>Notes - Optional</Text>
+            <Text style={[styles.label, { color: '#F4F1EF' }]}>Notes - Optional</Text>
             <TextInput
-              style={[styles.input, styles.notesInput, { backgroundColor: isDark ? '#1A1A1A' : '#F5F5F5', color: colors.text }]}
+              style={[styles.input, styles.notesInput, { backgroundColor: isDark ? '#1A1A1A' : '#F5F5F5', color: '#F4F1EF' }]}
               value={newPhotoNotes}
               onChangeText={setNewPhotoNotes}
               placeholder="Add notes about this photo"
@@ -547,7 +547,7 @@ const styles = StyleSheet.create({
   },
   photoCardSelected: {
     borderWidth: 3,
-    borderColor: '#4CAF50',
+    borderColor: '#E94E1B',
   },
   photo: {
     width: '100%',
@@ -608,13 +608,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: '#2A2A2A',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
   fabSecondary: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#E94E1B',
   },
   modalOverlay: {
     flex: 1,
@@ -655,7 +655,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     alignItems: 'center',
   },
   typeButtonActive: {

@@ -1,9 +1,15 @@
+import { Platform } from 'react-native';
 import { initializeDatabase, getDatabase as getDb } from './schema';
-import * as SQLite from 'expo-sqlite';
+
+// Only import SQLite on native platforms
+let SQLite: any = null;
+if (Platform.OS !== 'web') {
+  SQLite = require('expo-sqlite');
+}
 
 let isInitialized = false;
 let initPromise: Promise<void> | null = null;
-let cachedDb: SQLite.SQLiteDatabase | null = null;
+let cachedDb: any = null;
 
 export const ensureDatabase = async () => {
   if (isInitialized && cachedDb) return;

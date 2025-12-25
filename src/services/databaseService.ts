@@ -14,16 +14,21 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import * as SQLite from 'expo-sqlite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSafeDatabase } from '../database/databaseHelper';
-import { Alert } from 'react-native';
+import { Platform } from 'react-native';
+import { syncQueue } from './syncQueue';
+
+// Only import SQLite on native platforms
+let SQLite: any = null;
+if (Platform.OS !== 'web') {
+  SQLite = require('expo-sqlite');
+}
 import { translate } from '../contexts/LanguageContext';
 
 // Types
 interface SyncStatus {
   lastSyncedAt: Date | null;
-  pendingChanges: number;
   isOnline: boolean;
 }
 
@@ -31,7 +36,6 @@ class DatabaseService {
   private localDb: SQLite.SQLiteDatabase | null = null;
   private syncStatus: SyncStatus = {
     lastSyncedAt: null,
-    pendingChanges: 0,
     isOnline: true
   };
 
@@ -51,8 +55,7 @@ class DatabaseService {
         this.syncStatus = JSON.parse(status);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to load sync status. Please try again.');
-
+      // Silent error - not critical, app can continue
       console.error('Failed to load sync status:', error);
     }
   }
@@ -61,8 +64,7 @@ class DatabaseService {
     try {
       await AsyncStorage.setItem('syncStatus', JSON.stringify(this.syncStatus));
     } catch (error) {
-      Alert.alert('Error', 'Failed to save sync status. Please try again.');
-
+      // Silent error - not critical, app can continue
       console.error('Failed to save sync status:', error);
     }
   }
@@ -85,13 +87,28 @@ class DatabaseService {
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
         });
+      } else {
+        // Offline: add to sync queue
+        await syncQueue.add({
+          type: 'create',
+          collection: collectionName,
+          docId: id,
+          data: dataWithId,
+        });
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to save to Firestore, saving locally. Please try again.');
-
-      console.error('Failed to save to Firestore, saving locally:', error);
+      // Save locally when offline - this is expected behavior
+      console.log('Offline mode: saving locally');
+      console.error('Firestore save error:', error);
       this.syncStatus.isOnline = false;
-      this.syncStatus.pendingChanges++;
+
+      // Add to queue for retry when back online
+      await syncQueue.add({
+        type: 'create',
+        collection: collectionName,
+        docId: id,
+        data: dataWithId,
+      });
     }
 
     // Always save to local SQLite for offline support
@@ -99,13 +116,11 @@ class DatabaseService {
       try {
         await this.saveToLocalDb(tableName, dataWithId);
       } catch (error) {
-        Alert.alert('Error', 'Failed to save to local database. Please try again.');
-
+        // Log error but don't block the operation
         console.error('Failed to save to local database:', error);
       }
     }
 
-    await this.saveSyncStatus();
     return dataWithId as T & { id: string };
   }
 
@@ -132,9 +147,9 @@ class DatabaseService {
         }
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to read from Firestore, reading locally. Please try again.');
-
-      console.error('Failed to read from Firestore, reading locally:', error);
+      // Fallback to local - this is expected in offline mode
+      console.log('Reading from local cache');
+      console.error('Firestore read error:', error);
       this.syncStatus.isOnline = false;
     }
 
@@ -162,21 +177,34 @@ class DatabaseService {
           ...dataWithTimestamp,
           updatedAt: serverTimestamp()
         });
+      } else {
+        // Offline: add to sync queue
+        await syncQueue.add({
+          type: 'update',
+          collection: collectionName,
+          docId,
+          data: dataWithTimestamp,
+        });
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to update in Firestore, updating locally. Please try again.');
-
-      console.error('Failed to update in Firestore, updating locally:', error);
+      // Update locally when offline - this is expected behavior
+      console.log('Offline mode: updating locally');
+      console.error('Firestore update error:', error);
       this.syncStatus.isOnline = false;
-      this.syncStatus.pendingChanges++;
+
+      // Add to queue for retry when back online
+      await syncQueue.add({
+        type: 'update',
+        collection: collectionName,
+        docId,
+        data: dataWithTimestamp,
+      });
     }
 
     // Update local database
     if (this.localDb && tableName) {
       await this.updateLocalDb(tableName, docId, dataWithTimestamp);
     }
-
-    await this.saveSyncStatus();
   }
 
   async delete(
@@ -188,21 +216,32 @@ class DatabaseService {
       // Try to delete from Firestore
       if (this.syncStatus.isOnline) {
         await deleteDoc(doc(db, collectionName, docId));
+      } else {
+        // Offline: add to sync queue
+        await syncQueue.add({
+          type: 'delete',
+          collection: collectionName,
+          docId,
+        });
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to delete from Firestore, deleting locally. Please try again.');
-
-      console.error('Failed to delete from Firestore, deleting locally:', error);
+      // Delete locally when offline - this is expected behavior
+      console.log('Offline mode: deleting locally');
+      console.error('Firestore delete error:', error);
       this.syncStatus.isOnline = false;
-      this.syncStatus.pendingChanges++;
+
+      // Add to queue for retry when back online
+      await syncQueue.add({
+        type: 'delete',
+        collection: collectionName,
+        docId,
+      });
     }
 
     // Delete from local database
     if (this.localDb && tableName) {
       await this.deleteFromLocalDb(tableName, docId);
     }
-
-    await this.saveSyncStatus();
   }
 
   async list<T>(
@@ -239,9 +278,9 @@ class DatabaseService {
         return data;
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to list from Firestore, listing locally. Please try again.');
-
-      console.error('Failed to list from Firestore, listing locally:', error);
+      // Fallback to local - this is expected in offline mode
+      console.log('Reading list from local cache');
+      console.error('Firestore list error:', error);
       this.syncStatus.isOnline = false;
     }
 
@@ -397,58 +436,67 @@ class DatabaseService {
     return `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // Sync operations
-  async syncWithCloud(): Promise<void> {
+  // Sync operations - Process pending operations from queue
+  async processSyncQueue(): Promise<void> {
     if (!this.syncStatus.isOnline) {
       console.log('Cannot sync - offline mode');
       return;
     }
 
-    if (this.syncStatus.pendingChanges === 0) {
-      console.log('No pending changes to sync');
+    const queueSize = await syncQueue.size();
+    if (queueSize === 0) {
+      console.log('No pending operations to sync');
       return;
     }
 
-    try {
-      // Sync pending local changes to Firestore
-      if (this.localDb) {
-        const tables = ['users', 'workout_logs', 'nutrition_logs', 'exercises'];
+    console.log(`Processing ${queueSize} pending operations...`);
+    const operations = await syncQueue.getAll();
+    let successCount = 0;
+    let failCount = 0;
 
-        for (const table of tables) {
-          const pendingRows = await this.localDb.execAsync([
-            { sql: `SELECT * FROM ${table} WHERE syncStatus = 'pending'`, args: [] }
-          ]);
+    for (const op of operations) {
+      try {
+        // Execute the operation based on type
+        switch (op.type) {
+          case 'create':
+            await setDoc(doc(db, op.collection, op.docId), {
+              ...op.data,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            });
+            break;
 
-          if (pendingRows[0].rows && pendingRows[0].rows.length > 0) {
-            for (const row of pendingRows[0].rows) {
-              const data = this.parseLocalData(row);
-              const collectionName = this.getCollectionName(table);
+          case 'update':
+            await updateDoc(doc(db, op.collection, op.docId), {
+              ...op.data,
+              updatedAt: serverTimestamp()
+            });
+            break;
 
-              await setDoc(doc(db, collectionName, data.id), data);
-
-              // Mark as synced
-              await this.localDb.execAsync([
-                {
-                  sql: `UPDATE ${table} SET syncStatus = 'synced', lastSyncedAt = ? WHERE id = ?`,
-                  args: [new Date().toISOString(), data.id]
-                }
-              ]);
-            }
-          }
+          case 'delete':
+            await deleteDoc(doc(db, op.collection, op.docId));
+            break;
         }
+
+        // Operation succeeded, remove from queue
+        await syncQueue.remove(op.id);
+        successCount++;
+      } catch (error) {
+        console.error(`Failed to sync operation ${op.id}:`, error);
+
+        // Increment retry count or remove if max retries exceeded
+        const shouldRetry = await syncQueue.incrementRetry(op.id);
+        if (!shouldRetry) {
+          console.error(`Operation ${op.id} permanently failed after max retries`);
+        }
+        failCount++;
       }
-
-      this.syncStatus.pendingChanges = 0;
-      this.syncStatus.lastSyncedAt = new Date();
-      await this.saveSyncStatus();
-
-      console.log('Sync completed successfully');
-    } catch (error) {
-      Alert.alert('Error', 'Sync failed. Please try again.');
-
-      console.error('Sync failed:', error);
-      throw error;
     }
+
+    this.syncStatus.lastSyncedAt = new Date();
+    await this.saveSyncStatus();
+
+    console.log(`Sync completed: ${successCount} succeeded, ${failCount} failed`);
   }
 
   private getCollectionName(tableName: string): string {
@@ -465,19 +513,38 @@ class DatabaseService {
     return mapping[tableName] || tableName;
   }
 
-  // Check online status
+  // Check online status and trigger sync if we're back online
   async checkOnlineStatus(): Promise<boolean> {
+    const wasOffline = !this.syncStatus.isOnline;
+
     try {
       // Try a simple Firestore operation to check connectivity
       const testDoc = await getDoc(doc(db, 'system', 'ping'));
       this.syncStatus.isOnline = true;
       await this.saveSyncStatus();
+
+      // If we just came back online, process pending operations
+      if (wasOffline) {
+        console.log('Back online - processing pending operations');
+        await this.processSyncQueue();
+      }
+
       return true;
     } catch (error) {
       this.syncStatus.isOnline = false;
       await this.saveSyncStatus();
       return false;
     }
+  }
+
+  // Get sync status info (for UI indicator)
+  async getSyncInfo(): Promise<{ pendingOps: number; lastSync: Date | null; isOnline: boolean }> {
+    const pendingOps = await syncQueue.size();
+    return {
+      pendingOps,
+      lastSync: this.syncStatus.lastSyncedAt,
+      isOnline: this.syncStatus.isOnline
+    };
   }
 }
 

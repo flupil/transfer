@@ -521,7 +521,7 @@ export const CompleteWorkoutLogScreen: React.FC = () => {
                   <MaterialCommunityIcons
                     name={set.completed ? 'check-circle' : 'checkbox-blank-circle-outline'}
                     size={24}
-                    color={set.completed ? '#4CAF50' : '#999'}
+                    color={set.completed ? '#E94E1B' : '#999'}
                   />
                 </TouchableOpacity>
               </DataTable.Cell>
@@ -585,7 +585,7 @@ export const CompleteWorkoutLogScreen: React.FC = () => {
             <Text style={styles.restTimerTime}>{formatTime(timeRemaining)}</Text>
             <ProgressBar
               progress={1 - timeRemaining / restTime}
-              color="#4CAF50"
+              color="#E94E1B"
               style={styles.restTimerProgress}
             />
             <View style={styles.restTimerActions}>
@@ -635,7 +635,7 @@ export const CompleteWorkoutLogScreen: React.FC = () => {
         {exercises.length > 0 && (
           <FAB
             icon="check"
-            style={[styles.fab, { right: 16, backgroundColor: '#4CAF50' }]}
+            style={[styles.fab, { right: 16, backgroundColor: '#E94E1B' }]}
             onPress={completeWorkout}
           />
         )}
@@ -729,7 +729,7 @@ export const CompleteWorkoutLogScreen: React.FC = () => {
                 <MaterialCommunityIcons
                   name={autoStartRest ? 'toggle-switch' : 'toggle-switch-off'}
                   size={48}
-                  color={autoStartRest ? '#4CAF50' : '#999'}
+                  color={autoStartRest ? '#E94E1B' : '#999'}
                 />
               </TouchableOpacity>
             </View>
@@ -740,7 +740,7 @@ export const CompleteWorkoutLogScreen: React.FC = () => {
                 <MaterialCommunityIcons
                   name={vibrationEnabled ? 'toggle-switch' : 'toggle-switch-off'}
                   size={48}
-                  color={vibrationEnabled ? '#4CAF50' : '#999'}
+                  color={vibrationEnabled ? '#E94E1B' : '#999'}
                 />
               </TouchableOpacity>
             </View>
@@ -751,7 +751,7 @@ export const CompleteWorkoutLogScreen: React.FC = () => {
                 <MaterialCommunityIcons
                   name={soundEnabled ? 'toggle-switch' : 'toggle-switch-off'}
                   size={48}
-                  color={soundEnabled ? '#4CAF50' : '#999'}
+                  color={soundEnabled ? '#E94E1B' : '#999'}
                 />
               </TouchableOpacity>
             </View>
@@ -787,7 +787,7 @@ const styles = StyleSheet.create({
   },
   restTimerCard: {
     margin: 10,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
   },
   restTimerTitle: {
     fontSize: 16,
@@ -841,7 +841,7 @@ const styles = StyleSheet.create({
   },
   completedInput: {
     backgroundColor: '#E8F5E9',
-    borderColor: '#4CAF50',
+    borderColor: '#E94E1B',
   },
   exerciseActions: {
     flexDirection: 'row',

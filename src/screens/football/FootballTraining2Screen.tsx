@@ -52,21 +52,21 @@ export default function FootballTraining2Screen() {
       label: 'Total Time',
       labelHe: 'זמן כולל',
       value: '3.2h',
-      color: '#22C55E',
+      color: '#E94E1B',
     },
     {
       icon: 'trophy',
       label: 'Streak',
       labelHe: 'רצף',
       value: '12 days',
-      color: '#FFB800',
+      color: '#E94E1B',
     },
     {
       icon: 'chart-line',
       label: 'Progress',
       labelHe: 'התקדמות',
       value: '+15%',
-      color: '#8B5CF6',
+      color: '#E94E1B',
     },
   ];
 
@@ -88,7 +88,7 @@ export default function FootballTraining2Screen() {
       titleHe: 'מעקב ביצועים',
       description: 'Track speed, agility, and power metrics',
       descriptionHe: 'מעקב אחר מדדי מהירות, זריזות וכוח',
-      color: '#22C55E',
+      color: '#E94E1B',
       route: 'PerformanceTracking',
     },
     {
@@ -108,7 +108,7 @@ export default function FootballTraining2Screen() {
       titleHe: 'שיאים אישיים',
       description: 'Track your sprint times and best performances',
       descriptionHe: 'מעקב אחר זמני ספרינט וביצועים מיטביים',
-      color: '#FFB800',
+      color: '#E94E1B',
       route: 'FootballRecords',
     },
     {
@@ -118,7 +118,7 @@ export default function FootballTraining2Screen() {
       titleHe: 'לוח אימונים',
       description: 'Plan your weekly football training schedule',
       descriptionHe: 'תכנון לוח אימוני הכדורגל השבועי',
-      color: '#8B5CF6',
+      color: '#E94E1B',
       route: 'TrainingCalendar',
     },
     {

@@ -8,13 +8,13 @@ import { useOnboarding } from '../../contexts/OnboardingContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { selectWorkoutPlan } from '../../services/planSelectionService';
 import { selectWorkoutPlan as saveWorkoutPlan } from '../../services/workoutPlanService';
-import { selectMealPlan as saveMealPlan } from '../../services/mealPlanService';
+import { saveMealPlan, selectMealPlan as setSelectedMealPlan } from '../../services/mealPlanService';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 const OnboardingCompleteScreen = () => {
   const navigation = useNavigation();
   const { user } = useAuth();
-  const { onboardingData, updateOnboardingData, saveOnboardingData } = useOnboarding();
+  const { onboardingData, updateOnboardingData, saveOnboardingData, calculateTargets } = useOnboarding();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [workoutPlan, setWorkoutPlan] = useState<any>(null);
@@ -35,24 +35,56 @@ const OnboardingCompleteScreen = () => {
       let selectedMealPlan = null;
 
       if (includesNutrition) {
-        // Select meal plan based on calorie target
-        // Use predefined plans: cutting (1800), maintenance (2400), bulking (3000)
-        const calorieTarget = onboardingData.calorieTarget || 2000;
-        let selectedMealPlanId = 'maintenance'; // default
+        // Get calorie target from onboarding data, or calculate it if not set
+        let calorieTarget = onboardingData.calorieTarget;
+        console.log('🎯 Calorie target from onboarding data:', calorieTarget);
 
-        if (calorieTarget < 2100) {
-          selectedMealPlanId = 'cutting';
-        } else if (calorieTarget > 2700) {
-          selectedMealPlanId = 'bulking';
+        // If no calorie target set, calculate it based on user's profile
+        if (!calorieTarget) {
+          const targets = calculateTargets();
+          calorieTarget = targets.calories;
+          console.log('✓ Auto-calculated calorie target:', calorieTarget);
+        } else {
+          console.log('✓ Using calorie target from onboarding:', calorieTarget);
         }
 
-        // Get the actual meal plan object for display
-        const mealPlans = [
-          { id: 'cutting', name: 'Cutting Plan', totalCalories: 1800 },
-          { id: 'maintenance', name: 'Maintenance Plan', totalCalories: 2400 },
-          { id: 'bulking', name: 'Bulking Plan', totalCalories: 3000 }
-        ];
-        selectedMealPlan = mealPlans.find(p => p.id === selectedMealPlanId) || mealPlans[1];
+        // Calculate macros based on goals (same logic as OnboardingContext)
+        const goals = onboardingData.goals || [];
+        let proteinRatio = 0.25;
+        let carbRatio = 0.45;
+        let fatRatio = 0.30;
+
+        if (goals.includes('gain-muscle') || goals.includes('get-stronger')) {
+          proteinRatio = 0.30;
+          carbRatio = 0.45;
+          fatRatio = 0.25;
+        } else if (goals.includes('lose-weight')) {
+          proteinRatio = 0.35;
+          carbRatio = 0.35;
+          fatRatio = 0.30;
+        } else if (goals.includes('improve-endurance')) {
+          proteinRatio = 0.20;
+          carbRatio = 0.55;
+          fatRatio = 0.25;
+        }
+
+        const totalProtein = Math.round((calorieTarget * proteinRatio) / 4);
+        const totalCarbs = Math.round((calorieTarget * carbRatio) / 4);
+        const totalFat = Math.round((calorieTarget * fatRatio) / 9);
+
+        // Create custom plan object with all required fields
+        selectedMealPlan = {
+          id: 'custom-onboarding-' + Date.now(), // Unique ID to avoid conflicts
+          name: 'Your Custom Plan',
+          totalCalories: calorieTarget,
+          totalProtein,
+          totalCarbs,
+          totalFat,
+          description: `Personalized ${calorieTarget} cal/day plan based on your goals`,
+          isCustom: true,
+          meals: [] // Empty meals array - required by MealPlan interface
+        };
+        console.log('Created custom meal plan:', selectedMealPlan);
       }
 
       setWorkoutPlan(selectedWorkoutPlan);
@@ -80,10 +112,23 @@ const OnboardingCompleteScreen = () => {
       }
 
       if (selectedMealPlan?.id) {
-        await saveMealPlan(selectedMealPlan.id);
-        console.log('Saved meal plan to AsyncStorage:', selectedMealPlan.id);
+        // If it's a custom plan, save the full plan object
+        if (selectedMealPlan.isCustom) {
+          await saveMealPlan(selectedMealPlan, user?.id);
+          console.log('✓ Saved custom meal plan to AsyncStorage:', {
+            id: selectedMealPlan.id,
+            calories: selectedMealPlan.totalCalories,
+            protein: selectedMealPlan.totalProtein,
+            carbs: selectedMealPlan.totalCarbs,
+            fat: selectedMealPlan.totalFat
+          });
+        } else {
+          // Pre-made plan, just select it by ID
+          await setSelectedMealPlan(selectedMealPlan.id);
+          console.log('✓ Selected pre-made meal plan:', selectedMealPlan.id);
+        }
       } else {
-        console.log('Skipped meal plan (user selected workouts/football only)');
+        console.log('⊘ Skipped meal plan (user selected workouts/football only)');
       }
     };
 
@@ -121,9 +166,9 @@ const OnboardingCompleteScreen = () => {
 
   const getGoalColor = (goal: string) => {
     switch (goal) {
-      case 'muscle_building': return '#4285F4';
+      case 'muscle_building': return '#3B82F6';
       case 'fat_loss': return '#FF6B35';
-      case 'strength': return '#8B5CF6';
+      case 'strength': return '#E94E1B';
       case 'tone': return '#EC4899';
       case 'general_fitness': return '#10B981';
       case 'endurance': return '#F59E0B';
@@ -135,7 +180,7 @@ const OnboardingCompleteScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <View style={styles.progressContainer}>
@@ -183,7 +228,7 @@ const OnboardingCompleteScreen = () => {
 
           {/* Meal Plan */}
           {mealPlan && (
-            <View style={[styles.planSection, { marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: '#2a3a4a' }]}>
+            <View style={[styles.planSection, { marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: '#2A2A2A' }]}>
               <View style={styles.planHeader}>
                 <MaterialCommunityIcons
                   name="food-apple"
@@ -237,7 +282,7 @@ const OnboardingCompleteScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     paddingHorizontal: 20,
@@ -251,12 +296,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -276,7 +321,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -294,7 +339,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   summaryCard: {
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     padding: 20,
     borderRadius: 12,
     marginBottom: 25,
@@ -339,7 +384,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#2a3a4a',
+    borderTopColor: '#2A2A2A',
   },
   infoNoteText: {
     flex: 1,
@@ -371,7 +416,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

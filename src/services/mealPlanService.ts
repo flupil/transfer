@@ -735,12 +735,61 @@ class MealPlanService {
   private readonly CONSUMED_KEY = 'consumedFoods';
   private readonly CUSTOM_PLANS_KEY = 'customMealPlans';
 
-  async getMealPlans(): Promise<MealPlan[]> {
+  async getMealPlans(userId?: string): Promise<MealPlan[]> {
     // Get custom plans from storage
     try {
       const customPlansStr = await AsyncStorage.getItem(this.CUSTOM_PLANS_KEY);
       const customPlans = customPlansStr ? JSON.parse(customPlansStr) : [];
-      return [...MEAL_PLANS, ...customPlans];
+
+      // Personalize pre-made plans based on user's maintenance calories
+      let personalizedPlans = [...MEAL_PLANS];
+
+      if (userId) {
+        try {
+          const { default: firebaseDailyDataService } = await import('./firebaseDailyDataService');
+          const todayData = await firebaseDailyDataService.getTodayData(userId);
+          const maintenanceCalories = todayData.calories.target || 2000;
+
+          console.log('Personalizing meal plans for maintenance:', maintenanceCalories);
+
+          // Calculate personalized values
+          const cuttingCals = Math.round(maintenanceCalories * 0.8); // 20% deficit
+          const bulkingCals = Math.round(maintenanceCalories * 1.2); // 20% surplus
+
+          // Helper to scale macros proportionally
+          const scalePlan = (plan: MealPlan, newCalories: number): MealPlan => {
+            const ratio = newCalories / plan.totalCalories;
+            return {
+              ...plan,
+              totalCalories: newCalories,
+              totalProtein: Math.round(plan.totalProtein * ratio),
+              totalCarbs: Math.round(plan.totalCarbs * ratio),
+              totalFat: Math.round(plan.totalFat * ratio)
+            };
+          };
+
+          personalizedPlans = MEAL_PLANS.map(plan => {
+            if (plan.id === 'cutting') {
+              return scalePlan(plan, cuttingCals);
+            } else if (plan.id === 'bulking') {
+              return scalePlan(plan, bulkingCals);
+            } else if (plan.id === 'maintenance') {
+              return scalePlan(plan, maintenanceCalories);
+            }
+            return plan;
+          });
+
+          console.log('Personalized plans:', personalizedPlans.map(p => ({
+            id: p.id,
+            calories: p.totalCalories
+          })));
+        } catch (error) {
+          console.error('Error personalizing meal plans:', error);
+          // Fall back to default plans if personalization fails
+        }
+      }
+
+      return [...personalizedPlans, ...customPlans];
     } catch (error) {
       Alert.alert('Error', 'Loading custom meal plans. Please try again.');
 
@@ -751,24 +800,53 @@ class MealPlanService {
 
   async saveMealPlan(plan: MealPlan, userId?: string): Promise<void> {
     try {
+      console.log('📝 saveMealPlan called with:', {
+        id: plan.id,
+        name: plan.name,
+        totalCalories: plan.totalCalories,
+        totalProtein: plan.totalProtein,
+        totalCarbs: plan.totalCarbs,
+        totalFat: plan.totalFat
+      });
+
       // Save the plan to custom plans list
       const customPlansStr = await AsyncStorage.getItem(this.CUSTOM_PLANS_KEY);
       const customPlans = customPlansStr ? JSON.parse(customPlansStr) : [];
+      console.log('📦 Existing custom plans count:', customPlans.length);
 
       // Remove existing plan with same ID if it exists
       const filteredPlans = customPlans.filter((p: MealPlan) => p.id !== plan.id);
       filteredPlans.push(plan);
+      console.log('📦 Saving custom plans count:', filteredPlans.length);
 
       await AsyncStorage.setItem(this.CUSTOM_PLANS_KEY, JSON.stringify(filteredPlans));
+      console.log('✅ Saved to AsyncStorage:', this.CUSTOM_PLANS_KEY);
 
       // Set this as the selected plan
       await this.selectPlan(plan.id);
+      console.log('✅ Set as selected plan:', plan.id);
 
-      console.log('Meal plan saved successfully:', plan.name);
+      // CRITICAL: Update Firebase daily targets to match the new meal plan
+      if (userId) {
+        const { default: firebaseDailyDataService } = await import('./firebaseDailyDataService');
+        const newTargets = {
+          calories: plan.totalCalories,
+          protein: plan.totalProtein,
+          carbs: plan.totalCarbs,
+          fat: plan.totalFat,
+          water: 2000 // Default water target
+        };
+        await firebaseDailyDataService.updateTargets(userId, newTargets);
+        console.log('✅ Updated Firebase targets:', newTargets);
+      } else {
+        console.log('⚠️ No userId provided, Firebase targets not updated');
+      }
+
+      console.log('✅ Meal plan saved successfully:', plan.name);
     } catch (error) {
       Alert.alert('Error', 'Saving meal plan. Please try again.');
 
-      console.error('Error saving meal plan:', error);
+      console.error('❌ Error saving meal plan:', error);
       throw error;
     }
   }
@@ -781,11 +859,28 @@ class MealPlanService {
   async getSelectedPlan(): Promise<MealPlan | null> {
     try {
       const planId = await AsyncStorage.getItem(this.STORAGE_KEY);
+      console.log('🔍 getSelectedPlan - planId from storage:', planId);
+
       if (planId) {
-        return this.getMealPlanById(planId);
+        const plan = await this.getMealPlanById(planId);
+        if (plan) {
+          console.log('✅ Found plan:', {
+            id: plan.id,
+            name: plan.name,
+            totalCalories: plan.totalCalories,
+            totalProtein: plan.totalProtein,
+            totalCarbs: plan.totalCarbs,
+            totalFat: plan.totalFat
+          });
+        } else {
+          console.log('❌ Plan not found for ID:', planId);
+        }
+        return plan;
       }
+      console.log('⚠️ No selected plan ID in storage');
       return null;
-    } catch {
+    } catch (error) {
+      console.error('❌ Error getting selected plan:', error);
       return null;
     }
   }
@@ -950,7 +1045,7 @@ class MealPlanService {
 }
 
 export const mealPlanService = new MealPlanService();
-export const getMealPlans = () => mealPlanService.getMealPlans();
+export const getMealPlans = (userId?: string) => mealPlanService.getMealPlans(userId);
 export const selectMealPlan = (planId: string) => mealPlanService.selectPlan(planId);
 export const getSelectedMealPlan = () => mealPlanService.getSelectedPlan();
 export const getMealDetails = (planId: string, mealId: string) => mealPlanService.getMealById(planId, mealId);

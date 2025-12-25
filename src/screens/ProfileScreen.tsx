@@ -88,21 +88,21 @@ const ProfileScreen = () => {
               style={styles.quickActionButton}
               onPress={() => navigation.navigate('Settings' as never)}
             >
-              <MaterialCommunityIcons name="cog" size={24} color="#4CAF50" />
+              <MaterialCommunityIcons name="cog" size={24} color="#E94E1B" />
               <Text style={styles.quickActionText}>{t('general.settings')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.quickActionButton}
               onPress={() => navigation.navigate('Notifications' as never)}
             >
-              <MaterialCommunityIcons name="bell" size={24} color="#FF9800" />
+              <MaterialCommunityIcons name="bell" size={24} color="#E94E1B" />
               <Text style={styles.quickActionText}>{t('profile.notifications')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.quickActionButton}
               onPress={() => navigation.navigate('Attendance' as never)}
             >
-              <MaterialCommunityIcons name="calendar-check" size={24} color="#2196F3" />
+              <MaterialCommunityIcons name="calendar-check" size={24} color="#3B82F6" />
               <Text style={styles.quickActionText}>{t('profile.attendance')}</Text>
             </TouchableOpacity>
           </View>
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   avatar: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
   },
   name: {
     fontSize: 24,
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   },
   role: {
     fontSize: 12,
-    color: '#4CAF50',
+    color: '#E94E1B',
     fontWeight: '600',
   },
   quickActionsCard: {
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 12,
-    color: '#4CAF50',
+    color: '#E94E1B',
   },
   listItem: {
     paddingVertical: 4,

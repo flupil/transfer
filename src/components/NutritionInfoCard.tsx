@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -6,6 +6,9 @@ import MacroPieChart from './MacroPieChart';
 import RecommendedMacroPieChart from './RecommendedMacroPieChart';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { BRAND_COLORS } from '../constants/brandColors';
+import { generateLegendColors } from '../utils/colorUtils';
 
 interface NutritionInfoCardProps {
   carbsConsumed: number;
@@ -28,7 +31,14 @@ const NutritionInfoCard: React.FC<NutritionInfoCardProps> = ({
 }) => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { colors } = useTheme();
   const [userGoal, setUserGoal] = useState<'gain' | 'lose' | 'maintain'>('maintain');
+
+  // Generate styles with theme colors
+  const styles = React.useMemo(() => getStyles(colors), [colors]);
+
+  // Generate dynamic legend colors
+  const legendColors = useMemo(() => generateLegendColors(BRAND_COLORS.accent), []);
 
   useEffect(() => {
     const loadGoal = async () => {
@@ -54,21 +64,21 @@ const NutritionInfoCard: React.FC<NutritionInfoCardProps> = ({
       {/* Header */}
       <TouchableOpacity style={styles.header} onPress={onPress} activeOpacity={0.7}>
         <Text style={styles.headerTitle}>{t('nutrition.nutritionInfo')}</Text>
-        <Ionicons name="chevron-forward" size={24} color="#B0B0B0" />
+        <Ionicons name="chevron-forward" size={24} color={colors.textSecondary} />
       </TouchableOpacity>
 
       {/* Macros Row */}
       <View style={styles.macrosRow}>
         <View style={styles.macroItem}>
-          <View style={[styles.dot, { backgroundColor: '#4ECDC4' }]} />
+          <View style={[styles.dot, { backgroundColor: legendColors.carbs }]} />
           <Text style={styles.macroLabel}>{t('nutrition.carb')}</Text>
         </View>
         <View style={styles.macroItem}>
-          <View style={[styles.dot, { backgroundColor: '#FF9F40' }]} />
+          <View style={[styles.dot, { backgroundColor: legendColors.fat }]} />
           <Text style={styles.macroLabel}>{t('nutrition.fat')}</Text>
         </View>
         <View style={styles.macroItem}>
-          <View style={[styles.dot, { backgroundColor: '#E8C547' }]} />
+          <View style={[styles.dot, { backgroundColor: legendColors.protein }]} />
           <Text style={styles.macroLabel}>{t('nutrition.protein')}</Text>
         </View>
       </View>
@@ -100,13 +110,18 @@ const NutritionInfoCard: React.FC<NutritionInfoCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
     borderRadius: 20,
     padding: 20,
     marginHorizontal: 16,
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   header: {
     flexDirection: 'row',
@@ -117,7 +132,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#fff',
+    color: colors.text,
   },
   macrosRow: {
     flexDirection: 'row',
@@ -136,7 +151,7 @@ const styles = StyleSheet.create({
   },
   macroLabel: {
     fontSize: 12,
-    color: '#B0B0B0',
+    color: colors.textSecondary,
   },
   valuesRow: {
     flexDirection: 'row',
@@ -146,7 +161,7 @@ const styles = StyleSheet.create({
   macroValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.text,
     minWidth: 80,
     textAlign: 'center',
   },

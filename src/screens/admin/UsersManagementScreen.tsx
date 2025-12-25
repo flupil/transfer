@@ -224,8 +224,8 @@ const UsersManagementScreen: React.FC = () => {
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'admin': return '#F44336';
-      case 'coach': return '#FF9800';
-      case 'user': return '#4CAF50';
+      case 'coach': return '#E94E1B';
+      case 'user': return '#E94E1B';
       default: return '#9E9E9E';
     }
   };
@@ -286,7 +286,7 @@ const UsersManagementScreen: React.FC = () => {
                       onPress={() => toggleUserStatus(user)}
                       style={[
                         styles.statusButton,
-                        { backgroundColor: user.isActive === 1 ? '#4CAF50' : '#F44336' }
+                        { backgroundColor: user.isActive === 1 ? '#E94E1B' : '#F44336' }
                       ]}
                     >
                       <MaterialCommunityIcons
@@ -299,7 +299,7 @@ const UsersManagementScreen: React.FC = () => {
                       onPress={() => handleEditUser(user)}
                       style={styles.editButton}
                     >
-                      <MaterialCommunityIcons name="pencil" size={16} color="#2196F3" />
+                      <MaterialCommunityIcons name="pencil" size={16} color="#3B82F6" />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => handleDeleteUser(user)}

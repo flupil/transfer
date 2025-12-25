@@ -130,7 +130,7 @@ const FootballHomeScreen = ({ navigation }: any) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: '#0A1628' }]}>
+    <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       {/* Collapsible Header with Football Branding */}
       <Animated.View style={styles.stickyHeader}>
         <Animated.View style={[styles.headerBackground, { backgroundColor: '#0D1B2A' }]} />
@@ -146,7 +146,7 @@ const FootballHomeScreen = ({ navigation }: any) => {
               <MaterialCommunityIcons
                 name="fire"
                 size={30}
-                color={hasTrainedToday ? "#22C55E" : "#999999"}
+                color={hasTrainedToday ? "#E94E1B" : "#999999"}
               />
               <Text style={[
                 styles.duolingoItemText,
@@ -160,7 +160,7 @@ const FootballHomeScreen = ({ navigation }: any) => {
               style={styles.workoutIcon}
               onPress={() => navigation.navigate('Workout' as never)}
             >
-              <MaterialCommunityIcons name="soccer" size={28} color="#22C55E" />
+              <MaterialCommunityIcons name="soccer" size={28} color="#E94E1B" />
             </TouchableOpacity>
           </View>
 
@@ -181,8 +181,8 @@ const FootballHomeScreen = ({ navigation }: any) => {
               onPress={() => navigation.navigate('Progress' as never)}
               activeOpacity={0.7}
             >
-              <MaterialCommunityIcons name="diamond" size={30} color="#FFB800" />
-              <Text style={[styles.duolingoItemText, { color: colors.text }]}>
+              <MaterialCommunityIcons name="diamond" size={30} color="#E94E1B" />
+              <Text style={[styles.duolingoItemText, { color: '#F4F1EF' }]}>
                 {userXP}
               </Text>
             </TouchableOpacity>
@@ -192,7 +192,7 @@ const FootballHomeScreen = ({ navigation }: any) => {
               onPress={() => {}}
               activeOpacity={0.7}
             >
-              <MaterialCommunityIcons name="account-group" size={30} color="#22C55E" />
+              <MaterialCommunityIcons name="account-group" size={30} color="#E94E1B" />
             </TouchableOpacity>
           </View>
         </View>
@@ -275,7 +275,7 @@ const FootballHomeScreen = ({ navigation }: any) => {
               </Svg>
               {/* Football Icon in Center */}
               <View style={styles.logoContainer}>
-                <MaterialCommunityIcons name="soccer" size={45} color="#22C55E" />
+                <MaterialCommunityIcons name="soccer" size={45} color="#E94E1B" />
               </View>
             </View>
 
@@ -292,7 +292,7 @@ const FootballHomeScreen = ({ navigation }: any) => {
             <View style={styles.activityStatItem}>
               <Image
                 source={require('../../assets/calories-icon.png')}
-                style={[styles.activityIcon, { tintColor: '#22C55E' }]}
+                style={[styles.activityIcon, { tintColor: '#E94E1B' }]}
               />
               <Text style={[styles.activityStatValue, { color: isDark ? 'white' : '#333' }]}>{calories.consumed}</Text>
               <Text style={[styles.activityStatLabel, { color: isDark ? '#B0B0B0' : '#666' }]}>Calories</Text>
@@ -300,7 +300,7 @@ const FootballHomeScreen = ({ navigation }: any) => {
             <View style={styles.activityStatItem}>
               <Image
                 source={require('../../assets/steps-icon.png')}
-                style={[styles.activityIcon, { tintColor: '#4285F4' }]}
+                style={[styles.activityIcon, { tintColor: '#3B82F6' }]}
               />
               <Text style={[styles.activityStatValue, { color: isDark ? 'white' : '#333' }]}>{steps.toLocaleString()}</Text>
               <Text style={[styles.activityStatLabel, { color: isDark ? '#B0B0B0' : '#666' }]}>Steps</Text>
@@ -344,12 +344,12 @@ const FootballHomeScreen = ({ navigation }: any) => {
                 <View key={day + index} style={styles.dayColumn}>
                   <View style={[
                     styles.dayDot,
-                    isToday && { backgroundColor: '#22C55E' },
+                    isToday && { backgroundColor: '#E94E1B' },
                     !isToday && { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
                   ]} />
                   <Text style={[
                     styles.dayText,
-                    { color: isToday ? '#22C55E' : (isDark ? '#B0B0B0' : '#999') }
+                    { color: isToday ? '#E94E1B' : (isDark ? '#B0B0B0' : '#999') }
                   ]}>
                     {day}
                   </Text>
@@ -379,7 +379,7 @@ const FootballHomeScreen = ({ navigation }: any) => {
 
           <View style={styles.trainingInfoRow}>
             <View style={styles.infoPill}>
-              <Ionicons name="time-outline" size={16} color="#22C55E" />
+              <Ionicons name="time-outline" size={16} color="#E94E1B" />
               <Text style={[styles.infoPillText, { color: isDark ? 'white' : '#333' }]}>
                 45-60 min
               </Text>
@@ -409,12 +409,12 @@ const FootballHomeScreen = ({ navigation }: any) => {
             onPress={() => navigation.navigate('Nutrition')}
           >
             <View style={[styles.nextActionIconContainer, { backgroundColor: 'rgba(34, 197, 94, 0.2)' }]}>
-              <MaterialCommunityIcons name="food-apple" size={24} color="#22C55E" />
+              <MaterialCommunityIcons name="food-apple" size={24} color="#E94E1B" />
             </View>
             <View style={styles.nextActionContent}>
               <Text style={[styles.nextActionLabel, { color: isDark ? '#B0B0B0' : '#666' }]}>NEXT MEAL</Text>
-              <Text style={[styles.nextActionTitle, { color: colors.text }]}>Lunch</Text>
-              <Text style={[styles.nextActionTime, { color: colors.textSecondary }]}>12:30 PM</Text>
+              <Text style={[styles.nextActionTitle, { color: '#F4F1EF' }]}>Lunch</Text>
+              <Text style={[styles.nextActionTime, { color: '#C5C2BF' }]}>12:30 PM</Text>
             </View>
           </TouchableOpacity>
 
@@ -423,12 +423,12 @@ const FootballHomeScreen = ({ navigation }: any) => {
             onPress={() => navigation.navigate('Workout')}
           >
             <View style={[styles.nextActionIconContainer, { backgroundColor: 'rgba(34, 197, 94, 0.2)' }]}>
-              <MaterialCommunityIcons name="soccer" size={24} color="#22C55E" />
+              <MaterialCommunityIcons name="soccer" size={24} color="#E94E1B" />
             </View>
             <View style={styles.nextActionContent}>
               <Text style={[styles.nextActionLabel, { color: isDark ? '#B0B0B0' : '#666' }]}>NEXT SESSION</Text>
-              <Text style={[styles.nextActionTitle, { color: colors.text }]}>Skills Training</Text>
-              <Text style={[styles.nextActionTime, { color: colors.textSecondary }]}>6 drills</Text>
+              <Text style={[styles.nextActionTitle, { color: '#F4F1EF' }]}>Skills Training</Text>
+              <Text style={[styles.nextActionTime, { color: '#C5C2BF' }]}>6 drills</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   footballTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#22C55E',
+    color: '#E94E1B',
     letterSpacing: 2,
   },
   footballSubtitle: {

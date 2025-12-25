@@ -7,21 +7,21 @@ const PrivacyPolicyScreen = () => {
   const { colors, isDark } = useTheme();
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={[styles.title, { color: colors.text }]}>Privacy Policy</Text>
-        <Text style={[styles.date, { color: colors.textSecondary }]}>Last Updated: October 11, 2025</Text>
+        <Text style={[styles.title, { color: '#F4F1EF' }]}>Privacy Policy</Text>
+        <Text style={[styles.date, { color: '#C5C2BF' }]}>Last Updated: October 11, 2025</Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Introduction</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Introduction</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           Fit&Power ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Information We Collect</Text>
-        <Text style={[styles.subtitle, { color: colors.text }]}>Personal Information</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Information We Collect</Text>
+        <Text style={[styles.subtitle, { color: '#F4F1EF' }]}>Personal Information</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           • Account Information: Email address, name, profile photo{'\n'}
           • Fitness Data: Weight, height, age, gender, activity level{'\n'}
           • Nutrition Data: Food intake, calorie consumption, macros{'\n'}
@@ -29,8 +29,8 @@ const PrivacyPolicyScreen = () => {
           • Health Metrics: Steps, water intake, sleep data
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>How We Use Your Information</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>How We Use Your Information</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           We use the collected information to:{'\n\n'}
           • Provide and maintain our fitness tracking services{'\n'}
           • Calculate personalized calorie and nutrition targets{'\n'}
@@ -40,24 +40,24 @@ const PrivacyPolicyScreen = () => {
           • Send notifications (if you opt-in)
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Data Storage and Security</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Data Storage and Security</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           • Local Storage: Most data is stored locally on your device{'\n'}
           • Cloud Backup: We use Firebase to backup and sync data{'\n'}
           • Security: Industry-standard security measures{'\n'}
           • Encryption: Data transmission is encrypted using HTTPS/TLS
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Data Sharing</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Data Sharing</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           We DO NOT sell your personal information. We may share data only:{'\n\n'}
           • With your explicit consent{'\n'}
           • With service providers (Firebase, Google Analytics){'\n'}
           • If required by law or to protect our rights
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Your Rights</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Your Rights</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           You have the right to:{'\n\n'}
           • Access: Request a copy of your data{'\n'}
           • Correction: Update or correct your information{'\n'}
@@ -66,24 +66,24 @@ const PrivacyPolicyScreen = () => {
           • Export: Download your fitness and nutrition data
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>AI Assistant Disclaimer</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>AI Assistant Disclaimer</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           Our AI assistant is for informational purposes only. It should not replace professional medical, nutritional, or fitness advice. Always consult healthcare professionals before starting new diet or exercise programs.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Contact Us</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Contact Us</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           If you have questions about this Privacy Policy:{'\n\n'}
           Email: support@fitandpower.com{'\n'}
           Website: www.fitandpower.com
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Consent</Text>
-        <Text style={[styles.text, { color: colors.textSecondary }]}>
+        <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Consent</Text>
+        <Text style={[styles.text, { color: '#C5C2BF' }]}>
           By using Fit&Power, you consent to this Privacy Policy and agree to its terms.
         </Text>
 
-        <Text style={[styles.footer, { color: colors.textSecondary }]}>
+        <Text style={[styles.footer, { color: '#C5C2BF' }]}>
           © 2025 Fit&Power. All rights reserved.
         </Text>
 

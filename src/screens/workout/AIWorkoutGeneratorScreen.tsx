@@ -120,7 +120,7 @@ const AIWorkoutGeneratorScreen = () => {
         <Ionicons
           name={icon}
           size={20}
-          color={isSelected ? '#4ECDC4' : '#8A9BA8'}
+          color={isSelected ? '#E94E1B' : '#8A9BA8'}
         />
       )}
       <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
@@ -145,7 +145,7 @@ const AIWorkoutGeneratorScreen = () => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <Ionicons name="sparkles" size={32} color="#4ECDC4" />
+          <Ionicons name="sparkles" size={32} color="#E94E1B" />
           <Text style={styles.infoText}>
             AI will create a personalized workout plan based on your goals and preferences
           </Text>
@@ -167,7 +167,7 @@ const AIWorkoutGeneratorScreen = () => {
                 <Ionicons
                   name={goal.icon as any}
                   size={28}
-                  color={preferences.goal === goal.id ? '#4ECDC4' : '#8A9BA8'}
+                  color={preferences.goal === goal.id ? '#E94E1B' : '#8A9BA8'}
                 />
                 <Text
                   style={[
@@ -230,7 +230,7 @@ const AIWorkoutGeneratorScreen = () => {
                 <Ionicons
                   name={option.icon as any}
                   size={24}
-                  color={preferences.equipment === option.id ? '#4ECDC4' : '#8A9BA8'}
+                  color={preferences.equipment === option.id ? '#E94E1B' : '#8A9BA8'}
                 />
                 <Text
                   style={[
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   goalCard: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   goalCardSelected: {
-    borderColor: '#4ECDC4',
+    borderColor: '#E94E1B',
     backgroundColor: 'rgba(78, 205, 196, 0.1)',
   },
   goalText: {
@@ -365,13 +365,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   goalTextSelected: {
-    color: '#4ECDC4',
+    color: '#E94E1B',
     fontWeight: '600',
   },
   optionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   optionButtonSelected: {
-    borderColor: '#4ECDC4',
+    borderColor: '#E94E1B',
     backgroundColor: 'rgba(78, 205, 196, 0.1)',
   },
   optionText: {
@@ -389,13 +389,13 @@ const styles = StyleSheet.create({
     color: '#8A9BA8',
   },
   optionTextSelected: {
-    color: '#4ECDC4',
+    color: '#E94E1B',
     fontWeight: '600',
   },
   equipmentCard: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   equipmentCardSelected: {
-    borderColor: '#4ECDC4',
+    borderColor: '#E94E1B',
     backgroundColor: 'rgba(78, 205, 196, 0.1)',
   },
   equipmentText: {
@@ -414,14 +414,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   equipmentTextSelected: {
-    color: '#4ECDC4',
+    color: '#E94E1B',
     fontWeight: '600',
   },
   generateButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#E94E1B',
     marginHorizontal: 16,
     marginTop: 32,
     padding: 16,

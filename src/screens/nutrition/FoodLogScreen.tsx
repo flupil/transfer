@@ -18,6 +18,7 @@ import { getSafeDatabase, ensureDatabase } from '../../database/databaseHelper';
 import { format } from 'date-fns';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const { width } = Dimensions.get('window');
 
@@ -363,7 +364,7 @@ const FoodLogScreen: React.FC = () => {
         </Text>
         <Text style={styles.foodServing}>{item.serving}</Text>
       </View>
-      <MaterialCommunityIcons name="plus-circle" size={24} color="#4CAF50" />
+      <MaterialCommunityIcons name="plus-circle" size={24} color={BRAND_COLORS.accent} />
     </TouchableOpacity>
   );
 
@@ -395,7 +396,7 @@ const FoodLogScreen: React.FC = () => {
           onChangeText={setSearchText}
         />
         <TouchableOpacity onPress={() => setShowAddCustomModal(true)}>
-          <MaterialCommunityIcons name="plus" size={24} color="#4CAF50" />
+          <MaterialCommunityIcons name="plus" size={24} color={BRAND_COLORS.accent} />
         </TouchableOpacity>
       </View>
 
@@ -704,7 +705,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   saveButton: {
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -738,7 +739,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   categoryChipSelected: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
   },
   categoryText: {
     fontSize: 14,
@@ -767,7 +768,7 @@ const styles = StyleSheet.create({
   summaryStatValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
   },
   summaryStatLabel: {
     fontSize: 12,
@@ -903,10 +904,10 @@ const styles = StyleSheet.create({
   unitButton: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
   },
   unitButtonSelected: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
   },
   unitText: {
     fontSize: 16,
@@ -917,7 +918,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   nutritionPreview: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     padding: 12,
     borderRadius: 10,
     marginBottom: 20,
@@ -963,10 +964,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
   },
   addButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
   },
   cancelButtonText: {
     color: '#666',

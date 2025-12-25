@@ -8,7 +8,7 @@ import { useOnboarding } from '../../contexts/OnboardingContext';
 const OnboardingInterestsScreenV2 = () => {
   const navigation = useNavigation();
   const { onboardingData, updateOnboardingData } = useOnboarding();
-  const [selectedInterest, setSelectedInterest] = useState<string | null>(onboardingData.appInterest || null);
+  const [selectedInterest, setSelectedInterest] = useState<string | null>(onboardingData.appInterest || 'both');
 
   const interests = [
     {
@@ -19,18 +19,11 @@ const OnboardingInterestsScreenV2 = () => {
       color: '#FF6B35',
     },
     {
-      id: 'football',
-      title: 'Football Training',
-      description: 'Specialized training for football performance',
-      icon: 'soccer',
-      color: '#22C55E',
-    },
-    {
       id: 'nutrition',
       title: 'Nutrition Only',
       description: 'Track meals and manage your diet',
       icon: 'food-apple',
-      color: '#FF9800',
+      color: '#E94E1B',
     },
     {
       id: 'both',
@@ -44,13 +37,20 @@ const OnboardingInterestsScreenV2 = () => {
   const handleNext = () => {
     if (selectedInterest) {
       updateOnboardingData({ appInterest: selectedInterest });
-      navigation.navigate('OnboardingGender' as never);
+
+      // If nutrition only, skip gym/football selection
+      if (selectedInterest === 'nutrition') {
+        navigation.navigate('OnboardingGender' as never);
+      } else {
+        // If workouts or both, ask about gym/football preference
+        navigation.navigate('OnboardingAppPurpose' as never);
+      }
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -139,7 +139,7 @@ const OnboardingInterestsScreenV2 = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
@@ -201,10 +201,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 18,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#1e2e3e',
+    borderColor: '#2A2A2A',
     gap: 15,
   },
   optionCardSelected: {

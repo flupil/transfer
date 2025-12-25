@@ -1,10 +1,13 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Text, Animated, Alert, Image, Vibration, Modal } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Text, Animated, Alert, Image, Vibration, Modal, RefreshControl, ActivityIndicator } from 'react-native';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getSelectedWorkoutPlan } from '../services/workoutPlanService';
 import { SvgXml, Svg, Circle, G } from 'react-native-svg';
+
+// Create AnimatedCircle for smooth progress animations
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 import CustomHeader from '../components/CustomHeader';
 import { workoutService } from '../services/workoutService';
 import { useAuth } from '../contexts/AuthContext';
@@ -17,7 +20,10 @@ import { db } from '../config/firebase';
 import { updateWorkoutStreak } from '../services/progressTrackingService';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTour } from '../contexts/TourContext';
+import { useTimer } from '../contexts/TimerContext';
 import { CustomTourOverlay, TourStep } from '../components/tour/CustomTourOverlay';
+import calorieTrackingService from '../services/calorieTrackingService';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,6 +56,7 @@ const TestingScreenContent: React.FC = () => {
   const { colors, isDark } = useTheme();
   const { t } = useLanguage();
   const { isFirstVisit, markTourComplete } = useTour();
+  const { startTimer: startGlobalTimer, setExpanded: setTimerExpanded } = useTimer();
   const [showTour, setShowTour] = useState(false);
   const [tourStep, setTourStep] = useState(0);
   const [totalXP, setTotalXP] = useState(110);
@@ -63,11 +70,13 @@ const TestingScreenContent: React.FC = () => {
   const [achievementText, setAchievementText] = useState('');
   const [nextWorkoutTime, setNextWorkoutTime] = useState<string>('');
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showTimerModal, setShowTimerModal] = useState(false);
-  const [timerSeconds, setTimerSeconds] = useState(0);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [weeklyChallenge, setWeeklyChallenge] = useState<{title: string, target: number, current: number} | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'honeycomb' | 'list'>('honeycomb'); // Toggle between honeycomb and list view
+
+  // Generate styles with theme colors
+  const styles = React.useMemo(() => getStyles(colors), [colors]);
 
   // Helper function to get short day name using translations
   const getShortDayName = (dayName: string): string => {
@@ -83,6 +92,19 @@ const TestingScreenContent: React.FC = () => {
     return dayMap[dayName] || dayName.substring(0, 3).toUpperCase();
   };
 
+  const getDayName = (dayName: string): string => {
+    const dayMap: { [key: string]: string } = {
+      'Monday': t('days.monday'),
+      'Tuesday': t('days.tuesday'),
+      'Wednesday': t('days.wednesday'),
+      'Thursday': t('days.thursday'),
+      'Friday': t('days.friday'),
+      'Saturday': t('days.saturday'),
+      'Sunday': t('days.sunday')
+    };
+    return dayMap[dayName] || dayName;
+  };
+
   // Animation for today's workout pulse
   const pulseAnim = useRef(new Animated.Value(1)).current;
   // Animations for workout completion
@@ -93,8 +115,6 @@ const TestingScreenContent: React.FC = () => {
   const achievementAnim = useRef(new Animated.Value(0)).current;
   // Animation for progress ring
   const progressAnim = useRef(new Animated.Value(0)).current;
-  // Timer interval ref
-  const timerInterval = useRef<NodeJS.Timeout | null>(null);
   // ScrollView ref for tour
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -143,102 +163,58 @@ const TestingScreenContent: React.FC = () => {
     setWeeklyChallenge({ ...randomChallenge, current });
   };
 
-  const startTimer = (duration: number) => {
-    // Clear any existing interval first
-    if (timerInterval.current) {
-      clearInterval(timerInterval.current);
-      timerInterval.current = null;
-    }
-
-    setTimerSeconds(duration);
-    setIsTimerRunning(true);
-
-    timerInterval.current = setInterval(() => {
-      setTimerSeconds(prev => {
-        if (prev <= 1) {
-          stopTimer();
-          Alert.alert('Timer Complete!', 'Time to move to the next exercise!');
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const stopTimer = () => {
-    if (timerInterval.current) {
-      clearInterval(timerInterval.current);
-      timerInterval.current = null;
-    }
-    setIsTimerRunning(false);
-  };
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (timerInterval.current) {
-        clearInterval(timerInterval.current);
-      }
-    };
-  }, []);
-
-  const formatTimer = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
 
   // Load actual workout plan on mount
   useEffect(() => {
-    loadWorkoutPlan();
-    loadCompletedWorkoutsFromStorage();
-    if (user?.id) {
-      workoutService.setUserId(user.id);
-      loadCompletedWorkouts();
-    }
-
-
-    // Generate weekly challenge
-    generateWeeklyChallenge();
-
-
-    // Set time of day for gradient
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      setTimeOfDay('morning');
-    } else if (hour < 17) {
-      setTimeOfDay('afternoon');
-    } else if (hour < 20) {
-      setTimeOfDay('evening');
-    } else {
-      setTimeOfDay('night');
-    }
-  }, [user?.id]);
-
-  // Initialize tour
-  useEffect(() => {
-    const initTour = async () => {
+    const loadData = async () => {
       try {
-        console.log('🎯 TestingScreen: Checking if first visit for tour...');
-        const isFirst = await isFirstVisit('TestingScreen');
-        console.log('🎯 TestingScreen: Is first visit?', isFirst);
-        if (isFirst) {
-          console.log('🎯 TestingScreen: Starting tour in 1 second...');
-          setTimeout(() => {
-            console.log('🎯 TestingScreen: SHOWING TOUR NOW!');
-            setShowTour(true);
-          }, 1000);
+        await loadWorkoutPlan();
+        await loadCompletedWorkoutsFromStorage();
+        if (user?.id) {
+          workoutService.setUserId(user.id);
+          await loadCompletedWorkouts();
+        }
+
+        // Set time of day for gradient
+        const hour = new Date().getHours();
+        if (hour < 12) {
+          setTimeOfDay('morning');
+        } else if (hour < 17) {
+          setTimeOfDay('afternoon');
+        } else if (hour < 20) {
+          setTimeOfDay('evening');
         } else {
-          console.log('🎯 TestingScreen: Tour already completed, skipping');
+          setTimeOfDay('night');
         }
       } catch (error) {
-        console.error('Tour init error:', error);
+        console.error('Error loading workout data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    initTour();
-  }, []);
+    loadData();
+  }, [user?.id]);
+
+  // Generate weekly challenge when completed workouts or streak changes
+  useEffect(() => {
+    if (completedWorkouts && completedWorkouts.size >= 0) {
+      generateWeeklyChallenge();
+    }
+  }, [completedWorkouts, streak]);
+
+  // Reset currentWeek if it exceeds the new plan's max week
+  useEffect(() => {
+    if (selectedPlan) {
+      const maxWeek = getMaxWeek();
+      if (currentWeek > maxWeek) {
+        setCurrentWeek(maxWeek);
+      }
+    }
+  }, [selectedPlan]);
+
+  // Initialize tour - DISABLED
+  // Tours are disabled globally
 
   // Tour steps - positions are ABSOLUTE on screen (after scrolling)
   // The highlightArea.y is the position on screen AFTER scrolling to scrollToY
@@ -262,7 +238,7 @@ const TestingScreenContent: React.FC = () => {
       title: t('tour.workout.step3'),
       description: t('tour.workout.step3Desc'),
       scrollToY: 0,
-      highlightArea: { x: (width - 340) / 2, y: 215, width: 340, height: 340, borderRadius: 170 },
+      highlightArea: { x: (width - 315) / 2, y: 215, width: 315, height: 315, borderRadius: 157.5 },
     },
     {
       id: 'actions',
@@ -330,8 +306,6 @@ const TestingScreenContent: React.FC = () => {
       loadWorkoutPlan();
       loadCompletedWorkoutsFromStorage();
       loadCompletedWorkouts();
-      // Force refresh when returning to screen
-      setRefreshKey(prev => prev + 1);
     }, [])
   );
 
@@ -447,6 +421,24 @@ const TestingScreenContent: React.FC = () => {
     }
   };
 
+  // Pull-to-refresh handler
+  const onRefresh = async () => {
+    console.log('🔄 [WORKOUT TAB] Pull-to-refresh triggered');
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        loadWorkoutPlan(),
+        loadCompletedWorkoutsFromStorage(),
+        loadCompletedWorkouts()
+      ]);
+      console.log('✅ [WORKOUT TAB] Refresh completed successfully');
+    } catch (error) {
+      console.error('❌ [WORKOUT TAB] Error refreshing workout data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   // Get workout intensity level
   const getWorkoutIntensity = (workoutName: string) => {
     const nameLower = workoutName.toLowerCase();
@@ -456,6 +448,73 @@ const TestingScreenContent: React.FC = () => {
     if (nameLower.includes('arm') || nameLower.includes('shoulder')) return 2;
     if (nameLower.includes('abs') || nameLower.includes('core')) return 1;
     return 2;
+  };
+
+  // Get progress ring color based on completion percentage
+  const getProgressColor = (percentage: number) => {
+    if (percentage === 0) return colors.border; // Light gray for 0%
+    return colors.primaryAction; // Use gym primary color for any progress
+  };
+
+  // Calculate calories for a workout based on duration and intensity
+  const getWorkoutCalories = (workout: WorkoutDay) => {
+    if (workout.name.toLowerCase().includes('rest')) return 0;
+
+    // Parse duration from string like "60 min" or "75 min"
+    const durationMatch = workout.duration.match(/\d+/);
+    const duration = durationMatch ? parseInt(durationMatch[0]) : 45;
+
+    const intensity = getWorkoutIntensity(workout.name);
+    const baseCaloriesPerMin = 5;
+
+    return Math.round(duration * baseCaloriesPerMin * intensity);
+  };
+
+  // Get total minutes from completed workouts
+  const getTotalMinutes = () => {
+    if (!selectedPlan || !completedWorkouts) return 0;
+    const weekWorkouts = getWeekWorkouts();
+    const planId = selectedPlan?.id || selectedPlan?.name || 'default';
+
+    return weekWorkouts.reduce((total, workout, index) => {
+      const workoutKey = `${planId}-${currentWeek}-${index}`;
+      if (completedWorkouts.has(workoutKey)) {
+        const durationMatch = workout.duration.match(/\d+/);
+        const duration = durationMatch ? parseInt(durationMatch[0]) : 45;
+        return total + duration;
+      }
+      return total;
+    }, 0);
+  };
+
+  // Get total calories from completed workouts
+  const getTotalCalories = () => {
+    if (!selectedPlan || !completedWorkouts) return 0;
+    const weekWorkouts = getWeekWorkouts();
+    const planId = selectedPlan?.id || selectedPlan?.name || 'default';
+
+    return weekWorkouts.reduce((total, workout, index) => {
+      const workoutKey = `${planId}-${currentWeek}-${index}`;
+      if (completedWorkouts.has(workoutKey)) {
+        return total + getWorkoutCalories(workout);
+      }
+      return total;
+    }, 0);
+  };
+
+  // Get maximum week for the selected plan
+  const getMaxWeek = () => {
+    if (!selectedPlan) return 8; // Default fallback
+
+    // If plan has a weeks property, use it
+    if (selectedPlan.weeks) return selectedPlan.weeks;
+
+    // Otherwise calculate from total workouts
+    if (selectedPlan.workouts && selectedPlan.workouts.length > 0) {
+      return Math.ceil(selectedPlan.workouts.length / 7);
+    }
+
+    return 8; // Default fallback
   };
 
   // Map workout names to logo assets
@@ -494,6 +553,19 @@ const TestingScreenContent: React.FC = () => {
         [{ text: 'OK', style: 'default' }]
       );
       return;
+    }
+
+    // Prevent completing future workouts (only for current week)
+    if (currentWeek === 1 && todayIndex >= 0) {
+      // Check if this workout is in the future
+      if (dayIndex > todayIndex) {
+        Alert.alert(
+          'Future Workout',
+          `This workout is scheduled for ${workout.day}. You can complete it when that day arrives!`,
+          [{ text: 'OK', style: 'default' }]
+        );
+        return;
+      }
     }
 
     if (workout.name.toLowerCase().includes('rest')) {
@@ -552,9 +624,6 @@ const TestingScreenContent: React.FC = () => {
               // Note: We can't easily delete Firebase workout history without a delete function
               // The dashboard will check AsyncStorage first, so clearing that should be enough
 
-              // Force refresh
-              setRefreshKey(prev => prev + 1);
-
               Alert.alert('Reset Complete', 'All workouts have been reset for this week!');
             } catch (error) {
               console.error('Error resetting workouts:', error);
@@ -572,9 +641,6 @@ const TestingScreenContent: React.FC = () => {
     const newCompleted = new Set(completedWorkouts);
     newCompleted.add(workoutKey);
     setCompletedWorkouts(newCompleted);
-
-    // Force immediate UI update
-    setRefreshKey(prev => prev + 1);
 
     // Save to Firebase
     try {
@@ -601,6 +667,40 @@ const TestingScreenContent: React.FC = () => {
 
         // Increment daily workout count
         await firebaseDailyDataService.incrementWorkoutCount(user.id);
+
+        // Log calories burned for this workout
+        if (!workout.name.toLowerCase().includes('rest')) {
+          // Parse duration (e.g., "60 min" -> 60)
+          const durationMatch = workout.duration.match(/(\d+)/);
+          const durationMinutes = durationMatch ? parseInt(durationMatch[1]) : 45;
+
+          // Determine intensity based on workout name/focus area
+          let intensity: 'light' | 'moderate' | 'vigorous' = 'moderate';
+          const workoutName = workout.name.toLowerCase();
+          const focusArea = workout.focusArea?.toLowerCase() || '';
+
+          if (workoutName.includes('hiit') || workoutName.includes('intense') ||
+              focusArea.includes('hiit') || focusArea.includes('cardio')) {
+            intensity = 'vigorous';
+          } else if (workoutName.includes('yoga') || workoutName.includes('stretch') ||
+                     workoutName.includes('mobility') || focusArea.includes('recovery')) {
+            intensity = 'light';
+          }
+
+          // Calculate and log calories
+          const calories = calorieTrackingService.calculateWorkoutCalories(
+            durationMinutes,
+            intensity
+          );
+
+          await calorieTrackingService.logWorkoutCalories(
+            workoutKey,
+            calories,
+            new Date()
+          );
+
+          console.log(`✅ Logged ${calories} calories for workout: ${workout.name}`);
+        }
       }
     } catch (error) {
       console.error('Failed to save workout to Firebase:', error);
@@ -655,13 +755,13 @@ const TestingScreenContent: React.FC = () => {
     ).length;
 
     if (weekCompleted === 1 && currentWeek === 1) {
-      showAchievementBadge('First Workout! ðŸ”¥');
+      showAchievementBadge('First Workout!');
     } else if (weekCompleted === 3) {
-      showAchievementBadge('Halfway There! ðŸ’ª');
+      showAchievementBadge('Halfway There!');
     } else if (weekCompleted === 5) {
-      showAchievementBadge('Almost Done! ðŸŽ¯');
+      showAchievementBadge('Almost Done!');
     } else if (weekCompleted === 7) {
-      showAchievementBadge('Week Complete! ðŸ†');
+      showAchievementBadge('Week Complete!');
       triggerConfetti();
     }
 
@@ -773,10 +873,10 @@ const TestingScreenContent: React.FC = () => {
       let svgPaths = '';
       hexagonPaths.forEach(hex => {
         const workoutKey = `${planId}-${currentWeek}-${hex.id}`;
-        const isCompletedCurrentPlan = completedWorkouts.has(workoutKey);
+        const isCompletedCurrentPlan = completedWorkouts?.has(workoutKey) || false;
 
         // Check if completed in other plans (legacy or different plan)
-        const isCompletedOtherPlan = !isCompletedCurrentPlan && Array.from(completedWorkouts).some(key => {
+        const isCompletedOtherPlan = !isCompletedCurrentPlan && completedWorkouts && Array.from(completedWorkouts).some(key => {
           const parts = key.split('-');
           if (parts.length === 3) {
             const [keyPlanId, week, day] = parts;
@@ -785,33 +885,36 @@ const TestingScreenContent: React.FC = () => {
           return false;
         });
 
+        // Always add a subtle darker fill first
+        svgPaths += `<path fill="#000000" d="${hex.innerPath}" fill-opacity="0.08"/>`;
+
         if (isCompletedCurrentPlan) {
-          // Blue fill for current plan completions
-          svgPaths += `<path fill="#4285F4" d="${hex.innerPath}" fill-opacity="0.3"/>`;
+          // Teal fill for current plan completions
+          svgPaths += `<path fill="#5B8FA3" d="${hex.innerPath}" fill-opacity="0.3"/>`;
         } else if (isCompletedOtherPlan) {
           // Gray fill for other plan completions
-          svgPaths += `<path fill="#9CA3AF" d="${hex.innerPath}" fill-opacity="0.2"/>`;
+          svgPaths += `<path fill="${colors.textSecondary}" d="${hex.innerPath}" fill-opacity="0.2"/>`;
         }
 
         // Draw clean stroke border
-        svgPaths += `<path fill="none" stroke="#4A5568" stroke-width="2" d="${hex.innerPath}"/>`;
+        svgPaths += `<path fill="none" stroke="${colors.border}" stroke-width="2" d="${hex.innerPath}"/>`;
       });
 
-      return `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 595.5 585" preserveAspectRatio="xMidYMid meet" version="1.0"><g transform="matrix(1, 0, 0, 1, 21, 11)">${svgPaths}</g></svg>`;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="315" height="315" viewBox="0 0 595.5 585" preserveAspectRatio="xMidYMid meet" version="1.0"><g transform="matrix(0.88, 0, 0, 0.88, 60, 52)">${svgPaths}</g></svg>`;
     };
 
     const honeycombSvg = getHoneycombSvg();
 
-    // Hexagon positions matching the actual SVG layout (adjusted for centered 340x340 container)
+    // Hexagon positions matching the actual SVG layout (adjusted for centered 315x315 container with 0.88 scale)
     // Clockwise from top: Sun, Mon, Tue, Wed, Thu, Fri, and Sat in middle
     const hexPositions = [
-      { x: 252, y: 116 },   // Monday - Right upper
-      { x: 252, y: 211 },   // Tuesday - Right lower
-      { x: 170, y: 259 },   // Wednesday - Bottom center
-      { x: 88, y: 211 },    // Thursday - Left lower
-      { x: 88, y: 116 },    // Friday - Left upper
-      { x: 170, y: 163 },   // Saturday - Center middle
-      { x: 170, y: 68 },    // Sunday - Top center
+      { x: 235, y: 110 },   // Monday - Right upper
+      { x: 235, y: 194 },   // Tuesday - Right lower
+      { x: 158, y: 242 },   // Wednesday - Bottom center
+      { x: 85, y: 194 },    // Thursday - Left lower
+      { x: 85, y: 110 },    // Friday - Left upper
+      { x: 158, y: 151 },   // Saturday - Center middle
+      { x: 158, y: 62 },    // Sunday - Top center
     ];
 
     return (
@@ -825,28 +928,31 @@ const TestingScreenContent: React.FC = () => {
       >
         {/* Progress Ring */}
         <View style={styles.progressRingContainer}>
-          <Svg width="340" height="340" style={styles.progressRingSvg}>
+          <Svg width="315" height="315" style={styles.progressRingSvg}>
             {/* Full gray background circle */}
             <Circle
-              cx="170"
-              cy="170"
-              r="160"
-              stroke="#4A5568"
+              cx="157.5"
+              cy="157.5"
+              r="147"
+              stroke={colors.border}
               strokeWidth="6"
               fill="none"
               strokeOpacity={0.3}
             />
-            {/* Blue progress circle on top */}
-            <G transform="rotate(-90 170 170)">
-              <Circle
-                cx="170"
-                cy="170"
-                r="160"
-                stroke="#4285F4"
+            {/* Animated progress circle on top */}
+            <G transform="rotate(-90 157.5 157.5)">
+              <AnimatedCircle
+                cx="157.5"
+                cy="157.5"
+                r="147"
+                stroke={getProgressColor(progressPercentage)}
                 strokeWidth="8"
                 fill="none"
-                strokeDasharray={`${2 * Math.PI * 160}`}
-                strokeDashoffset={`${2 * Math.PI * 160 * (1 - progressPercentage / 100)}`}
+                strokeDasharray={`${2 * Math.PI * 147}`}
+                strokeDashoffset={progressAnim.interpolate({
+                  inputRange: [0, 100],
+                  outputRange: [2 * Math.PI * 147, 0],
+                })}
                 strokeLinecap="round"
               />
             </G>
@@ -855,10 +961,10 @@ const TestingScreenContent: React.FC = () => {
 
         {/* Background honeycomb structure */}
         <SvgXml
-          key={`honeycomb-${refreshKey}`}
+          key={`honeycomb-${selectedPlan?.id || 'default'}-${currentWeek}`}
           xml={honeycombSvg}
-          width="300"
-          height="300"
+          width="315"
+          height="315"
         />
 
         {/* Workout logo overlays */}
@@ -866,10 +972,10 @@ const TestingScreenContent: React.FC = () => {
           const workout = weekWorkouts[index];
           if (!workout) return null;
           const isToday = index === todayIndex && currentWeek === 1;
-          const isCompletedCurrentPlan = completedWorkouts.has(`${planId}-${currentWeek}-${index}`);
+          const isCompletedCurrentPlan = completedWorkouts?.has(`${planId}-${currentWeek}-${index}`) || false;
 
           // Check if completed in other plans (legacy or different plan)
-          const isCompletedOtherPlan = !isCompletedCurrentPlan && Array.from(completedWorkouts).some(key => {
+          const isCompletedOtherPlan = !isCompletedCurrentPlan && completedWorkouts && Array.from(completedWorkouts).some(key => {
             const parts = key.split('-');
             if (parts.length === 3) {
               const [keyPlanId, week, day] = parts;
@@ -880,10 +986,10 @@ const TestingScreenContent: React.FC = () => {
 
           return (
             <Animated.View
-              key={`workout-${index}-${refreshKey}`}
+              key={`workout-${index}`}
               style={[
                 styles.hexOverlay,
-                { left: pos.x - 30, top: pos.y - 30 },
+                { left: pos.x - 40, top: pos.y - 40 },
                 {
                   transform: [{ scale: completionAnims[index] }],
                 }
@@ -908,7 +1014,8 @@ const TestingScreenContent: React.FC = () => {
                   source={getWorkoutLogo(workout.name)}
                   style={[
                     styles.workoutLogo,
-                    (isCompletedCurrentPlan || isCompletedOtherPlan) && styles.completedLogo
+                    (isCompletedCurrentPlan || isCompletedOtherPlan) && styles.completedLogo,
+                    !(isCompletedCurrentPlan || isCompletedOtherPlan) && { tintColor: colors.primaryAction }
                   ]}
                   resizeMode="contain"
                 />
@@ -928,11 +1035,21 @@ const TestingScreenContent: React.FC = () => {
     );
   };
 
-  return (
-    <View style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
-      {/* App Header with Logo, Streak, etc. */}
-      <CustomHeader />
+  // Loading State
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <CustomHeader />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primaryAction} />
+          <Text style={styles.loadingText}>Loading your workout plan...</Text>
+        </View>
+      </View>
+    );
+  }
 
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Achievement Badge */}
       {showAchievement && (
         <Animated.View
@@ -966,7 +1083,7 @@ const TestingScreenContent: React.FC = () => {
                 styles.confetti,
                 {
                   left: `${Math.random() * 100}%`,
-                  backgroundColor: ['#FF6B35', 'rgba(66, 133, 244, 0.7)'][Math.floor(Math.random() * 2)],
+                  backgroundColor: [colors.accent, colors.info][Math.floor(Math.random() * 2)],
                   transform: [
                     {
                       translateY: new Animated.Value(0).interpolate({
@@ -983,229 +1100,398 @@ const TestingScreenContent: React.FC = () => {
         </View>
       )}
 
-      {/* Current Plan Section - Slim Design */}
-      <TouchableOpacity
-        style={styles.planSection}
-        onPress={() => (navigation as any).navigate('WorkoutPlanSelection')}
-        activeOpacity={0.8}
-        onLayout={(event) => {
-          const { y, height } = event.nativeEvent.layout;
-          console.log('📍 PLAN SECTION Y:', y, 'HEIGHT:', height);
-        }}
-      >
-      {selectedPlan ? (
-        <View style={styles.currentPlan}>
-          <View style={styles.planIconContainer}>
-            <MaterialCommunityIcons name="dumbbell" size={18} color="#FF6B35" />
-          </View>
-          <View style={styles.planInfo}>
-            <Text style={styles.planName}>{selectedPlan.name}</Text>
-            <Text style={styles.planWeek}>{t('workoutPlans.changePlan')}</Text>
-          </View>
-          <MaterialCommunityIcons name="chevron-right" size={20} color="#9CA3AF" />
-        </View>
-      ) : (
-        <View style={styles.noPlanContainer}>
-          <MaterialCommunityIcons name="plus-circle" size={20} color="#FF6B35" />
-          <Text style={styles.noPlanTitle}>{t('workoutPlans.selectWorkoutPlan')}</Text>
-          <MaterialCommunityIcons name="chevron-right" size={20} color="#9CA3AF" />
-        </View>
-      )}
-      </TouchableOpacity>
-
-
       <ScrollView
         ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primaryAction}
+            colors={[colors.primaryAction]}
+          />
+        }
       >
-        <View style={styles.pathContainer}>
-          {/* Week Label with Navigation */}
-          <View
-            style={styles.weekLabel}
-            onLayout={(event) => {
-              event.target.measure((x, y, width, height, pageX, pageY) => {
-                console.log('📍 WEEK LABEL Y:', pageY, 'HEIGHT:', height);
-              });
-            }}
+        {/* Screen Title */}
+        <View style={styles.headerSection}>
+          <View style={{ width: 40 }} />
+          <View style={styles.titleContainer}>
+            <Text style={styles.screenTitle}>Workouts</Text>
+            {selectedPlan && (
+              <TouchableOpacity
+                onPress={() => (navigation as any).navigate('WorkoutPlanSelection')}
+                activeOpacity={0.7}
+                style={styles.planSubtitle}
+              >
+                <Text style={styles.planSubtitleText}>{selectedPlan.name}</Text>
+                <MaterialCommunityIcons name="chevron-down" size={16} color={colors.textSecondary} />
+              </TouchableOpacity>
+            )}
+            {!selectedPlan && (
+              <TouchableOpacity
+                onPress={() => (navigation as any).navigate('WorkoutPlanSelection')}
+                activeOpacity={0.7}
+                style={styles.planSubtitle}
+              >
+                <Text style={styles.planSubtitleText}>No plan selected</Text>
+                <MaterialCommunityIcons name="chevron-down" size={16} color={colors.textSecondary} />
+              </TouchableOpacity>
+            )}
+          </View>
+          <TouchableOpacity
+            onPress={() => (navigation as any).navigate('EditWeek', { currentWeek })}
+            style={styles.settingsButton}
+            activeOpacity={0.6}
           >
-            <View style={styles.weekHeader}>
-            <TouchableOpacity
-              style={styles.resetButton}
-              onPress={resetCompletedWorkouts}
-            >
-              <MaterialCommunityIcons name="refresh" size={24} color="#FF6B35" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.weekArrowButton, currentWeek === 1 && styles.disabledButton]}
-              onPress={() => setCurrentWeek(Math.max(1, currentWeek - 1))}
-              disabled={currentWeek === 1}
-            >
-              <MaterialCommunityIcons name="chevron-left" size={24} color={currentWeek === 1 ? '#4A5568' : 'rgba(66, 133, 244, 0.7)'} />
-            </TouchableOpacity>
-            <Text style={styles.weekText}>{t('workouts.week')} {currentWeek}</Text>
-            <TouchableOpacity
-              style={[styles.weekArrowButton, currentWeek === 8 && styles.disabledButton]}
-              onPress={() => setCurrentWeek(Math.min(8, currentWeek + 1))}
-              disabled={currentWeek === 8}
-            >
-              <MaterialCommunityIcons name="chevron-right" size={24} color={currentWeek === 8 ? '#4A5568' : 'rgba(66, 133, 244, 0.7)'} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.weekLine} />
-          </View>
+            <MaterialCommunityIcons name="pencil" size={24} color={colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
 
-          {/* Honeycomb with workout logos */}
-          {renderHoneycomb()}
+        {/* View Mode Toggle */}
+        <View style={styles.viewModeToggle}>
+          <TouchableOpacity
+            style={[styles.viewModeButton, viewMode === 'honeycomb' && styles.viewModeButtonActive]}
+            onPress={() => setViewMode('honeycomb')}
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons
+              name="hexagon-multiple"
+              size={20}
+              color={viewMode === 'honeycomb' ? colors.text : colors.textSecondary}
+            />
+            <Text style={[styles.viewModeText, viewMode === 'honeycomb' && styles.viewModeTextActive]}>
+              Honeycomb
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.viewModeButton, viewMode === 'list' && styles.viewModeButtonActive]}
+            onPress={() => setViewMode('list')}
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons
+              name="format-list-bulleted"
+              size={20}
+              color={viewMode === 'list' ? colors.text : colors.textSecondary}
+            />
+            <Text style={[styles.viewModeText, viewMode === 'list' && styles.viewModeTextActive]}>
+              List
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-          {/* Weekly Stats */}
-          <View style={styles.weeklyStats}>
-            <View style={styles.statCard}>
-              <MaterialCommunityIcons name="dumbbell" size={20} color="#FF6B35" />
-              <Text style={styles.statValue}>{getCompletedCount()}</Text>
-              <Text style={styles.statLabel}>{t('workouts.done')}</Text>
+        {/* Empty State - No Plan Selected */}
+        {!selectedPlan && (
+          <View style={styles.emptyStateContainer}>
+            <View style={styles.emptyStateIconContainer}>
+              <MaterialCommunityIcons name="dumbbell" size={64} color={colors.textSecondary} />
             </View>
-            <View style={styles.statCard}>
-              <MaterialCommunityIcons name="calendar-check" size={20} color="rgba(66, 133, 244, 0.7)" />
-              <Text style={styles.statValue}>{7 - getCompletedCount()}</Text>
-              <Text style={styles.statLabel}>{t('workouts.left')}</Text>
-            </View>
-            <View style={styles.statCard}>
-              <MaterialCommunityIcons name="timer" size={20} color="rgba(66, 133, 244, 0.7)" />
-              <Text style={styles.statValue}>{getCompletedCount() * 45}</Text>
-              <Text style={styles.statLabel}>Min</Text>
-            </View>
-            <View style={styles.statCard}>
-              <MaterialCommunityIcons name="lightning-bolt" size={20} color="#FF6B35" />
-              <Text style={styles.statValue}>{getCompletedCount() * 250}</Text>
-              <Text style={styles.statLabel}>Cal</Text>
-            </View>
-          </View>
-
-          {/* Start Today's Workout Button */}
-          {currentWeek === 1 && todayIndex >= 0 && todayIndex < 7 && (
+            <Text style={styles.emptyStateTitle}>No Workout Plan Selected</Text>
+            <Text style={styles.emptyStateSubtitle}>
+              Choose a professional workout plan tailored to your goals and fitness level
+            </Text>
             <TouchableOpacity
-              style={styles.startTodayButton}
-              onPress={() => {
-                const weekWorkouts = getWeekWorkouts();
-                const todayWorkout = weekWorkouts[todayIndex];
-                if (todayWorkout) {
-                  handleWorkoutPress(todayWorkout, todayIndex);
-                }
-              }}
+              style={styles.emptyStateCTA}
+              onPress={() => (navigation as any).navigate('WorkoutPlanSelection')}
               activeOpacity={0.8}
             >
-              <View style={styles.startButtonInner}>
-                <MaterialCommunityIcons name="fire" size={20} color="#FF6B35" />
-                <Text style={styles.startButtonText}>{t('workouts.startTodaysWorkout')}</Text>
-                <MaterialCommunityIcons name="chevron-right" size={20} color="#FF6B35" />
-              </View>
+              <MaterialCommunityIcons name="compass-outline" size={20} color={colors.text} />
+              <Text style={styles.emptyStateCTAText}>Browse Workout Plans</Text>
             </TouchableOpacity>
-          )}
-
-        </View>
-
-        {/* Quick Actions */}
-        <View
-          style={styles.quickActionsSection}
-          onLayout={(event) => {
-            event.target.measure((x, y, width, height, pageX, pageY) => {
-              console.log('📍 QUICK ACTIONS Y:', pageY, 'HEIGHT:', height);
-            });
-          }}
-        >
-          <Text style={styles.quickActionsTitle}>Quick Actions</Text>
-          <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 10 }}
-        >
-          <TouchableOpacity
-            style={styles.actionCard}
-            onPress={() => (navigation as any).navigate('WorkoutLog')}
-          >
-            <MaterialCommunityIcons name="pencil" size={20} color="#B0B0B0" />
-            <Text style={styles.actionText}>Log</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionCard}
-            onPress={() => (navigation as any).navigate('PersonalRecords')}
-          >
-            <MaterialCommunityIcons name="trophy" size={20} color="#B0B0B0" />
-            <Text style={styles.actionText}>Records</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionCard}
-            onPress={() => (navigation as any).navigate('ExerciseLibrary')}
-          >
-            <MaterialCommunityIcons name="book-open-variant" size={20} color="#B0B0B0" />
-            <Text style={styles.actionText}>Library</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionCard}
-            onPress={() => (navigation as any).navigate('EditWeek', { currentWeek })}
-          >
-            <MaterialCommunityIcons name="calendar-edit" size={20} color="#B0B0B0" />
-            <Text style={styles.actionText}>Edit</Text>
-          </TouchableOpacity>
-        </ScrollView>
-        </View>
-
-        {/* Weekly Challenge */}
-        {weeklyChallenge && (
-          <View style={styles.challengeSection}>
-          <View style={styles.challengeHeader}>
-            <MaterialCommunityIcons name="trophy" size={24} color="rgba(66, 133, 244, 0.7)" />
-            <Text style={styles.challengeTitle}>Weekly Challenge</Text>
           </View>
-          <View
-            style={styles.challengeCard}
-            onLayout={(event) => {
-              event.target.measure((x, y, width, height, pageX, pageY) => {
-                console.log('📍 CHALLENGE CARD Y:', pageY, 'HEIGHT:', height);
-              });
-            }}
-          >
-            <Text style={styles.challengeName}>{weeklyChallenge.title}</Text>
-            <View style={styles.challengeProgress}>
-              <View style={styles.challengeProgressBar}>
-                <View
-                  style={[
-                    styles.challengeProgressFill,
-                    { width: `${(weeklyChallenge.current / weeklyChallenge.target) * 100}%` }
-                  ]}
-                />
+        )}
+
+        {/* HONEYCOMB VIEW */}
+        {viewMode === 'honeycomb' && (
+          <>
+            {/* Honeycomb Card Container */}
+            <View style={styles.honeycombCard}>
+              {/* Week Label with Navigation */}
+              <View style={styles.weekLabel}>
+                <View style={styles.weekHeader}>
+                  <TouchableOpacity
+                    style={styles.resetButton}
+                    onPress={resetCompletedWorkouts}
+                  >
+                    <MaterialCommunityIcons name="refresh" size={24} color={colors.textSecondary} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.weekArrowButton, currentWeek === 1 && styles.disabledButton]}
+                    onPress={() => setCurrentWeek(Math.max(1, currentWeek - 1))}
+                    disabled={currentWeek === 1}
+                  >
+                    <MaterialCommunityIcons name="chevron-left" size={24} color={currentWeek === 1 ? colors.border : colors.text} />
+                  </TouchableOpacity>
+                  <Text style={styles.weekText}>{t('workouts.week')} {currentWeek}</Text>
+                  <TouchableOpacity
+                    style={[styles.weekArrowButton, currentWeek === getMaxWeek() && styles.disabledButton]}
+                    onPress={() => setCurrentWeek(Math.min(getMaxWeek(), currentWeek + 1))}
+                    disabled={currentWeek === getMaxWeek()}
+                  >
+                    <MaterialCommunityIcons name="chevron-right" size={24} color={currentWeek === getMaxWeek() ? colors.border : colors.text} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.weekLine} />
               </View>
-              <Text style={styles.challengeProgressText}>
-                {weeklyChallenge.current} / {weeklyChallenge.target}
-              </Text>
+
+              {/* Honeycomb with workout logos */}
+              {!selectedPlan ? (
+                <View style={styles.honeycombLoadingContainer}>
+                  <ActivityIndicator size="large" color={colors.textSecondary} />
+                  <Text style={styles.honeycombLoadingText}>Loading workouts...</Text>
+                </View>
+              ) : (
+                renderHoneycomb()
+              )}
             </View>
-            <TouchableOpacity
-              style={styles.challengeRefresh}
-              onPress={generateWeeklyChallenge}
-            >
-              <MaterialCommunityIcons name="refresh" size={20} color="#9CA3AF" />
-            </TouchableOpacity>
-          </View>
-          </View>
+
+            {/* Start Today's Workout Button */}
+            {currentWeek === 1 && todayIndex >= 0 && todayIndex < 7 && (
+              <TouchableOpacity
+                style={styles.startTodayButton}
+                onPress={() => {
+                  const weekWorkouts = getWeekWorkouts();
+                  const todayWorkout = weekWorkouts[todayIndex];
+                  if (todayWorkout) {
+                    handleWorkoutPress(todayWorkout, todayIndex);
+                  }
+                }}
+                activeOpacity={0.8}
+              >
+                <View style={styles.startButtonInner}>
+                  <MaterialCommunityIcons name="play-circle-outline" size={20} color={colors.text} />
+                  <Text style={styles.startButtonText}>{t('workouts.startTodaysWorkout')}</Text>
+                  <MaterialCommunityIcons name="chevron-right" size={20} color={colors.text} />
+                </View>
+              </TouchableOpacity>
+            )}
+          </>
+        )}
+
+        {/* LIST VIEW */}
+        {viewMode === 'list' && (
+          <>
+            {/* Weekly Progress Card */}
+            <View style={styles.weeklyProgressCard}>
+              {/* Week Navigation */}
+              <View style={styles.weekNavigation}>
+                <TouchableOpacity
+                  style={[styles.weekArrowButton, currentWeek === 1 && styles.disabledButton]}
+                  onPress={() => setCurrentWeek(Math.max(1, currentWeek - 1))}
+                  disabled={currentWeek === 1}
+                >
+                  <MaterialCommunityIcons name="chevron-left" size={24} color={currentWeek === 1 ? colors.border : colors.text} />
+                </TouchableOpacity>
+                <Text style={styles.weekTitle}>Week {currentWeek}</Text>
+                <TouchableOpacity
+                  style={[styles.weekArrowButton, currentWeek === getMaxWeek() && styles.disabledButton]}
+                  onPress={() => setCurrentWeek(Math.min(getMaxWeek(), currentWeek + 1))}
+                  disabled={currentWeek === getMaxWeek()}
+                >
+                  <MaterialCommunityIcons name="chevron-right" size={24} color={currentWeek === getMaxWeek() ? colors.border : colors.text} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Progress Summary */}
+              <View style={styles.progressSummary}>
+                <Text style={styles.progressNumber}>{getCompletedCount()}/7</Text>
+                <Text style={styles.progressLabel}>Workouts Completed</Text>
+              </View>
+
+              {/* Progress Bar */}
+              <View style={styles.weekProgressBar}>
+                <View style={[styles.weekProgressFill, { width: `${(getCompletedCount() / 7) * 100}%` }]} />
+              </View>
+
+              {/* Daily Workout List */}
+              <View style={styles.dailyWorkoutList}>
+                {getWeekWorkouts().map((workout, index) => {
+                  const planId = selectedPlan?.id || 'unknown';
+                  const workoutKey = `${planId}-${currentWeek}-${index}`;
+                  const isCompleted = completedWorkouts?.has(workoutKey) || false;
+                  const isToday = index === todayIndex && currentWeek === 1;
+
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.dailyWorkoutItem,
+                        isCompleted && styles.completedWorkoutItem,
+                        isToday && styles.todayWorkoutItem
+                      ]}
+                      onPress={() => handleWorkoutPress(workout, index)}
+                      activeOpacity={0.7}
+                    >
+                      <View style={styles.workoutDayInfo}>
+                        <Text style={[styles.workoutDay, isCompleted && styles.completedText]}>
+                          {isToday ? 'Today' : getDayName(workout.day)}
+                        </Text>
+                        <Text style={[styles.workoutName, isCompleted && styles.completedText]} numberOfLines={1}>
+                          {workout.name}
+                        </Text>
+                      </View>
+                      {isCompleted ? (
+                        <MaterialCommunityIcons name="check-circle" size={24} color={colors.primaryAction} />
+                      ) : isToday ? (
+                        <MaterialCommunityIcons name="play-circle" size={24} color={colors.primaryAction} />
+                      ) : (
+                        <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textSecondary} />
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              {/* Weekly Stats Row */}
+              <View style={styles.statsRow}>
+                <View style={styles.statItem}>
+                  <MaterialCommunityIcons name="timer" size={20} color={BRAND_COLORS.secondaryMuted} />
+                  <Text style={styles.statItemValue}>{getTotalMinutes()}</Text>
+                  <Text style={styles.statItemLabel}>min</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <MaterialCommunityIcons name="lightning-bolt" size={20} color={colors.primaryAction} />
+                  <Text style={styles.statItemValue}>{getTotalCalories()}</Text>
+                  <Text style={styles.statItemLabel}>cal</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <MaterialCommunityIcons name="calendar-check" size={20} color={colors.info} />
+                  <Text style={styles.statItemValue}>{7 - getCompletedCount()}</Text>
+                  <Text style={styles.statItemLabel}>left</Text>
+                </View>
+              </View>
+            </View>
+
+            {/* Today's Workout Card */}
+            {currentWeek === 1 && todayIndex >= 0 && todayIndex < 7 && (
+              <TouchableOpacity
+                style={styles.todayWorkoutCard}
+                onPress={() => {
+                  const weekWorkouts = getWeekWorkouts();
+                  const todayWorkout = weekWorkouts[todayIndex];
+                  if (todayWorkout) {
+                    handleWorkoutPress(todayWorkout, todayIndex);
+                  }
+                }}
+                activeOpacity={0.8}
+              >
+                <View style={styles.todayHeader}>
+                  <MaterialCommunityIcons name="fire" size={24} color={colors.primaryAction} />
+                  <Text style={styles.todayTitle}>Ready to Workout?</Text>
+                </View>
+                <Text style={styles.todayWorkoutName}>
+                  {getWeekWorkouts()[todayIndex]?.name}
+                </Text>
+                <View style={styles.startWorkoutButton}>
+                  <Text style={styles.startWorkoutButtonText}>Start Workout</Text>
+                  <MaterialCommunityIcons name="chevron-right" size={20} color="#FFFFFF" />
+                </View>
+              </TouchableOpacity>
+            )}
+          </>
         )}
 
         {/* Workout Timer */}
         <TouchableOpacity
           style={styles.timerButton}
-          onPress={() => setShowTimerModal(true)}
-          onLayout={(event) => {
-            event.target.measure((x, y, width, height, pageX, pageY) => {
-              console.log('📍 TIMER BUTTON Y:', pageY, 'HEIGHT:', height);
-            });
+          onPress={() => {
+            startGlobalTimer(60);
+            setTimerExpanded(true);
           }}
         >
-          <MaterialCommunityIcons name="timer" size={24} color="rgba(66, 133, 244, 0.7)" />
+          <MaterialCommunityIcons name="timer" size={24} color={BRAND_COLORS.secondaryMuted} />
           <Text style={styles.timerButtonText}>Workout Timer</Text>
         </TouchableOpacity>
+
+        {/* Quick Actions */}
+        <View style={styles.quickActionsSection}>
+          <Text style={styles.quickActionsTitle}>Quick Actions</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 10 }}
+          >
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => (navigation as any).navigate('WorkoutLog')}
+            >
+              <MaterialCommunityIcons name="pencil" size={24} color={colors.textSecondary} />
+              <Text style={styles.actionText}>Log</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => (navigation as any).navigate('PersonalRecords')}
+            >
+              <MaterialCommunityIcons name="trophy" size={24} color={colors.textSecondary} />
+              <Text style={styles.actionText}>Records</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => (navigation as any).navigate('EditWeek', { currentWeek })}
+            >
+              <MaterialCommunityIcons name="calendar-edit" size={24} color={colors.textSecondary} />
+              <Text style={styles.actionText}>Edit</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+
+        {/* Weekly Challenge & Stats Combined */}
+        <View style={styles.weekStatsCard}>
+          {/* Weekly Challenge */}
+          {weeklyChallenge && (
+            <View style={styles.challengeSectionInCard}>
+              <View style={styles.challengeHeader}>
+                <MaterialCommunityIcons name="trophy" size={24} color={colors.textSecondary} />
+                <Text style={styles.challengeTitle}>Weekly Challenge</Text>
+              </View>
+              <View style={styles.challengeCardInner}>
+                <Text style={styles.challengeName}>{weeklyChallenge.title}</Text>
+                <View style={styles.challengeProgress}>
+                  <View style={styles.challengeProgressBar}>
+                    <View
+                      style={[
+                        styles.challengeProgressFill,
+                        { width: `${(weeklyChallenge.current / weeklyChallenge.target) * 100}%` }
+                      ]}
+                    />
+                  </View>
+                  <Text style={styles.challengeProgressText}>
+                    {weeklyChallenge.current} / {weeklyChallenge.target}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.challengeRefresh}
+                  onPress={generateWeeklyChallenge}
+                >
+                  <MaterialCommunityIcons name="refresh" size={20} color={colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Divider */}
+              <View style={styles.sectionDivider} />
+            </View>
+          )}
+
+          {/* This Week's Stats */}
+          <View>
+            <Text style={styles.weekStatsTitle}>This Week's Stats</Text>
+            <View style={styles.weekStatsRow}>
+              <View style={styles.weekStatItem}>
+                <MaterialCommunityIcons name="clock-outline" size={32} color={BRAND_COLORS.secondaryMuted} />
+                <Text style={styles.weekStatValue}>{getTotalMinutes()}</Text>
+                <Text style={styles.weekStatLabel}>minutes</Text>
+              </View>
+              <View style={styles.weekStatDivider} />
+              <View style={styles.weekStatItem}>
+                <MaterialCommunityIcons name="fire" size={32} color={colors.primaryAction} />
+                <Text style={styles.weekStatValue}>{getTotalCalories()}</Text>
+                <Text style={styles.weekStatLabel}>calories</Text>
+              </View>
+            </View>
+          </View>
+        </View>
 
       </ScrollView>
 
@@ -1221,123 +1507,91 @@ const TestingScreenContent: React.FC = () => {
         scrollViewRef={scrollViewRef}
       />
 
-      {/* Timer Modal */}
-      <Modal
-        visible={showTimerModal}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setShowTimerModal(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setShowTimerModal(false)}
-            >
-              <MaterialCommunityIcons name="close" size={24} color="#9CA3AF" />
-            </TouchableOpacity>
-
-            <Text style={styles.modalTitle}>Workout Timer</Text>
-
-            <View style={styles.timerDisplay}>
-              <Text style={styles.timerText}>{formatTimer(timerSeconds)}</Text>
-            </View>
-
-            <View style={styles.timerControls}>
-              {!isTimerRunning ? (
-                <TouchableOpacity
-                  style={[styles.timerControl, { backgroundColor: 'rgba(66, 133, 244, 0.7)' }]}
-                  onPress={() => startTimer(30)}
-                >
-                  <MaterialCommunityIcons name="play" size={32} color="white" />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={[styles.timerControl, { backgroundColor: '#FF6B35' }]}
-                  onPress={stopTimer}
-                >
-                  <MaterialCommunityIcons name="pause" size={32} color="white" />
-                </TouchableOpacity>
-              )}
-
-              <TouchableOpacity
-                style={[styles.timerControl, { backgroundColor: '#4A5568' }]}
-                onPress={() => setTimerSeconds(0)}
-              >
-                <MaterialCommunityIcons name="restart" size={32} color="white" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.presetTimers}>
-              <Text style={styles.presetTitle}>Rest Presets</Text>
-              <View style={styles.presetRow}>
-                <TouchableOpacity
-                  style={styles.presetButton}
-                  onPress={() => {
-                    setTimerSeconds(30);
-                    startTimer(30);
-                  }}
-                >
-                  <Text style={styles.presetText}>30s</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.presetButton}
-                  onPress={() => {
-                    setTimerSeconds(60);
-                    startTimer(60);
-                  }}
-                >
-                  <Text style={styles.presetText}>1m</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.presetButton}
-                  onPress={() => {
-                    setTimerSeconds(90);
-                    startTimer(90);
-                  }}
-                >
-                  <Text style={styles.presetText}>1.5m</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.presetButton}
-                  onPress={() => {
-                    setTimerSeconds(120);
-                    startTimer(120);
-                  }}
-                >
-                  <Text style={styles.presetText}>2m</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: colors.background,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.textSecondary,
+    marginTop: 12,
+  },
+  headerSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 12,
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  screenTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+    color: colors.text,
+  },
+  planSubtitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 2,
+  },
+  planSubtitleText: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    fontWeight: '500',
+  },
+  settingsButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContent: {
     paddingBottom: 200,
+  },
+  quickFeaturesCard: {
+    backgroundColor: colors.cardBackground,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    padding: 16,
+    marginTop: 8,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   pathContainer: {
     position: 'relative',
     marginTop: 8,
   },
   planSection: {
-    marginHorizontal: 20,
-    marginTop: 12,
-    marginBottom: 0,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#2C2C2E',
+    marginHorizontal: 16,
+    marginTop: 0,
+    marginBottom: 16,
+    padding: 12,
+    backgroundColor: colors.cardBackground,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 107, 53, 0.2)',
+    borderColor: colors.border,
   },
   currentPlan: {
     flexDirection: 'row',
@@ -1347,7 +1601,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(255, 107, 53, 0.15)',
+    backgroundColor: colors.cardBackground,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -1356,46 +1610,105 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   planName: {
-    color: '#FFFFFF',
-    fontSize: 15,
+    color: colors.text,
+    fontSize: 17,
     fontWeight: '600',
+    letterSpacing: 0.3,
     marginBottom: 2,
   },
   planWeek: {
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     fontSize: 12,
   },
-  noPlanContainer: {
+  emptyStateContainer: {
+    marginHorizontal: 16,
+    marginTop: 60,
+    marginBottom: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 32,
+    backgroundColor: colors.cardBackground,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  emptyStateIconContainer: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  emptyStateTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  emptyStateSubtitle: {
+    fontSize: 15,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 32,
+  },
+  emptyStateCTA: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'transparent',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    gap: 8,
+    borderWidth: 1.5,
+    borderColor: colors.text,
   },
-  noPlanTitle: {
-    flex: 1,
-    fontSize: 15,
+  emptyStateCTAText: {
+    fontSize: 16,
     fontWeight: '600',
-    color: '#E0E0E0',
-    marginLeft: 12,
+    color: colors.text,
+    letterSpacing: 0.3,
   },
   quoteContainer: {
     paddingHorizontal: 30,
-    marginBottom: 20,
+    marginBottom: 16,
     alignItems: 'center',
   },
   quoteText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     fontStyle: 'italic',
     textAlign: 'center',
     lineHeight: 20,
   },
   quoteAuthor: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     marginTop: 4,
+  },
+  honeycombCard: {
+    backgroundColor: colors.cardBackground,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    padding: 20,
+    marginTop: 0,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   weekLabel: {
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 16,
   },
   weekHeader: {
     flexDirection: 'row',
@@ -1412,30 +1725,46 @@ const styles = StyleSheet.create({
   weekText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#E0E0E0',
+    color: colors.text,
+    letterSpacing: 0.5,
     marginBottom: 0,
   },
   weekLine: {
     width: '80%',
     height: 2,
-    backgroundColor: '#4B5563',
+    backgroundColor: colors.border,
     marginTop: 8,
     borderRadius: 1,
   },
   honeycombContainer: {
-    width: 340,
-    height: 340,
+    width: 315,
+    height: 315,
     alignSelf: 'center',
     position: 'relative',
-    marginTop: -10,
-    marginBottom: 20,
+    marginTop: 0,
+    marginBottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  honeycombLoadingContainer: {
+    width: 315,
+    height: 315,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 0,
+    marginBottom: 0,
+    gap: 12,
+  },
+  honeycombLoadingText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginTop: 8,
+  },
   progressRingContainer: {
     position: 'absolute',
-    width: 340,
-    height: 340,
+    width: 315,
+    height: 315,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1445,35 +1774,40 @@ const styles = StyleSheet.create({
   },
   progressTextContainer: {
     position: 'absolute',
+    top: 157.5,
+    left: 157.5,
+    transform: [{ translateX: -50 }, { translateY: -20 }],
     alignItems: 'center',
     justifyContent: 'center',
   },
-  progressPercentage: {
-    fontSize: 28,
+  progressCount: {
+    fontSize: 48,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: colors.text,
+    lineHeight: 52,
+  },
+  progressTotal: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: colors.textSecondary,
+    marginTop: -4,
   },
   progressLabel: {
-    fontSize: 10,
-    color: '#9CA3AF',
-    letterSpacing: 1,
-    marginTop: 2,
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginTop: 4,
+    fontWeight: '500',
   },
   hexOverlay: {
     position: 'absolute',
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 5,
   },
   hexTouchable: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1481,19 +1815,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 140,
     alignSelf: 'center',
-    backgroundColor: '#FF6B35',
+    backgroundColor: colors.primaryAction,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 25,
     zIndex: 1000,
     elevation: 10,
-    shadowColor: '#000',
+    shadowColor: '#2A2A2A',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
   },
   achievementText: {
-    color: 'white',
+    color: colors.text,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -1518,13 +1852,13 @@ const styles = StyleSheet.create({
   },
   featuresSection: {
     flexDirection: 'row',
-    marginHorizontal: 20,
+    marginHorizontal: 16,
     marginTop: 15,
     gap: 10,
   },
   featureCard: {
     flex: 1,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',
@@ -1544,12 +1878,12 @@ const styles = StyleSheet.create({
   featureCardTitle: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#E0E0E0',
+    color: colors.text,
     marginBottom: 2,
   },
   featureCardSubtitle: {
     fontSize: 10,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
   },
   modalOverlay: {
     flex: 1,
@@ -1557,7 +1891,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
     borderRadius: 20,
     padding: 24,
     width: '85%',
@@ -1572,7 +1906,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#E0E0E0',
+    color: colors.text,
     textAlign: 'center',
     marginBottom: 24,
   },
@@ -1582,18 +1916,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#37445C',
+    borderBottomColor: colors.border,
   },
   reminderToggleLabel: {
     fontSize: 16,
-    color: '#E0E0E0',
+    color: colors.text,
   },
   timePickerSection: {
     marginTop: 20,
   },
   timePickerLabel: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     marginBottom: 12,
   },
   timeOptions: {
@@ -1605,40 +1939,40 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
   },
   timeOptionActive: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: colors.primaryAction,
   },
   timeOptionText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
   },
   timeOptionTextActive: {
-    color: '#FFF',
+    color: colors.text,
   },
   modalButton: {
     marginTop: 30,
-    backgroundColor: '#FF6B35',
+    backgroundColor: colors.primaryAction,
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
   },
   modalButtonText: {
-    color: '#FFF',
+    color: colors.text,
     fontSize: 16,
     fontWeight: '600',
   },
   videoPlaceholder: {
     alignItems: 'center',
     paddingVertical: 40,
-    backgroundColor: 'rgba(255, 107, 53, 0.05)',
+    backgroundColor: colors.cardBackground,
     borderRadius: 12,
   },
   videoPlaceholderText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
   },
   exerciseTips: {
     marginTop: 20,
@@ -1646,107 +1980,104 @@ const styles = StyleSheet.create({
   exerciseTipsTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#E0E0E0',
+    color: colors.text,
     marginBottom: 12,
   },
   exerciseTip: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     marginBottom: 8,
   },
   notesInput: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
     borderRadius: 12,
     padding: 16,
     minHeight: 150,
-    color: '#E0E0E0',
+    color: colors.text,
     fontSize: 14,
     textAlignVertical: 'top',
   },
   dayLabel: {
     position: 'absolute',
-    bottom: -15,
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#E0E0E0',
+    bottom: -8,
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: colors.text,
     textAlign: 'center',
   },
   todayLabel: {
-    color: '#FF6B35',
+    color: colors.primaryAction,
     fontWeight: 'bold',
-    fontSize: 11,
+    fontSize: 14,
   },
   todayGlow: {
     position: 'absolute',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#FF6B35',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primaryAction,
     opacity: 0.3,
   },
   completedLogo: {
-    tintColor: '#000000',
+    tintColor: '#2A2A2A',
     opacity: 0.8,
   },
   completedLabel: {
-    color: '#FFFFFF',
+    color: colors.text,
     fontWeight: 'bold',
     fontSize: 16,
   },
   otherPlanLabel: {
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     fontWeight: 'bold',
     fontSize: 16,
   },
   weeklyStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingHorizontal: 30,
-    marginTop: -10,
-    marginBottom: 15,
+    paddingHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 16,
   },
   statCard: {
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 12,
-    minWidth: 65,
+    minWidth: 70,
   },
   statValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#E0E0E0',
+    color: colors.text,
     marginVertical: 2,
   },
   statLabel: {
     fontSize: 10,
-    color: '#9CA3AF',
-    textTransform: 'uppercase',
+    color: colors.textSecondary,
     letterSpacing: 0.5,
   },
   startTodayButton: {
-    marginHorizontal: 50,
-    marginTop: -5,
-    marginBottom: 10,
-    backgroundColor: '#2C2C2E',
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 0,
+    backgroundColor: 'transparent',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#FF6B35',
+    borderWidth: 1.5,
+    borderColor: colors.text,
   },
   startButtonInner: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 20,
     gap: 8,
   },
   startButtonText: {
-    color: '#FF6B35',
-    fontSize: 14,
+    color: colors.text,
+    fontSize: 15,
     fontWeight: '600',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
   weekNavigation: {
     flexDirection: 'row',
@@ -1759,25 +2090,25 @@ const styles = StyleSheet.create({
   weekNavButton: {
     padding: 8,
     borderRadius: 20,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
   },
   disabledButton: {
     opacity: 0.5,
   },
   weekNavText: {
-    color: '#E0E0E0',
+    color: colors.text,
     fontSize: 16,
     fontWeight: '600',
   },
   quickActionsSection: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    marginTop: 5,
+    marginHorizontal: 16,
+    paddingBottom: 16,
+    marginTop: 16,
   },
   quickActionsTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#E0E0E0',
+    color: colors.text,
     marginBottom: 12,
   },
   quickActions: {
@@ -1785,14 +2116,18 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   actionCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
     borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    padding: 14,
     alignItems: 'center',
     flexDirection: 'row',
     gap: 8,
     minWidth: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   actionIcon: {
     width: 48,
@@ -1804,13 +2139,13 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 13,
-    color: '#E0E0E0',
+    color: colors.text,
     fontWeight: '500',
   },
   challengeSection: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    marginTop: 16,
+    marginHorizontal: 16,
+    paddingBottom: 16,
   },
   challengeHeader: {
     flexDirection: 'row',
@@ -1821,19 +2156,22 @@ const styles = StyleSheet.create({
   challengeTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#E0E0E0',
+    color: colors.text,
   },
   challengeCard: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
     borderRadius: 16,
     padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(66, 133, 244, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   challengeName: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'rgba(66, 133, 244, 0.7)',
+    color: colors.text,
     marginBottom: 12,
   },
   challengeProgress: {
@@ -1841,18 +2179,18 @@ const styles = StyleSheet.create({
   },
   challengeProgressBar: {
     height: 8,
-    backgroundColor: 'rgba(66, 133, 244, 0.2)',
+    backgroundColor: colors.border,
     borderRadius: 4,
     marginBottom: 8,
   },
   challengeProgressFill: {
     height: '100%',
-    backgroundColor: 'rgba(66, 133, 244, 0.7)',
+    backgroundColor: colors.primaryAction,
     borderRadius: 4,
   },
   challengeProgressText: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     textAlign: 'center',
   },
   challengeRefresh: {
@@ -1862,23 +2200,26 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   timerButton: {
-    marginHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 30,
-    backgroundColor: '#2C2C2E',
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 0,
+    backgroundColor: colors.cardBackground,
     borderRadius: 16,
     paddingVertical: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(66, 133, 244, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   timerButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'rgba(66, 133, 244, 0.7)',
+    color: colors.text,
   },
   modalContainer: {
     flex: 1,
@@ -1893,7 +2234,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   timerDisplay: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.cardBackground,
     borderRadius: 16,
     padding: 32,
     alignItems: 'center',
@@ -1902,7 +2243,7 @@ const styles = StyleSheet.create({
   timerText: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: 'rgba(66, 133, 244, 0.7)',
+    color: colors.info,
     fontVariant: ['tabular-nums'],
   },
   timerControls: {
@@ -1920,12 +2261,12 @@ const styles = StyleSheet.create({
   },
   presetTimers: {
     borderTopWidth: 1,
-    borderTopColor: 'rgba(156, 163, 175, 0.2)',
+    borderTopColor: `${colors.textSecondary}33`,
     paddingTop: 16,
   },
   presetTitle: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: colors.textSecondary,
     marginBottom: 12,
     textAlign: 'center',
   },
@@ -1934,15 +2275,324 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   presetButton: {
-    backgroundColor: 'rgba(156, 163, 175, 0.2)',
+    backgroundColor: `${colors.textSecondary}33`,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
   },
   presetText: {
-    color: '#E0E0E0',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
+  },
+  // New redesigned styles
+  weeklyProgressCard: {
+    backgroundColor: colors.cardBackground,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    padding: 20,
+    marginTop: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  weekNavigation: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  weekTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
+  progressSummary: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  progressNumber: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
+  progressLabel: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginTop: 4,
+  },
+  weekProgressBar: {
+    height: 8,
+    backgroundColor: colors.border,
+    borderRadius: 4,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  weekProgressFill: {
+    height: '100%',
+    backgroundColor: colors.primaryAction,
+    borderRadius: 4,
+  },
+  dailyWorkoutList: {
+    marginBottom: 16,
+  },
+  dailyWorkoutItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  completedWorkoutItem: {
+    opacity: 0.6,
+  },
+  todayWorkoutItem: {
+    backgroundColor: `${colors.primaryAction}10`,
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+  },
+  workoutDayInfo: {
+    flex: 1,
+  },
+  workoutDay: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.textSecondary,
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
+  workoutName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.text,
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  statItem: {
+    alignItems: 'center',
+    gap: 4,
+  },
+  statItemValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
+  statItemLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  todayWorkoutCard: {
+    backgroundColor: colors.cardBackground,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  todayHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  todayTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  todayWorkoutName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 16,
+  },
+  startWorkoutButton: {
+    backgroundColor: colors.primaryAction,
+    borderRadius: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  startWorkoutButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  quickActionsCard: {
+    backgroundColor: colors.cardBackground,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    padding: 4,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  quickActionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+  },
+  quickActionIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: `${colors.primaryAction}15`,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickActionContent: {
+    flex: 1,
+  },
+  quickActionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 2,
+  },
+  quickActionSubtitle: {
+    fontSize: 13,
+    color: colors.textSecondary,
+  },
+  quickActionDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginHorizontal: 16,
+  },
+  // View Mode Toggle Styles
+  viewModeToggle: {
+    flexDirection: 'row',
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 16,
+    gap: 12,
+  },
+  viewModeButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    gap: 6,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: 'transparent',
+  },
+  viewModeButtonActive: {
+    backgroundColor: colors.cardBackground,
+    borderColor: colors.text,
+  },
+  viewModeText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  viewModeTextActive: {
+    color: colors.text,
+  },
+  // Weekly Summary Styles
+  weeklySummary: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  summaryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  summaryText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.text,
+  },
+  // This Week's Stats Card (now combined with challenge)
+  weekStatsCard: {
+    backgroundColor: colors.cardBackground,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    padding: 20,
+    marginTop: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  challengeSectionInCard: {
+    marginBottom: 20,
+  },
+  challengeCardInner: {
+    position: 'relative',
+    paddingTop: 8,
+  },
+  sectionDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginTop: 20,
+  },
+  weekStatsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  weekStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  weekStatItem: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 8,
+  },
+  weekStatValue: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: colors.text,
+  },
+  weekStatLabel: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    textTransform: 'lowercase',
+  },
+  weekStatDivider: {
+    width: 1,
+    height: 60,
+    backgroundColor: colors.border,
+    marginHorizontal: 16,
   },
 });
 

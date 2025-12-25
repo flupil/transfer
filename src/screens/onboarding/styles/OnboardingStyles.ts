@@ -1,31 +1,32 @@
 import { StyleSheet } from 'react-native';
+import { BRAND_COLORS } from '../../../constants/brandColors';
 
 export const COLORS = {
-  primary: '#FF6B35',       // Your app's orange
-  secondary: '#FF8A65',      // Lighter orange
-  accent: '#FFB74D',         // Golden accent
+  primary: BRAND_COLORS.accent,           // #E94E1B
+  secondary: BRAND_COLORS.accentLight,    // #FF6B35
+  accent: BRAND_COLORS.warning,           // #E94E1B
 
   // Background gradients
-  darkBg: '#0F0F14',
-  darkBg2: '#1A1A20',
-  lightBg: '#FFFFFF',
-  lightBg2: '#F8F9FA',
+  darkBg: BRAND_COLORS.background,        // #2A2A2A
+  darkBg2: BRAND_COLORS.backgroundLight,  // #4A4A4A
+  lightBg: BRAND_COLORS.text,            // #F4F1EF
+  lightBg2: BRAND_COLORS.text,           // #F4F1EF
 
   // Text colors
-  textPrimary: '#FFFFFF',
-  textSecondary: '#B0B0B8',
-  textDark: '#2C2C35',
+  textPrimary: BRAND_COLORS.text,        // #F4F1EF
+  textSecondary: BRAND_COLORS.textSecondary, // #C5C2BF
+  textDark: BRAND_COLORS.background,     // #2A2A2A
 
   // UI elements
-  cardDark: '#1E1E26',
-  cardLight: '#FFFFFF',
-  borderDark: '#2A2A35',
-  borderLight: '#E0E0E0',
+  cardDark: BRAND_COLORS.backgroundLight,  // #4A4A4A
+  cardLight: BRAND_COLORS.text,           // #F4F1EF
+  borderDark: BRAND_COLORS.border,        // #5A5A5A
+  borderLight: BRAND_COLORS.border,       // #5A5A5A
 
-  success: '#FF6B35',
-  error: '#FF5252',
-  warning: '#FFC107',
-  info: '#7E57C2',          // Purple for info
+  success: BRAND_COLORS.accent,           // #E94E1B
+  error: BRAND_COLORS.error,              // #E94E1B
+  warning: BRAND_COLORS.warning,          // #E94E1B
+  info: BRAND_COLORS.accent,              // #E94E1B
 };
 
 export const commonStyles = StyleSheet.create({

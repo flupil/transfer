@@ -20,6 +20,7 @@ import {
   FriendStreak,
 } from '../services/friendStreakService';
 import { useLanguage } from '../contexts/LanguageContext';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 interface FriendStreakCardProps {
   onClose?: () => void;
@@ -120,7 +121,7 @@ const FriendStreakCard: React.FC<FriendStreakCardProps> = ({ onClose, visible })
         <View style={styles.friendInfo}>
           <Text style={styles.friendName}>{item.name}</Text>
           <View style={styles.streakInfo}>
-            <MaterialCommunityIcons name="fire" size={16} color="#FF6B35" />
+            <MaterialCommunityIcons name="fire" size={16} color={BRAND_COLORS.accent} />
             <Text style={styles.streakText}>{item.streak}</Text>
           </View>
         </View>
@@ -136,7 +137,7 @@ const FriendStreakCard: React.FC<FriendStreakCardProps> = ({ onClose, visible })
 
         {status === 'active' && (
           <View style={styles.activeButton}>
-            <MaterialCommunityIcons name="check-circle" size={20} color="#4CAF50" />
+            <MaterialCommunityIcons name="check-circle" size={20} color="#E94E1B" />
           </View>
         )}
       </Animated.View>
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
     borderWidth: 2,
     borderColor: 'white',
   },

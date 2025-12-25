@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useColorScheme, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MD3LightTheme, MD3DarkTheme, MD3Theme } from 'react-native-paper';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -46,93 +47,103 @@ interface ThemeContextType {
   toggleTheme: () => void;
 }
 
-const lightColors: CustomColors = {
-  background: '#f5f5f5',
-  surface: '#ffffff',
-  text: '#1C1C1C',
-  textSecondary: '#666666',
-  border: '#E0E0E0',
-  cardBackground: '#ffffff',
-  waterCard: '#64B5F6',
-  waterCardLight: '#E1F5FE',
-  progressCard: '#64B5F6',
-  progressCardLight: '#E1F5FE',
-  distanceCard: '#FFB74D',
-  distanceCardLight: '#FFF3E0',
-  stepsCard: '#FFB74D',
-  stepsCardLight: '#FFF3E0',
-  tabBarBackground: '#ffffff',
-  tabBarActive: '#4CAF50',
-  tabBarInactive: '#999999',
-  // Macro colors
-  proteinColor: '#FF6B6B',
-  carbsColor: '#4ECDC4',
-  fatColor: '#FFD93D',
-  // Status colors
-  success: '#4CAF50',
-  warning: '#FF9800',
-  info: '#1CB0F6',
-  // Action colors
-  primaryAction: '#FF6B35',
-  secondaryAction: '#2196F3',
-  dangerAction: '#FF6B6B',
+// FIT AND POWER Brand Colors - Dark Theme (Primary)
+const brandDarkColors: CustomColors = {
+  background: BRAND_COLORS.background,      // #2A2A2A
+  surface: BRAND_COLORS.backgroundLight,     // #4A4A4A
+  text: BRAND_COLORS.text,                   // #F4F1EF
+  textSecondary: BRAND_COLORS.textSecondary, // #C5C2BF
+  border: BRAND_COLORS.border,               // #5A5A5A
+  cardBackground: BRAND_COLORS.backgroundLight, // #4A4A4A
+  waterCard: BRAND_COLORS.accent,            // #E94E1B
+  waterCardLight: BRAND_COLORS.accentSubtle, // #E94E1B20
+  progressCard: BRAND_COLORS.accent,         // #E94E1B
+  progressCardLight: BRAND_COLORS.accentSubtle,
+  distanceCard: BRAND_COLORS.accentLight,    // #FF6B35
+  distanceCardLight: BRAND_COLORS.accentSubtle,
+  stepsCard: BRAND_COLORS.accent,
+  stepsCardLight: BRAND_COLORS.accentSubtle,
+  tabBarBackground: BRAND_COLORS.backgroundDark, // #2A2A2A
+  tabBarActive: '#E94E1B',
+  tabBarInactive: BRAND_COLORS.textSecondary, // #C5C2BF
+  // Macro colors (ALL USE ORANGE - strict 4-color palette)
+  proteinColor: BRAND_COLORS.accent,    // Orange
+  carbsColor: BRAND_COLORS.accent,      // Orange
+  fatColor: BRAND_COLORS.accent,        // Orange
+  // Status colors (ALL USE ORANGE except info which uses blue)
+  success: BRAND_COLORS.success,        // Orange (mapped in brandColors)
+  warning: BRAND_COLORS.warning,        // Orange (mapped in brandColors)
+  info: BRAND_COLORS.info,              // Blue (for data viz only)
+  // Action colors (ALL USE ORANGE)
+  primaryAction: BRAND_COLORS.accent,      // Orange
+  secondaryAction: BRAND_COLORS.accent,    // Orange
+  dangerAction: BRAND_COLORS.accent,       // Orange
 };
 
-const darkColors: CustomColors = {
-  background: '#202124',
-  surface: '#2D2E30',
-  text: '#FFFFFF',
-  textSecondary: '#B3B3B3',
-  border: '#2C2C2C',
-  cardBackground: '#2D2E30',
-  waterCard: '#1976D2',
-  waterCardLight: '#90CAF9',
-  progressCard: '#1976D2',
-  progressCardLight: '#90CAF9',
-  distanceCard: '#E65100',
-  distanceCardLight: '#FFAB91',
-  stepsCard: '#E65100',
-  stepsCardLight: '#FFAB91',
-  tabBarBackground: '#2D2E30',
-  tabBarActive: '#66BB6A',
-  tabBarInactive: '#808080',
-  // Macro colors (slightly adjusted for dark mode)
-  proteinColor: '#FF8A8A',
-  carbsColor: '#6EDBD3',
-  fatColor: '#FFE066',
-  // Status colors
-  success: '#66BB6A',
-  warning: '#FFA726',
-  info: '#42A5F5',
-  // Action colors
-  primaryAction: '#FF8A5B',
-  secondaryAction: '#42A5F5',
-  dangerAction: '#FF8A8A',
+// Light theme (optional - using inverted brand colors)
+const brandLightColors: CustomColors = {
+  background: BRAND_COLORS.text,       // #F4F1EF (cream as background)
+  surface: '#FFFFFF',                   // Pure white
+  text: BRAND_COLORS.background,        // #2A2A2A (dark as text)
+  textSecondary: '#6B6B6B',            // Medium gray
+  border: '#D5D2CF',                   // Light border
+  cardBackground: '#FFFFFF',
+  waterCard: BRAND_COLORS.accent,
+  waterCardLight: BRAND_COLORS.accentSubtle,
+  progressCard: BRAND_COLORS.accent,
+  progressCardLight: BRAND_COLORS.accentSubtle,
+  distanceCard: BRAND_COLORS.accentLight,
+  distanceCardLight: BRAND_COLORS.accentSubtle,
+  stepsCard: BRAND_COLORS.accent,
+  stepsCardLight: BRAND_COLORS.accentSubtle,
+  tabBarBackground: '#FFFFFF',
+  tabBarActive: '#E94E1B',
+  tabBarInactive: '#8B8886',
+  // Macro colors (ALL USE ORANGE - strict 4-color palette)
+  proteinColor: BRAND_COLORS.accent,
+  carbsColor: BRAND_COLORS.accent,
+  fatColor: BRAND_COLORS.accent,
+  // Status colors (ALL USE ORANGE except info which uses blue)
+  success: BRAND_COLORS.success,
+  warning: BRAND_COLORS.warning,
+  info: BRAND_COLORS.info,
+  // Action colors (ALL USE ORANGE)
+  primaryAction: BRAND_COLORS.accent,
+  secondaryAction: BRAND_COLORS.accent,
+  dangerAction: BRAND_COLORS.accent,
 };
 
-const lightTheme: MD3Theme = {
-  ...MD3LightTheme,
-  colors: {
-    ...MD3LightTheme.colors,
-    primary: '#4CAF50',
-    secondary: '#2196F3',
-    tertiary: '#FF9800',
-    error: '#F44336',
-    surface: '#ffffff',
-    background: '#f5f5f5',
-  },
-};
-
-const darkTheme: MD3Theme = {
+const brandDarkTheme: MD3Theme = {
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: '#66BB6A',
-    secondary: '#42A5F5',
-    tertiary: '#FFA726',
-    error: '#EF5350',
-    surface: '#2D2E30',
-    background: '#202124',
+    primary: BRAND_COLORS.accent,         // #E94E1B
+    secondary: BRAND_COLORS.accentLight,  // #FF6B35
+    tertiary: BRAND_COLORS.text,          // #F4F1EF
+    error: BRAND_COLORS.error,            // #E94E1B
+    surface: BRAND_COLORS.backgroundLight, // #4A4A4A
+    background: BRAND_COLORS.background,  // #2A2A2A
+    onPrimary: BRAND_COLORS.text,         // #F4F1EF
+    onSecondary: BRAND_COLORS.text,
+    onSurface: BRAND_COLORS.text,
+    onBackground: BRAND_COLORS.text,
+  },
+};
+
+const brandLightTheme: MD3Theme = {
+  ...MD3LightTheme,
+  colors: {
+    ...MD3LightTheme.colors,
+    primary: BRAND_COLORS.accent,         // #E94E1B
+    secondary: BRAND_COLORS.accentLight,  // #FF6B35
+    tertiary: BRAND_COLORS.background,    // #2A2A2A
+    error: BRAND_COLORS.error,
+    surface: '#FFFFFF',
+    background: BRAND_COLORS.text,        // #F4F1EF
+    onPrimary: BRAND_COLORS.text,
+    onSecondary: BRAND_COLORS.text,
+    onSurface: BRAND_COLORS.background,
+    onBackground: BRAND_COLORS.background,
   },
 };
 
@@ -152,9 +163,10 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const systemColorScheme = useColorScheme();
-  const [themeMode, setThemeModeState] = useState<ThemeMode>('system');
-  const [theme, setTheme] = useState(lightTheme);
-  const [isDark, setIsDark] = useState(false);
+  // Default to dark theme for FIT AND POWER branding
+  const [themeMode, setThemeModeState] = useState<ThemeMode>('dark');
+  const [theme, setTheme] = useState(brandDarkTheme);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     loadThemePreference();
@@ -169,6 +181,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       const savedTheme = await AsyncStorage.getItem('themeMode');
       if (savedTheme) {
         setThemeModeState(savedTheme as ThemeMode);
+      } else {
+        // Default to dark if no preference saved
+        setThemeModeState('dark');
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to load theme settings. Using default theme.');
@@ -177,18 +192,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   const updateTheme = () => {
-    let shouldUseDark = false;
+    let shouldUseDark = true; // Default to dark for brand
 
     if (themeMode === 'dark') {
       shouldUseDark = true;
     } else if (themeMode === 'light') {
       shouldUseDark = false;
     } else {
-      shouldUseDark = systemColorScheme === 'dark';
+      // For system mode, prefer dark theme for brand consistency
+      shouldUseDark = systemColorScheme === 'dark' || systemColorScheme == null;
     }
 
     setIsDark(shouldUseDark);
-    setTheme(shouldUseDark ? darkTheme : lightTheme);
+    setTheme(shouldUseDark ? brandDarkTheme : brandLightTheme);
   };
 
   const setThemeMode = async (mode: ThemeMode) => {
@@ -206,7 +222,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     await setThemeMode(newMode);
   };
 
-  const colors = isDark ? darkColors : lightColors;
+  const colors = isDark ? brandDarkColors : brandLightColors;
 
   const value: ThemeContextType = {
     theme,

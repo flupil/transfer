@@ -3,11 +3,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import DashboardScreen from '../screens/DashboardScreen';
+import TryScreen from '../screens/TryScreen';
 import TraineesScreen from '../screens/coach/TraineesScreen';
 import PlanBuilderScreen from '../screens/coach/PlanBuilderScreen';
 import CoachAnalyticsScreen from '../screens/coach/CoachAnalyticsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -39,12 +40,12 @@ const CoachTabNavigator = () => {
 
           return <MaterialCommunityIcons name={iconName as any} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#4CAF50',
+        tabBarActiveTintColor: '#E94E1B',
         tabBarInactiveTintColor: 'gray',
         headerShown: true,
       })}
     >
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Dashboard" component={TryScreen} />
       <Tab.Screen name="Trainees" component={TraineesScreen} />
       <Tab.Screen name="Plans" component={PlanBuilderScreen} />
       <Tab.Screen name="Analytics" component={CoachAnalyticsScreen} />

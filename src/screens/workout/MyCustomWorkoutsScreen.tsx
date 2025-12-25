@@ -160,7 +160,7 @@ const MyCustomWorkoutsScreen = () => {
           activeOpacity={0.8}
         >
           <LinearGradient
-            colors={['#4CAF50', '#45B839']}
+            colors={['#E94E1B', '#45B839']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.createGradient}
@@ -261,13 +261,13 @@ const MyCustomWorkoutsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFBFD',
+    backgroundColor: '#2A2A2A',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FAFBFD',
+    backgroundColor: '#2A2A2A',
   },
   loadingText: {
     marginTop: 16,

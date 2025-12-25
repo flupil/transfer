@@ -265,7 +265,7 @@ const AttendanceScreen = ({ navigation }: any) => {
   };
 
   const getStatusColor = () => {
-    return isCheckedIn ? '#4CAF50' : '#757575';
+    return isCheckedIn ? '#E94E1B' : '#757575';
   };
 
   const getStatusText = () => {
@@ -425,7 +425,7 @@ const AttendanceScreen = ({ navigation }: any) => {
                       <MaterialCommunityIcons
                         name="check-circle"
                         size={20}
-                        color="#4CAF50"
+                        color="#E94E1B"
                       />
                       <Text style={styles.sessionsText}>
                         {completedSessions} session{completedSessions !== 1 ? 's' : ''}
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   activeBadge: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
   },
   statsGrid: {
     flexDirection: 'row',
@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   todayText: {
-    color: '#4CAF50',
+    color: '#E94E1B',
   },
   attendanceIndicator: {
     flex: 1,
@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
   },
   sessionsText: {
     fontSize: 14,
-    color: '#4CAF50',
+    color: '#E94E1B',
     fontWeight: '500',
   },
 });

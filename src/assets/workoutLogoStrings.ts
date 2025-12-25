@@ -4,8 +4,8 @@ export const workoutLogoSvgs: Record<string, string> = {
     <path d="M25 40 Q50 25, 75 40 L75 60 Q50 75, 25 60 Z" fill="#FF6B35"/>
   </svg>`,
   'push day': `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="45" fill="#4ECDC4" opacity="0.1"/>
-    <path d="M30 50 L70 50 M60 40 L70 50 L60 60" stroke="#4ECDC4" stroke-width="4" fill="none"/>
+    <circle cx="50" cy="50" r="45" fill="#E94E1B" opacity="0.1"/>
+    <path d="M30 50 L70 50 M60 40 L70 50 L60 60" stroke="#E94E1B" stroke-width="4" fill="none"/>
   </svg>`,
   'back day': `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <circle cx="50" cy="50" r="45" fill="#95E1D3" opacity="0.1"/>
@@ -28,9 +28,9 @@ export const workoutLogoSvgs: Record<string, string> = {
   </svg>`,
   'abs day': `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <circle cx="50" cy="50" r="45" fill="#FFFFD2" opacity="0.1"/>
-    <rect x="40" y="35" width="20" height="10" fill="#FFD93D"/>
-    <rect x="40" y="50" width="20" height="10" fill="#FFD93D"/>
-    <rect x="40" y="65" width="20" height="10" fill="#FFD93D"/>
+    <rect x="40" y="35" width="20" height="10" fill="#E94E1B"/>
+    <rect x="40" y="50" width="20" height="10" fill="#E94E1B"/>
+    <rect x="40" y="65" width="20" height="10" fill="#E94E1B"/>
   </svg>`,
   'arms day': `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <circle cx="50" cy="50" r="45" fill="#A8E6CF" opacity="0.1"/>

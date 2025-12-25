@@ -14,7 +14,9 @@ service cloud.firestore {
 
     // Users collection - users can read/write their own data
     match /users/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read: if isAuthenticated() && (request.auth.uid == userId || request.auth.uid != null);
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update, delete: if isAuthenticated() && request.auth.uid == userId;
     }
 
     // Daily data collection - users can read/write their own daily data
@@ -81,6 +83,13 @@ service cloud.firestore {
 
     // Progress tracking
     match /progress/{progressId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // Calendar events - users can read/write their own calendar events
+    match /calendar_events/{eventId} {
       allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;

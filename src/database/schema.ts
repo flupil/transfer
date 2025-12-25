@@ -1,9 +1,21 @@
-import * as SQLite from 'expo-sqlite';
+import { Platform } from 'react-native';
 import { User, Exercise, WorkoutPlan, WorkoutLog, FoodItem, NutritionLog, CalendarEvent, Attendance } from '../types';
 
-let db: SQLite.SQLiteDatabase | null = null;
+// Only import SQLite on native platforms
+let SQLite: any = null;
+if (Platform.OS !== 'web') {
+  SQLite = require('expo-sqlite');
+}
+
+let db: any = null;
 
 export const initializeDatabase = async () => {
+  // Skip database initialization on web
+  if (Platform.OS === 'web') {
+    console.log('Skipping SQLite initialization on web platform');
+    return;
+  }
+
   try {
     // Open or create the database - use sync version for better stability
     db = SQLite.openDatabaseSync('fitgym.db');

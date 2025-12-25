@@ -42,9 +42,9 @@ const OnboardingPlansWelcomeScreen = () => {
 
   const getGoalColor = (goal: string) => {
     switch (goal) {
-      case 'muscle_building': return '#4285F4';
+      case 'muscle_building': return '#3B82F6';
       case 'fat_loss': return '#FF6B35';
-      case 'strength': return '#8B5CF6';
+      case 'strength': return '#E94E1B';
       case 'tone': return '#EC4899';
       case 'general_fitness': return '#10B981';
       case 'endurance': return '#F59E0B';
@@ -58,7 +58,7 @@ const OnboardingPlansWelcomeScreen = () => {
     const badges = {
       beginner: { label: 'Beginner', color: '#10B981' },
       intermediate: { label: 'Intermediate', color: '#F59E0B' },
-      advanced: { label: 'Advanced', color: '#EF4444' }
+      advanced: { label: 'Advanced', color: '#E94E1B' }
     };
     return badges[experience as keyof typeof badges] || badges.beginner;
   };
@@ -84,7 +84,7 @@ const OnboardingPlansWelcomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <View style={styles.progressContainer}>
@@ -146,7 +146,7 @@ const OnboardingPlansWelcomeScreen = () => {
         )}
 
         <View style={styles.infoBox}>
-          <MaterialCommunityIcons name="information-outline" size={20} color="#3b9eff" />
+          <MaterialCommunityIcons name="information-outline" size={20} color="#3B82F6" />
           <Text style={styles.infoText}>
             You can always change your workout plan later in the app settings. For nutrition, you can browse meal plans from the nutrition tab if you want pre-planned meals.
           </Text>
@@ -166,7 +166,7 @@ const OnboardingPlansWelcomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     paddingHorizontal: 20,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   planCard: {
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 16,
     padding: 18,
     borderWidth: 2,

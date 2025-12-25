@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { Platform } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -13,10 +14,16 @@ import { UserPreferencesProvider } from './src/contexts/UserPreferencesContext';
 import { NutritionProvider } from './src/contexts/NutritionContext';
 import { LanguageProvider } from './src/contexts/LanguageContext';
 import { TourProvider } from './src/contexts/TourContext';
+import { SnackbarProvider } from './src/contexts/SnackbarContext';
+import { TimerProvider } from './src/contexts/TimerContext';
+import { GymBrandingProvider } from './src/contexts/GymBrandingContext';
 import { AppNavigator } from './src/navigation/AppNavigator';
+import { FloatingTimerBubble } from './src/components/FloatingTimerBubble';
 import { initializeDatabase } from './src/database/schema';
 import { setupNotifications } from './src/services/notificationService';
+import { networkService } from './src/services/networkService';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
+import registerServiceWorker from './src/registerServiceWorker';
 // import { initializeSentry } from './src/config/sentry'; // Disabled for Expo Go - requires native code
 
 // Set notification handler only if notifications are available
@@ -63,6 +70,7 @@ function ThemedApp() {
     <PaperProvider theme={theme}>
       <NavigationContainer theme={navigationTheme}>
         <AppNavigator />
+        <FloatingTimerBubble />
         <StatusBar style={isDark ? 'light' : 'dark'} />
       </NavigationContainer>
     </PaperProvider>
@@ -95,29 +103,52 @@ export default function App() {
       console.log('Notification setup skipped:', notifError);
       // App can continue without notifications
     }
+
+    try {
+      networkService.initialize();
+    } catch (netError) {
+      console.log('Network monitoring setup skipped:', netError);
+      // App can continue without network monitoring
+    }
+
+    // Register Service Worker for PWA (web only)
+    if (Platform.OS === 'web') {
+      try {
+        registerServiceWorker();
+      } catch (swError) {
+        console.log('Service Worker registration skipped:', swError);
+      }
+    }
+
   };
 
   return (
     <ErrorBoundary>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-          <LanguageProvider>
-            <DatabaseProvider>
-              <AuthProvider>
-                <UserPreferencesProvider>
-                  <OnboardingProvider>
-                    <NutritionProvider>
-                      <ThemeProvider>
-                        <TourProvider>
-                          <ThemedApp />
-                        </TourProvider>
-                      </ThemeProvider>
-                    </NutritionProvider>
-                  </OnboardingProvider>
-                </UserPreferencesProvider>
-              </AuthProvider>
-            </DatabaseProvider>
-          </LanguageProvider>
+          <GymBrandingProvider>
+            <LanguageProvider>
+              <DatabaseProvider>
+                <AuthProvider>
+                  <UserPreferencesProvider>
+                    <OnboardingProvider>
+                      <NutritionProvider>
+                        <ThemeProvider>
+                          <SnackbarProvider>
+                            <TourProvider>
+                              <TimerProvider>
+                                <ThemedApp />
+                              </TimerProvider>
+                            </TourProvider>
+                          </SnackbarProvider>
+                        </ThemeProvider>
+                      </NutritionProvider>
+                    </OnboardingProvider>
+                  </UserPreferencesProvider>
+                </AuthProvider>
+              </DatabaseProvider>
+            </LanguageProvider>
+          </GymBrandingProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </ErrorBoundary>

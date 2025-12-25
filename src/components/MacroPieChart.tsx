@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Path, G, Text as SvgText } from 'react-native-svg';
+import { BRAND_COLORS } from '../constants/brandColors';
+import { generatePieChartColors } from '../utils/colorUtils';
 
 interface MacroPieChartProps {
   title?: string;
@@ -26,12 +28,8 @@ const MacroPieChart: React.FC<MacroPieChartProps> = ({
   const proteinPercent = totalCalories > 0 ? (protein / totalCalories) * 100 : 0;
   const fatPercent = totalCalories > 0 ? (fat / totalCalories) * 100 : 0;
 
-  // Colors (matching your app theme)
-  const colors = {
-    carbs: '#4ECDC4',     // Teal/Cyan
-    protein: '#E8C547',   // Yellow
-    fat: '#FF9F40',       // Orange
-  };
+  // Generate dynamic colors based on gym's primary color
+  const colors = useMemo(() => generatePieChartColors(BRAND_COLORS.accent), []);
 
   // Helper function to create a pie slice path
   const createPieSlice = (startAngle: number, endAngle: number) => {
@@ -86,7 +84,7 @@ const MacroPieChart: React.FC<MacroPieChartProps> = ({
             <Path
               d={carbsPath}
               fill={colors.carbs}
-              stroke="#2C2C2E"
+              stroke="#4E4E50"
               strokeWidth="3"
             />
           )}
@@ -94,7 +92,7 @@ const MacroPieChart: React.FC<MacroPieChartProps> = ({
             <Path
               d={proteinPath}
               fill={colors.protein}
-              stroke="#2C2C2E"
+              stroke="#4E4E50"
               strokeWidth="3"
             />
           )}
@@ -102,7 +100,7 @@ const MacroPieChart: React.FC<MacroPieChartProps> = ({
             <Path
               d={fatPath}
               fill={colors.fat}
-              stroke="#2C2C2E"
+              stroke="#4E4E50"
               strokeWidth="3"
             />
           )}

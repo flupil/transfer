@@ -9,6 +9,7 @@ import {
 import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useTheme } from '../../contexts/ThemeContext';
 import type { FootballProgram, FootballWorkout } from '../../data/footballWorkouts';
 
 const { width } = Dimensions.get('window');
@@ -16,11 +17,15 @@ const { width } = Dimensions.get('window');
 const FootballProgramWorkoutsScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const { colors } = useTheme();
   const program = (route.params as any)?.program as FootballProgram;
+
+  // Generate styles with theme colors
+  const styles = React.useMemo(() => getStyles(colors), [colors]);
 
   if (!program) {
     return (
-      <View style={[styles.container, { backgroundColor: '#0A1628' }]}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={styles.errorText}>Program not found</Text>
       </View>
     );
@@ -32,10 +37,10 @@ const FootballProgramWorkoutsScreen: React.FC = () => {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner': return '#22C55E';
-      case 'intermediate': return '#FFB800';
-      case 'advanced': return '#FF6B35';
-      default: return '#8B9AA5';
+      case 'beginner': return colors.success;
+      case 'intermediate': return colors.warning;
+      case 'advanced': return colors.secondaryAction;
+      default: return colors.textSecondary;
     }
   };
 
@@ -46,7 +51,7 @@ const FootballProgramWorkoutsScreen: React.FC = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: '#0A1628' }]}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -69,7 +74,7 @@ const FootballProgramWorkoutsScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         {/* Program Info */}
-        <View style={[styles.programInfo, { backgroundColor: '#1E3A5F' }]}>
+        <View style={styles.programInfo}>
           <View style={[styles.programIconLarge, { backgroundColor: `${program.color}20` }]}>
             <MaterialCommunityIcons
               name={program.icon as any}
@@ -121,7 +126,7 @@ const FootballProgramWorkoutsScreen: React.FC = () => {
               {workouts.map((workout, index) => (
                 <TouchableOpacity
                   key={workout.id}
-                  style={[styles.workoutCard, { backgroundColor: '#1E3A5F' }]}
+                  style={styles.workoutCard}
                   onPress={() => navigateToWorkoutDetail(workout)}
                   activeOpacity={0.8}
                 >
@@ -158,7 +163,7 @@ const FootballProgramWorkoutsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -174,7 +179,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(30, 58, 95, 0.8)',
+    backgroundColor: `${colors.cardBackground}CC`,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -186,7 +191,7 @@ const styles = StyleSheet.create({
   headerTitleText: {
     fontSize: 18,
     fontWeight: '600',
-    color: 'white',
+    color: colors.text,
   },
   scrollView: {
     flex: 1,
@@ -199,6 +204,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     marginBottom: 24,
+    backgroundColor: colors.cardBackground,
   },
   programIconLarge: {
     width: 80,
@@ -211,26 +217,26 @@ const styles = StyleSheet.create({
   programName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
     textAlign: 'center',
     marginBottom: 4,
   },
   programNameHe: {
     fontSize: 18,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     textAlign: 'center',
     marginBottom: 12,
   },
   programDescription: {
     fontSize: 14,
-    color: '#B0B0B0',
+    color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 4,
   },
   programDescriptionHe: {
     fontSize: 14,
-    color: '#B0B0B0',
+    color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 16,
@@ -247,7 +253,7 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontSize: 13,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
   },
   difficultySection: {
     marginBottom: 24,
@@ -270,7 +276,7 @@ const styles = StyleSheet.create({
   },
   difficultySectionCount: {
     fontSize: 14,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
   },
   workoutCard: {
     flexDirection: 'row',
@@ -278,12 +284,13 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
+    backgroundColor: colors.cardBackground,
   },
   workoutNumber: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: `${colors.text}1A`,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -291,7 +298,7 @@ const styles = StyleSheet.create({
   workoutNumberText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'white',
+    color: colors.text,
   },
   workoutInfo: {
     flex: 1,
@@ -299,12 +306,12 @@ const styles = StyleSheet.create({
   workoutName: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'white',
+    color: colors.text,
     marginBottom: 2,
   },
   workoutNameHe: {
     fontSize: 13,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
     marginBottom: 6,
   },
   workoutMeta: {
@@ -318,11 +325,11 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 12,
-    color: '#8B9AA5',
+    color: colors.textSecondary,
   },
   errorText: {
     fontSize: 16,
-    color: 'white',
+    color: colors.text,
     textAlign: 'center',
     marginTop: 100,
   },

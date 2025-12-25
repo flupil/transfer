@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { getSafeDatabase } from '../database/databaseHelper';
 import { workoutService } from '../services/workoutService';
 import { format } from 'date-fns';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 const { width } = Dimensions.get('window');
 
@@ -827,7 +828,7 @@ const WorkoutScreen: React.FC = () => {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>{t('workouts.startWorkout')}</Text>
+          <Text style={styles.headerTitle}>{t('workouts.startWorkout')} QA-TEST</Text>
           <Text style={styles.headerSubtitle}>{t('workouts.chooseTemplate')}</Text>
         </View>
 
@@ -837,7 +838,7 @@ const WorkoutScreen: React.FC = () => {
               style={styles.quickActionCard}
               onPress={() => (navigation as any).navigate('WorkoutPlans')}
             >
-              <MaterialCommunityIcons name="clipboard-list" size={32} color="#4ECDC4" />
+              <MaterialCommunityIcons name="clipboard-list" size={32} color={BRAND_COLORS.accent} />
               <Text style={styles.quickActionTitle}>{t('workouts.workoutPrograms')}</Text>
               <Text style={styles.quickActionSubtitle}>{t('workouts.browsePlansSubtitle')}</Text>
             </TouchableOpacity>
@@ -846,7 +847,7 @@ const WorkoutScreen: React.FC = () => {
               style={styles.quickActionCard}
               onPress={() => (navigation as any).navigate('ExerciseLibrary')}
             >
-              <MaterialCommunityIcons name="book-open-variant" size={32} color="#4ECDC4" />
+              <MaterialCommunityIcons name="book-open-variant" size={32} color={BRAND_COLORS.accent} />
               <Text style={styles.quickActionTitle}>{t('workouts.exerciseLibrary')}</Text>
               <Text style={styles.quickActionSubtitle}>{t('workouts.learnTechniques')}</Text>
             </TouchableOpacity>
@@ -860,7 +861,7 @@ const WorkoutScreen: React.FC = () => {
               setWorkoutStartTime(new Date());
             }}
           >
-            <MaterialCommunityIcons name="plus-circle" size={48} color="#4ECDC4" />
+            <MaterialCommunityIcons name="plus-circle" size={48} color={BRAND_COLORS.accent} />
             <Text style={styles.customWorkoutTitle}>{t('workouts.startCustomWorkout')}</Text>
             <Text style={styles.customWorkoutSubtitle}>{t('workouts.buildYourOwn')}</Text>
           </TouchableOpacity>
@@ -882,7 +883,7 @@ const WorkoutScreen: React.FC = () => {
                 <MaterialCommunityIcons
                   name={template.category === 'strength' ? 'dumbbell' : 'run-fast'}
                   size={32}
-                  color={template.category === 'strength' ? '#4ECDC4' : '#FF6B35'}
+                  color={template.category === 'strength' ? BRAND_COLORS.accent : BRAND_COLORS.accentLight}
                 />
               </View>
               <View style={styles.templateExercisesList}>
@@ -943,11 +944,11 @@ const WorkoutScreen: React.FC = () => {
                 <MaterialCommunityIcons
                   name={getMuscleGroupIcon(exercise.muscleGroup) as any}
                   size={24}
-                  color="#4ECDC4"
+                  color={BRAND_COLORS.accent}
                 />
                 <Text style={styles.exerciseName}>{exercise.name}</Text>
                 <TouchableOpacity onPress={() => removeExercise(exercise.id)}>
-                  <MaterialCommunityIcons name="close" size={24} color="#FF6B35" />
+                  <MaterialCommunityIcons name="close" size={24} color={BRAND_COLORS.accentLight} />
                 </TouchableOpacity>
               </View>
 
@@ -983,7 +984,7 @@ const WorkoutScreen: React.FC = () => {
                     <MaterialCommunityIcons
                       name={set.completed ? "check-circle" : "check-circle-outline"}
                       size={24}
-                      color={set.completed ? "white" : "#4ECDC4"}
+                      color={set.completed ? "white" : BRAND_COLORS.accent}
                     />
                   </TouchableOpacity>
                   {exercise.sets.length > 1 && (
@@ -991,7 +992,7 @@ const WorkoutScreen: React.FC = () => {
                       style={styles.removeSetButton}
                       onPress={() => removeSet(exercise.id, set.id)}
                     >
-                      <MaterialCommunityIcons name="minus-circle" size={20} color="#FF6B35" />
+                      <MaterialCommunityIcons name="minus-circle" size={20} color={BRAND_COLORS.accentLight} />
                     </TouchableOpacity>
                   )}
                 </View>
@@ -1001,7 +1002,7 @@ const WorkoutScreen: React.FC = () => {
                 style={styles.addSetButton}
                 onPress={() => addSet(exercise.id)}
               >
-                <MaterialCommunityIcons name="plus-circle-outline" size={20} color="#4ECDC4" />
+                <MaterialCommunityIcons name="plus-circle-outline" size={20} color={BRAND_COLORS.accent} />
                 <Text style={styles.addSetText}>{t('workouts.addSet')}</Text>
               </TouchableOpacity>
             </Card.Content>
@@ -1012,7 +1013,7 @@ const WorkoutScreen: React.FC = () => {
           style={styles.addExerciseButton}
           onPress={() => setShowAddExerciseModal(true)}
         >
-          <MaterialCommunityIcons name="plus" size={24} color="#4ECDC4" />
+          <MaterialCommunityIcons name="plus" size={24} color={BRAND_COLORS.accent} />
           <Text style={styles.addExerciseText}>{t('workouts.addExercise')}</Text>
         </TouchableOpacity>
 
@@ -1153,7 +1154,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#4ECDC4',
+    borderColor: BRAND_COLORS.accent,
     borderStyle: 'dashed',
   },
   customWorkoutTitle: {
@@ -1235,12 +1236,12 @@ const styles = StyleSheet.create({
   },
   templateExerciseMore: {
     fontSize: 13,
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     fontStyle: 'italic',
     marginTop: 4,
   },
   activeHeader: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     padding: 16,
     paddingTop: 20,
   },
@@ -1280,7 +1281,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   finishButtonText: {
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     fontWeight: 'bold',
   },
   exerciseCard: {
@@ -1345,7 +1346,7 @@ const styles = StyleSheet.create({
   },
   weightInput: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     borderRadius: 8,
     padding: 8,
     marginHorizontal: 4,
@@ -1354,7 +1355,7 @@ const styles = StyleSheet.create({
   },
   repsInput: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     borderRadius: 8,
     padding: 8,
     marginHorizontal: 4,
@@ -1366,7 +1367,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkButtonCompleted: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     borderRadius: 12,
     padding: 2,
   },
@@ -1384,7 +1385,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#F0F0F0',
   },
   addSetText: {
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -1399,11 +1400,11 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#4ECDC4',
+    borderColor: BRAND_COLORS.accent,
     borderStyle: 'dashed',
   },
   addExerciseText: {
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -1461,10 +1462,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelModalButton: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
   },
   saveButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
   },
   cancelButtonText: {
     color: '#666',
@@ -1492,7 +1493,7 @@ const styles = StyleSheet.create({
   timerDisplay: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     marginBottom: 30,
   },
   timerButtons: {
@@ -1501,7 +1502,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   timerControlButton: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -1509,7 +1510,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timerPlayButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
   },
   timerControlText: {
     fontSize: 16,
@@ -1519,7 +1520,7 @@ const styles = StyleSheet.create({
   closeTimerButton: {
     paddingVertical: 12,
     paddingHorizontal: 40,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     borderRadius: 10,
   },
   closeTimerText: {

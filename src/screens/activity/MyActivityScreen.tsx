@@ -7,6 +7,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
 import Svg, { Circle, Line, Text as SvgText, Rect, Defs, LinearGradient, Stop, Path, G } from 'react-native-svg';
 import firebaseDailyDataService from '../../services/firebaseDailyDataService';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
@@ -241,14 +242,14 @@ const MyActivityScreen = () => {
     if (activityData.length === 0 || barAnimations.length === 0) {
       return (
         <View style={styles.emptyState}>
-          <Ionicons name="trending-up-outline" size={48} color="#3C3C3E" />
+          <Ionicons name="trending-up-outline" size={48} color="#4E4E50" />
           <Text style={styles.emptyText}>No data available</Text>
         </View>
       );
     }
 
     const maxValue = Math.max(...activityData.map(d => d.value), 1);
-    const barColor = dataType === 'calories' ? '#FF6B35' : '#4285F4';
+    const barColor = dataType === 'calories' ? BRAND_COLORS.accentLight : '#3B82F6';
     const todayStr = new Date().toISOString().split('T')[0];
 
     // Day view shows bars
@@ -288,7 +289,7 @@ const MyActivityScreen = () => {
                     y1={y}
                     x2={chartWidth}
                     y2={y}
-                    stroke="#2C2C2E"
+                    stroke="#4E4E50"
                     strokeWidth="1"
                     strokeDasharray="4,4"
                     opacity="0.3"
@@ -314,7 +315,7 @@ const MyActivityScreen = () => {
               y1={paddingTop + chartHeight}
               x2={chartWidth}
               y2={paddingTop + chartHeight}
-              stroke="#3C3C3E"
+              stroke="#4E4E50"
               strokeWidth="2"
             />
 
@@ -421,7 +422,7 @@ const MyActivityScreen = () => {
                   y1={y}
                   x2={chartWidth - paddingRight}
                   y2={y}
-                  stroke="#2C2C2E"
+                  stroke="#4E4E50"
                   strokeWidth="1"
                   strokeDasharray="4,4"
                   opacity="0.3"
@@ -526,7 +527,7 @@ const MyActivityScreen = () => {
                       cx={point.x}
                       cy={point.y}
                       r={isToday ? "2" : "1.5"}
-                      fill="#1C1C1E"
+                      fill="#4E4E50"
                     />
                   </>
                 )}
@@ -649,11 +650,11 @@ const MyActivityScreen = () => {
       {/* Date Navigation with arrows */}
       <View style={styles.dateNavContainer}>
         <TouchableOpacity onPress={handlePreviousDate} style={styles.arrowButton}>
-          <Ionicons name="chevron-back" size={24} color="#4285F4" />
+          <Ionicons name="chevron-back" size={24} color="#3B82F6" />
         </TouchableOpacity>
         <Text style={styles.dateText}>{getDateRangeText()}</Text>
         <TouchableOpacity onPress={handleNextDate} style={styles.arrowButton}>
-          <Ionicons name="chevron-forward" size={24} color="#4285F4" />
+          <Ionicons name="chevron-forward" size={24} color="#3B82F6" />
         </TouchableOpacity>
       </View>
 
@@ -663,7 +664,7 @@ const MyActivityScreen = () => {
           <Ionicons
             name={dataType === 'steps' ? 'footsteps' : 'flame'}
             size={28}
-            color={dataType === 'steps' ? '#4285F4' : '#FF6B35'}
+            color={dataType === 'steps' ? '#3B82F6' : BRAND_COLORS.accentLight}
           />
           <Text style={styles.dailySummaryValue}>
             {Math.round(getTotalValue()).toLocaleString()}
@@ -707,7 +708,7 @@ const MyActivityScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: '#4E4E50',
   },
   header: {
     flexDirection: 'row',
@@ -726,7 +727,7 @@ const styles = StyleSheet.create({
   },
   timeNavWrapper: {
     borderBottomWidth: 1,
-    borderBottomColor: '#2C2C2E',
+    borderBottomColor: '#4E4E50',
   },
   timeNavContainer: {
     flexDirection: 'row',
@@ -744,11 +745,11 @@ const styles = StyleSheet.create({
     color: '#B0B0B0',
   },
   timeNavTextActive: {
-    color: '#4285F4',
+    color: '#3B82F6',
   },
   underline: {
     height: 3,
-    backgroundColor: '#4285F4',
+    backgroundColor: '#3B82F6',
     marginHorizontal: 16,
     borderRadius: 1.5,
   },
@@ -808,7 +809,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#3C3C3E',
+    borderColor: '#4E4E50',
     backgroundColor: 'transparent',
   },
   dataTypeButtonActive: {

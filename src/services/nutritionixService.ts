@@ -15,10 +15,13 @@ export const searchFoods = async (
   pageSize: number = 20
 ): Promise<FoodSearchResult> => {
   try {
+    const appId = NUTRITIONIX_APP_ID || 'f7a8c1e0';
+    const apiKey = NUTRITIONIX_API_KEY || '3eb38c7e134b318d734f1ebe4065c7d6';
+
     const response = await fetch(`${NUTRITIONIX_API_BASE}/search/instant?query=${encodeURIComponent(query)}`, {
       headers: {
-        'x-app-id': NUTRITIONIX_APP_ID,
-        'x-app-key': NUTRITIONIX_API_KEY,
+        'x-app-id': appId,
+        'x-app-key': apiKey,
         'Content-Type': 'application/json'
       }
     });
@@ -74,11 +77,14 @@ export const searchFoods = async (
  */
 async function getCommonFoodDetails(foodName: string, imageUrl?: string): Promise<FoodItem | null> {
   try {
+    const appId = NUTRITIONIX_APP_ID || 'f7a8c1e0';
+    const apiKey = NUTRITIONIX_API_KEY || '3eb38c7e134b318d734f1ebe4065c7d6';
+
     const response = await fetch(`${NUTRITIONIX_API_BASE}/natural/nutrients`, {
       method: 'POST',
       headers: {
-        'x-app-id': NUTRITIONIX_APP_ID,
-        'x-app-key': NUTRITIONIX_API_KEY,
+        'x-app-id': appId,
+        'x-app-key': apiKey,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({

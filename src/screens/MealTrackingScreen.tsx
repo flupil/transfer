@@ -12,6 +12,7 @@ import {
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { BRAND_COLORS } from '../constants/brandColors';
 import {
   getTodayMacros,
   addMacroEntry,
@@ -125,11 +126,11 @@ const MealTrackingScreen = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#F5F5F5' }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={28} color="#FF6B35" />
+          <Ionicons name="chevron-back" size={28} color={BRAND_COLORS.accent} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Text style={styles.headerTitle}>{getMealName()}</Text>
@@ -141,7 +142,7 @@ const MealTrackingScreen = () => {
       {/* Macro Cards */}
       <View style={styles.macroRow}>
         <View style={[styles.macroCard, { backgroundColor: '#FFE8E8' }]}>
-          <MaterialCommunityIcons name="fire" size={24} color="#FF6B6B" />
+          <MaterialCommunityIcons name="fire" size={24} color={BRAND_COLORS.accent} />
           <Text style={styles.macroLabel}>Calories</Text>
           <Text style={styles.macroValue}>
             {Math.round(macros.calories.current)}/{macros.calories.target}
@@ -179,7 +180,7 @@ const MealTrackingScreen = () => {
           style={[styles.tabButton, selectedTab === 'favorites' && styles.activeTab]}
           onPress={() => setSelectedTab('favorites')}
         >
-          <MaterialCommunityIcons name="star" size={18} color={selectedTab === 'favorites' ? '#FF6B35' : '#999'} />
+          <MaterialCommunityIcons name="star" size={18} color={selectedTab === 'favorites' ? BRAND_COLORS.accent : '#999'} />
           <Text style={[styles.tabText, selectedTab === 'favorites' && styles.activeTabText]}>
             Favorites
           </Text>
@@ -214,7 +215,7 @@ const MealTrackingScreen = () => {
               <Text style={styles.foodTitle}>{entry.name}</Text>
               <View style={styles.foodDetails}>
                 <View style={styles.caloriesInfo}>
-                  <MaterialCommunityIcons name="fire" size={16} color="#FF6B6B" />
+                  <MaterialCommunityIcons name="fire" size={16} color={BRAND_COLORS.accent} />
                   <Text style={styles.caloriesText}>{entry.calories} calories</Text>
                 </View>
                 <View style={styles.macroInfo}>
@@ -247,7 +248,7 @@ const MealTrackingScreen = () => {
                 <Text style={styles.foodTitle}>{food.name}</Text>
                 <View style={styles.foodDetails}>
                   <View style={styles.caloriesInfo}>
-                    <MaterialCommunityIcons name="fire" size={16} color="#FF6B6B" />
+                    <MaterialCommunityIcons name="fire" size={16} color={BRAND_COLORS.accent} />
                     <Text style={styles.caloriesText}>{food.calories} cal</Text>
                   </View>
                   <View style={styles.servingInfo}>
@@ -268,8 +269,8 @@ const MealTrackingScreen = () => {
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.goBack()}>
-          <Ionicons name="home" size={22} color="#FF6B35" />
-          <Text style={[styles.navLabel, { color: '#FF6B35' }]}>Home</Text>
+          <Ionicons name="home" size={22} color={BRAND_COLORS.accent} />
+          <Text style={[styles.navLabel, { color: BRAND_COLORS.accent }]}>Home</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Workout' as never)}>
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: '#FF6B35',
+    borderColor: BRAND_COLORS.accent,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -330,7 +331,7 @@ const styles = StyleSheet.create({
   headerTime: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: BRAND_COLORS.accent,
   },
   macroRow: {
     flexDirection: 'row',
@@ -377,7 +378,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   activeTab: {
-    borderColor: '#FF6B35',
+    borderColor: BRAND_COLORS.accent,
     backgroundColor: '#FFF5F0',
   },
   tabText: {
@@ -385,7 +386,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   activeTabText: {
-    color: '#FF6B35',
+    color: BRAND_COLORS.accent,
     fontWeight: '500',
   },
   scrollView: {
@@ -415,8 +416,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#4CAF50',
-    borderColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
+    borderColor: BRAND_COLORS.accent,
   },
   foodContent: {
     flex: 1,
@@ -442,7 +443,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   servingInfo: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,

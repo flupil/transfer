@@ -268,8 +268,8 @@ export const ExerciseLibraryScreen: React.FC = () => {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner': return '#4CAF50';
-      case 'intermediate': return '#FF9800';
+      case 'beginner': return '#E94E1B';
+      case 'intermediate': return '#E94E1B';
       case 'advanced': return '#F44336';
       default: return '#9E9E9E';
     }
@@ -403,7 +403,7 @@ export const ExerciseLibraryScreen: React.FC = () => {
                     <Text style={styles.sectionTitle}>{t('exercises.proTips')}</Text>
                     {selectedExercise.tips.map((tip, index) => (
                       <View key={index} style={styles.tipItem}>
-                        <MaterialCommunityIcons name="lightbulb-outline" size={16} color="#4CAF50" />
+                        <MaterialCommunityIcons name="lightbulb-outline" size={16} color="#E94E1B" />
                         <Text style={styles.tipText}>{tip}</Text>
                       </View>
                     ))}
@@ -594,7 +594,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
     color: 'white',
     textAlign: 'center',
     lineHeight: 24,

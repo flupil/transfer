@@ -1,8 +1,8 @@
 import * as Calendar from 'expo-calendar';
 import { Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 import { translate } from '../contexts/LanguageContext';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 interface CalendarEvent {
   id?: string;
@@ -45,6 +45,8 @@ export class CalendarService {
         const { calendarId } = JSON.parse(saved);
         if (calendarId) {
           this.calendarId = calendarId;
+          // Update calendar color to match current branding
+          await this.updateCalendarColor(calendarId);
           return calendarId;
         }
       }
@@ -61,12 +63,14 @@ export class CalendarService {
 
       // Get or create calendar
       const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
-      
+
       // Look for existing Fit&Power calendar
       const existingCalendar = calendars.find(cal => cal.title === CALENDAR_NAME);
       if (existingCalendar) {
         this.calendarId = existingCalendar.id;
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ calendarId: existingCalendar.id }));
+        // Update calendar color to match current branding
+        await this.updateCalendarColor(existingCalendar.id);
         return existingCalendar.id;
       }
 
@@ -94,7 +98,7 @@ export class CalendarService {
 
       const newCalendarID = await Calendar.createCalendarAsync({
         title: CALENDAR_NAME,
-        color: '#FF6B35',
+        color: BRAND_COLORS.accent,
         entityType: Calendar.EntityTypes.EVENT,
         sourceId: defaultCalendarSource.id,
         source: defaultCalendarSource as any,
@@ -118,6 +122,19 @@ export class CalendarService {
       source => source.type === Calendar.SourceType.LOCAL
     );
     return defaultSource;
+  }
+
+  private static async updateCalendarColor(calendarId: string): Promise<void> {
+    try {
+      // Update calendar color to match current branding
+      await Calendar.updateCalendarAsync(calendarId, {
+        color: BRAND_COLORS.accent,
+      });
+      console.log('Calendar color updated to:', BRAND_COLORS.accent);
+    } catch (error) {
+      console.log('Could not update calendar color (may not be supported on this platform):', error);
+      // Don't show alert - this is not critical and may not be supported on all platforms
+    }
   }
 
   static async addWorkoutEvent(
@@ -299,6 +316,41 @@ export class CalendarService {
       Alert.alert('Error', 'Deleting event. Please try again.');
 
       console.error('Error deleting event:', error);
+      return false;
+    }
+  }
+
+  static async resetCalendar(): Promise<boolean> {
+    try {
+      // Clear cached calendar ID
+      this.calendarId = null;
+
+      // Clear stored calendar ID
+      await AsyncStorage.removeItem(STORAGE_KEY);
+
+      // Get all calendars and find Fit&Power calendar
+      const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+      const existingCalendar = calendars.find(cal => cal.title === CALENDAR_NAME);
+
+      if (existingCalendar) {
+        // Delete the old calendar
+        await Calendar.deleteCalendarAsync(existingCalendar.id);
+        console.log('Old calendar deleted');
+      }
+
+      // Create new calendar with correct color
+      const newCalendarId = await this.createCalendar();
+      if (newCalendarId) {
+        this.calendarId = newCalendarId;
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ calendarId: newCalendarId }));
+        Alert.alert('Success', 'Calendar has been reset with the new branding color. Please sync your workouts again.');
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error resetting calendar:', error);
+      Alert.alert('Error', 'Failed to reset calendar. Please try again.');
       return false;
     }
   }

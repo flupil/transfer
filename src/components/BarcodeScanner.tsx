@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+// import { BarCodeScanner } from 'expo-barcode-scanner'; // Temporarily disabled due to build issues
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { foodApiService } from '../services/foodApiService';
@@ -42,6 +42,22 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   onClose,
   onScan,
 }) => {
+  // Temporarily disabled - barcode scanner feature unavailable
+  return (
+    <Modal visible={visible} transparent animationType="slide">
+      <View style={styles.container}>
+        <View style={styles.disabledContainer}>
+          <MaterialCommunityIcons name="barcode-off" size={64} color="#999" />
+          <Text style={styles.disabledText}>Barcode Scanner Temporarily Unavailable</Text>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  /* Original code disabled:
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -58,6 +74,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     const { status } = await BarCodeScanner.requestPermissionsAsync();
     setHasPermission(status === 'granted');
   };
+  *
 
   const handleBarCodeScanned = async ({ type, data }: { type: string; data: string }) => {
     if (scanned) return;
@@ -265,7 +282,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 </TouchableOpacity>
                 <TouchableOpacity onPress={confirmFoodItem}>
                   <LinearGradient
-                    colors={['#4CAF50', '#45B839']}
+                    colors={['#E94E1B', '#45B839']}
                     style={styles.addButton}
                   >
                     <Text style={styles.addButtonText}>Add to Diary</Text>

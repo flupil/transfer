@@ -88,7 +88,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
       <Card style={styles.compactCard}>
         <Card.Content>
           <View style={styles.compactHeader}>
-            <MaterialCommunityIcons name="water" size={24} color="#2196F3" />
+            <MaterialCommunityIcons name="water" size={24} color="#3B82F6" />
             <Text style={styles.compactTitle}>Water</Text>
             <Text style={styles.compactValue}>
               {(waterIntake / 1000).toFixed(1)}L / {(dailyGoal / 1000).toFixed(0)}L
@@ -96,7 +96,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
           </View>
           <ProgressBar
             progress={progress}
-            color="#2196F3"
+            color="#3B82F6"
             style={styles.compactProgressBar}
           />
           <View style={styles.compactActions}>
@@ -104,7 +104,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
               style={styles.compactButton}
               onPress={() => addWater(glassSize)}
             >
-              <MaterialCommunityIcons name="plus" size={20} color="#2196F3" />
+              <MaterialCommunityIcons name="plus" size={20} color="#3B82F6" />
             </TouchableOpacity>
             <Text style={styles.compactPercentage}>{percentage}%</Text>
             <TouchableOpacity
@@ -124,7 +124,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
       <Card.Content>
         <View style={styles.header}>
           <View style={styles.titleSection}>
-            <MaterialCommunityIcons name="water" size={28} color="#2196F3" />
+            <MaterialCommunityIcons name="water" size={28} color="#3B82F6" />
             <Text style={styles.title}>Water Intake</Text>
           </View>
           <TouchableOpacity
@@ -143,7 +143,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
         >
           <View style={styles.circularProgress}>
             <View style={styles.waterDrop}>
-              <MaterialCommunityIcons name="water" size={40} color="#2196F3" />
+              <MaterialCommunityIcons name="water" size={40} color="#3B82F6" />
             </View>
             <Text style={styles.intakeText}>
               {(waterIntake / 1000).toFixed(1)}L
@@ -155,7 +155,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
 
           <ProgressBar
             progress={progress}
-            color="#2196F3"
+            color="#3B82F6"
             style={styles.progressBar}
           />
 
@@ -165,7 +165,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
               <Text style={styles.statLabel}>Glasses</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: percentage >= 100 ? '#4CAF50' : '#2196F3' }]}>
+              <Text style={[styles.statValue, { color: percentage >= 100 ? '#E94E1B' : '#3B82F6' }]}>
                 {percentage}%
               </Text>
               <Text style={styles.statLabel}>Complete</Text>
@@ -186,7 +186,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
               style={styles.quickAddButton}
               onPress={() => addWater(glassSize)}
             >
-              <MaterialCommunityIcons name="cup" size={24} color="#2196F3" />
+              <MaterialCommunityIcons name="cup" size={24} color="#3B82F6" />
               <Text style={styles.quickAddText}>Glass</Text>
               <Text style={styles.quickAddAmount}>{glassSize}ml</Text>
             </TouchableOpacity>
@@ -195,7 +195,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
               style={styles.quickAddButton}
               onPress={() => addWater(bottleSize)}
             >
-              <MaterialCommunityIcons name="water" size={24} color="#2196F3" />
+              <MaterialCommunityIcons name="water" size={24} color="#3B82F6" />
               <Text style={styles.quickAddText}>Bottle</Text>
               <Text style={styles.quickAddAmount}>{bottleSize}ml</Text>
             </TouchableOpacity>
@@ -204,7 +204,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
               style={styles.quickAddButton}
               onPress={() => addWater(1000)}
             >
-              <MaterialCommunityIcons name="water-outline" size={24} color="#2196F3" />
+              <MaterialCommunityIcons name="water-outline" size={24} color="#3B82F6" />
               <Text style={styles.quickAddText}>1 Liter</Text>
               <Text style={styles.quickAddAmount}>1000ml</Text>
             </TouchableOpacity>
@@ -213,7 +213,7 @@ const WaterTracker: React.FC<WaterTrackerProps> = ({ compact = false }) => {
               style={styles.quickAddButton}
               onPress={() => addWater(100)}
             >
-              <MaterialCommunityIcons name="plus" size={24} color="#2196F3" />
+              <MaterialCommunityIcons name="plus" size={24} color="#3B82F6" />
               <Text style={styles.quickAddText}>Custom</Text>
               <Text style={styles.quickAddAmount}>100ml</Text>
             </TouchableOpacity>
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   intakeText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#2196F3',
+    color: '#3B82F6',
   },
   goalText: {
     fontSize: 14,
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2196F3',
+    color: '#3B82F6',
   },
   statLabel: {
     fontSize: 12,
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
   },
   compactValue: {
     fontSize: 14,
-    color: '#2196F3',
+    color: '#3B82F6',
     fontWeight: '600',
   },
   compactProgressBar: {
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   compactPercentage: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2196F3',
+    color: '#3B82F6',
   },
 });
 

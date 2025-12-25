@@ -50,7 +50,7 @@ export const WorkoutPlansScreen: React.FC = () => {
       category: t('workoutPlans.categoryStrength'),
       workoutsPerWeek: 3,
       icon: 'dumbbell',
-      color: ['#FF6B6B', '#FF8787'],
+      color: ['#E94E1B', '#FF8787'],
       exercises: 24,
     },
     {
@@ -191,8 +191,8 @@ export const WorkoutPlansScreen: React.FC = () => {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'beginner': return '#4CAF50';
-      case 'intermediate': return '#FF9800';
+      case 'beginner': return '#E94E1B';
+      case 'intermediate': return '#E94E1B';
       case 'advanced': return '#F44336';
       default: return '#9E9E9E';
     }
@@ -213,7 +213,7 @@ export const WorkoutPlansScreen: React.FC = () => {
         </View>
 
         <LinearGradient
-          colors={['#4CAF50', '#45a049']}
+          colors={['#E94E1B', '#45a049']}
           style={styles.logoSection}
         >
           <View style={styles.iconRow}>
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
   },
   programName: {
     fontSize: 18,

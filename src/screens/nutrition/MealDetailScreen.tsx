@@ -15,6 +15,7 @@ import { getMealDetails, markFoodEaten, replaceMealFood } from '../../services/m
 import { format } from 'date-fns';
 import { useAuth } from '../../contexts/AuthContext';
 import { getSafeDatabase, ensureDatabase } from '../../database/databaseHelper';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const MealDetailScreen = () => {
   const navigation = useNavigation();
@@ -137,7 +138,7 @@ const MealDetailScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={28} color="#FF6B35" />
+          <Ionicons name="chevron-back" size={28} color={BRAND_COLORS.accent} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Text style={styles.headerTitle}>{meal.name}</Text>
@@ -148,7 +149,7 @@ const MealDetailScreen = () => {
 
       <View style={styles.macroSummary}>
         <View style={[styles.macroCard, { backgroundColor: '#FFE8E8' }]}>
-          <MaterialCommunityIcons name="fire" size={20} color="#FF6B6B" />
+          <MaterialCommunityIcons name="fire" size={20} color={BRAND_COLORS.accent} />
           <Text style={styles.macroValue}>{meal.calories}</Text>
           <Text style={styles.macroLabel}>Calories</Text>
         </View>
@@ -213,7 +214,7 @@ const MealDetailScreen = () => {
 
                 <View style={styles.foodMacros}>
                   <View style={styles.macroTag}>
-                    <MaterialCommunityIcons name="fire" size={12} color="#FF6B6B" />
+                    <MaterialCommunityIcons name="fire" size={12} color={BRAND_COLORS.accent} />
                     <Text style={styles.macroTagText}>{food.calories} cal</Text>
                   </View>
                   <View style={styles.macroTag}>
@@ -232,7 +233,7 @@ const MealDetailScreen = () => {
                     style={styles.replaceButton}
                     onPress={() => openReplacementModal(food)}
                   >
-                    <MaterialCommunityIcons name="swap-horizontal" size={16} color="#FF6B35" />
+                    <MaterialCommunityIcons name="swap-horizontal" size={16} color={BRAND_COLORS.accent} />
                     <Text style={styles.replaceButtonText}>Replace</Text>
                   </TouchableOpacity>
                 )}
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: '#FF6B35',
+    borderColor: BRAND_COLORS.accent,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -329,7 +330,7 @@ const styles = StyleSheet.create({
   },
   headerTime: {
     fontSize: 14,
-    color: '#FF6B35',
+    color: BRAND_COLORS.accent,
     marginTop: 2,
   },
   macroSummary: {
@@ -375,7 +376,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
     borderRadius: 4,
   },
   progressText: {
@@ -418,8 +419,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#4CAF50',
-    borderColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
+    borderColor: BRAND_COLORS.accent,
   },
   foodContent: {
     flex: 1,
@@ -452,7 +453,7 @@ const styles = StyleSheet.create({
   macroTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -474,7 +475,7 @@ const styles = StyleSheet.create({
   },
   replaceButtonText: {
     fontSize: 12,
-    color: '#FF6B35',
+    color: BRAND_COLORS.accent,
     fontWeight: '500',
   },
   modalOverlay: {

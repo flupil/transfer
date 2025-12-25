@@ -40,13 +40,15 @@ export const TourProvider: React.FC<TourProviderProps> = ({ children }) => {
    * @returns true if first visit, false if tour already completed
    */
   const isFirstVisit = async (screen: TourScreen): Promise<boolean> => {
-    try {
-      const completed = await AsyncStorage.getItem(`${TOUR_STORAGE_PREFIX}${screen}`);
-      return completed === null; // Return true if no record exists (first visit)
-    } catch (error) {
-      console.error('Error checking tour status:', error);
-      return false; // Default to not showing tour on error
-    }
+    // TOURS DISABLED - Always return false to never show tours
+    return false;
+    // try {
+    //   const completed = await AsyncStorage.getItem(`${TOUR_STORAGE_PREFIX}${screen}`);
+    //   return completed === null; // Return true if no record exists (first visit)
+    // } catch (error) {
+    //   console.error('Error checking tour status:', error);
+    //   return false; // Default to not showing tour on error
+    // }
   };
 
   /**

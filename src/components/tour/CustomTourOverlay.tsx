@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   tooltip: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 16,
     padding: 20,
     shadowColor: '#000',

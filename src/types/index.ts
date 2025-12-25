@@ -1,3 +1,6 @@
+// Re-export navigation types for convenience
+export * from './navigation.types';
+
 export type UserRole = 'admin' | 'coach' | 'user';
 
 export interface User {

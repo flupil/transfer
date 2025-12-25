@@ -13,7 +13,7 @@ import {
   TextInput
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RestTimer from '../../components/RestTimer';
 import WorkoutTimer from '../../components/WorkoutTimer';
@@ -22,6 +22,7 @@ import WorkoutExerciseCard from '../../components/WorkoutExerciseCard';
 import { getExerciseFromDB } from '../../services/exerciseDBService';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const { width } = Dimensions.get('window');
 
@@ -106,6 +107,19 @@ const WorkoutDetailScreen = () => {
     };
   }, [workoutStartTime]);
 
+  // Clean up timer when screen loses focus
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        // Clean up timer when navigating away
+        if (workoutTimerInterval.current) {
+          clearInterval(workoutTimerInterval.current);
+          workoutTimerInterval.current = null;
+        }
+      };
+    }, [])
+  );
+
   const loadProgress = async () => {
     try {
       const saved = await AsyncStorage.getItem(`workout_progress_${workout.id}`);
@@ -159,7 +173,44 @@ const WorkoutDetailScreen = () => {
     const updatedSetData = { ...setData };
     if (!updatedSetData[exerciseId]) return;
 
-    updatedSetData[exerciseId][setIndex][field] = value;
+    // Validate and clean the input
+    let cleanedValue = value;
+
+    if (field === 'weight' || field === 'reps') {
+      // Remove all non-numeric characters except decimal point
+      cleanedValue = value.replace(/[^0-9.]/g, '');
+
+      // Handle multiple decimal points - keep only the first one
+      const parts = cleanedValue.split('.');
+      if (parts.length > 2) {
+        cleanedValue = parts[0] + '.' + parts.slice(1).join('');
+      }
+
+      // For reps, remove decimal points (can't do half a rep)
+      if (field === 'reps') {
+        cleanedValue = cleanedValue.replace(/\./g, '');
+      }
+
+      // Prevent leading zeros (except for decimals like 0.5)
+      if (cleanedValue.length > 1 && cleanedValue[0] === '0' && cleanedValue[1] !== '.') {
+        cleanedValue = cleanedValue.substring(1);
+      }
+
+      // Limit to reasonable values
+      if (field === 'weight') {
+        const numValue = parseFloat(cleanedValue);
+        if (numValue > 9999) {
+          cleanedValue = '9999'; // Max weight 9999 lbs/kg
+        }
+      } else if (field === 'reps') {
+        const numValue = parseInt(cleanedValue);
+        if (numValue > 999) {
+          cleanedValue = '999'; // Max 999 reps
+        }
+      }
+    }
+
+    updatedSetData[exerciseId][setIndex][field] = cleanedValue;
     setSetData(updatedSetData);
   };
 
@@ -272,7 +323,7 @@ const WorkoutDetailScreen = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: isDark ? '#000000' : '#F5F5F5',
+      backgroundColor: isDark ? '#2A2A2A' : '#F5F5F5',
     },
     floatingTimerButton: {
       position: 'absolute',
@@ -281,12 +332,12 @@ const WorkoutDetailScreen = () => {
       width: 60,
       height: 60,
       borderRadius: 30,
-      backgroundColor: '#FF6B35',
+      backgroundColor: BRAND_COLORS.accentLight,
       justifyContent: 'center',
       alignItems: 'center',
     },
     header: {
-      backgroundColor: isDark ? '#000000' : '#F5F5F5',
+      backgroundColor: isDark ? '#2A2A2A' : '#F5F5F5',
       padding: 16,
       paddingTop: 12,
     },
@@ -309,7 +360,7 @@ const WorkoutDetailScreen = () => {
     },
     planLabel: {
       fontSize: 12,
-      color: colors.textSecondary,
+      color: '#C5C2BF',
       textTransform: 'uppercase',
       letterSpacing: 1,
       fontWeight: '600',
@@ -318,12 +369,12 @@ const WorkoutDetailScreen = () => {
     workoutName: {
       fontSize: 24,
       fontWeight: '700',
-      color: colors.text,
+      color: '#F4F1EF',
       marginBottom: 6,
     },
     workoutDescription: {
       fontSize: 14,
-      color: colors.textSecondary,
+      color: '#C5C2BF',
       lineHeight: 20,
     },
     progressContainer: {
@@ -344,18 +395,18 @@ const WorkoutDetailScreen = () => {
     },
     progressFill: {
       height: '100%',
-      backgroundColor: '#FF6B35',
+      backgroundColor: BRAND_COLORS.accentLight,
       borderRadius: 10,
     },
     progressPercentage: {
       fontSize: 14,
       fontWeight: '600',
-      color: '#FF6B35',
+      color: BRAND_COLORS.accentLight,
       minWidth: 40,
     },
     progressText: {
       fontSize: 12,
-      color: colors.textSecondary,
+      color: '#C5C2BF',
       fontWeight: '500',
     },
     statsContainer: {
@@ -376,12 +427,12 @@ const WorkoutDetailScreen = () => {
     statValue: {
       fontSize: 20,
       fontWeight: '700',
-      color: colors.text,
+      color: '#F4F1EF',
       marginTop: 6,
     },
     statLabel: {
       fontSize: 10,
-      color: colors.textSecondary,
+      color: '#C5C2BF',
       marginTop: 2,
       fontWeight: '600',
       textTransform: 'uppercase',
@@ -393,7 +444,7 @@ const WorkoutDetailScreen = () => {
     sectionTitle: {
       fontSize: 16,
       fontWeight: '600',
-      color: colors.text,
+      color: '#F4F1EF',
       marginBottom: 8,
       marginHorizontal: 16,
     },
@@ -406,7 +457,7 @@ const WorkoutDetailScreen = () => {
     exerciseCardCompleted: {
       backgroundColor: isDark ? 'rgba(76, 175, 80, 0.2)' : '#F0FDF4',
       borderWidth: 1,
-      borderColor: '#4CAF50',
+      borderColor: BRAND_COLORS.accent,
     },
     exerciseHeader: {
       flexDirection: 'row',
@@ -416,7 +467,7 @@ const WorkoutDetailScreen = () => {
       width: 36,
       height: 36,
       borderRadius: 18,
-      backgroundColor: '#FF6B35',
+      backgroundColor: BRAND_COLORS.accentLight,
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: 16,
@@ -432,12 +483,12 @@ const WorkoutDetailScreen = () => {
     exerciseName: {
       fontSize: 18,
       fontWeight: '600',
-      color: colors.text,
+      color: '#F4F1EF',
       marginBottom: 8,
     },
     exerciseNameCompleted: {
       textDecorationLine: 'line-through',
-      color: colors.textSecondary,
+      color: '#C5C2BF',
     },
     exerciseDetails: {
       flexDirection: 'row',
@@ -452,7 +503,7 @@ const WorkoutDetailScreen = () => {
     },
     detailText: {
       fontSize: 14,
-      color: colors.textSecondary,
+      color: '#C5C2BF',
     },
     exerciseTags: {
       flexDirection: 'row',
@@ -463,13 +514,13 @@ const WorkoutDetailScreen = () => {
       alignItems: 'center',
       paddingHorizontal: 10,
       paddingVertical: 4,
-      backgroundColor: isDark ? 'rgba(255, 107, 53, 0.2)' : '#FFF4ED',
+      backgroundColor: isDark ? `${BRAND_COLORS.accent}33` : '#FFF4ED',
       borderRadius: 12,
       gap: 4,
     },
     tagText: {
       fontSize: 12,
-      color: '#FF6B35',
+      color: BRAND_COLORS.accentLight,
       fontWeight: '500',
     },
     completeButton: {
@@ -486,7 +537,7 @@ const WorkoutDetailScreen = () => {
       gap: 8,
     },
     completeButtonActive: {
-      backgroundColor: '#4CAF50',
+      backgroundColor: BRAND_COLORS.accent,
     },
     completeButtonText: {
       color: 'white',
@@ -495,13 +546,13 @@ const WorkoutDetailScreen = () => {
     },
     modalOverlay: {
       flex: 1,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
       justifyContent: 'flex-end',
     },
     modalContent: {
       backgroundColor: colors.card,
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
       maxHeight: '80%',
       padding: 20,
     },
@@ -517,7 +568,7 @@ const WorkoutDetailScreen = () => {
     modalTitle: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: colors.text,
+      color: '#F4F1EF',
     },
     modalClose: {
       padding: 4,
@@ -539,7 +590,7 @@ const WorkoutDetailScreen = () => {
     alternativeName: {
       fontSize: 16,
       fontWeight: '600',
-      color: colors.text,
+      color: '#F4F1EF',
       marginBottom: 6,
     },
     alternativeDetails: {
@@ -548,7 +599,7 @@ const WorkoutDetailScreen = () => {
     },
     alternativeDetail: {
       fontSize: 14,
-      color: colors.textSecondary,
+      color: '#C5C2BF',
     },
     alternativeTags: {
       flexDirection: 'row',
@@ -556,7 +607,7 @@ const WorkoutDetailScreen = () => {
     },
     alternativeTag: {
       fontSize: 12,
-      color: colors.textSecondary,
+      color: '#C5C2BF',
       paddingHorizontal: 8,
       paddingVertical: 4,
       backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#F3F4F6',
@@ -564,7 +615,7 @@ const WorkoutDetailScreen = () => {
     },
     timerButton: {
       margin: 20,
-      backgroundColor: '#4ECDC4',
+      backgroundColor: BRAND_COLORS.accent,
       borderRadius: 20,
       padding: 18,
       flexDirection: 'row',
@@ -630,19 +681,19 @@ const WorkoutDetailScreen = () => {
         {/* Stats Cards */}
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
-            <MaterialCommunityIcons name="dumbbell" size={20} color="#FF6B35" />
+            <MaterialCommunityIcons name="dumbbell" size={20} color={BRAND_COLORS.accentLight} />
             <Text style={styles.statValue}>{workout.exercises.length}</Text>
             <Text style={styles.statLabel}>{t('workouts.exercises')}</Text>
           </View>
           <View style={styles.statCard}>
-            <MaterialCommunityIcons name="clock-outline" size={20} color="#FF6B35" />
+            <MaterialCommunityIcons name="clock-outline" size={20} color={BRAND_COLORS.accentLight} />
             <Text style={styles.statValue}>
               {workoutDuration > 0 ? Math.floor(workoutDuration / 60) : '~45'}
             </Text>
             <Text style={styles.statLabel}>{t('workouts.minutes')}</Text>
           </View>
           <View style={styles.statCard}>
-            <MaterialCommunityIcons name="fire" size={20} color="#FF6B35" />
+            <MaterialCommunityIcons name="fire" size={20} color={BRAND_COLORS.accentLight} />
             <Text style={styles.statValue}>320</Text>
             <Text style={styles.statLabel}>{t('workouts.calories')}</Text>
           </View>
@@ -716,7 +767,7 @@ const WorkoutDetailScreen = () => {
         >
           <View style={[
             styles.completeButtonInner,
-            { backgroundColor: progress === 100 ? '#4CAF50' : colors.textSecondary }
+            { backgroundColor: progress === 100 ? BRAND_COLORS.accent : colors.border }
           ]}>
             <Text style={styles.completeButtonText}>
               {progress === 100 ? 'Workout Complete!' : 'Finish Workout'}

@@ -64,7 +64,7 @@ const OnboardingFoodPreferencesScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -130,7 +130,7 @@ const OnboardingFoodPreferencesScreen = () => {
         {/* Allergens Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <MaterialCommunityIcons name="alert-circle" size={20} color="#EF4444" />
+            <MaterialCommunityIcons name="alert-circle" size={20} color="#E94E1B" />
             <Text style={styles.sectionTitle}>Allergies & Intolerances</Text>
           </View>
           <Text style={styles.sectionSubtitle}>Select any you need to avoid</Text>
@@ -148,7 +148,7 @@ const OnboardingFoodPreferencesScreen = () => {
                 <MaterialCommunityIcons
                   name={allergen.icon as any}
                   size={28}
-                  color={selectedAllergens.includes(allergen.id) ? '#EF4444' : '#8e9bab'}
+                  color={selectedAllergens.includes(allergen.id) ? '#E94E1B' : '#8e9bab'}
                 />
                 <Text
                   style={[
@@ -159,7 +159,7 @@ const OnboardingFoodPreferencesScreen = () => {
                   {allergen.label}
                 </Text>
                 {selectedAllergens.includes(allergen.id) && (
-                  <View style={[styles.checkmark, { backgroundColor: '#EF4444' }]}>
+                  <View style={[styles.checkmark, { backgroundColor: '#E94E1B' }]}>
                     <Ionicons name="checkmark" size={14} color="#fff" />
                   </View>
                 )}
@@ -185,7 +185,7 @@ const OnboardingFoodPreferencesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
@@ -262,10 +262,10 @@ const styles = StyleSheet.create({
   optionCard: {
     width: '48%',
     padding: 16,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#1e2e3e',
+    borderColor: '#2A2A2A',
     alignItems: 'center',
     position: 'relative',
     minHeight: 100,
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 107, 53, 0.1)',
   },
   optionCardAllergen: {
-    borderColor: '#EF4444',
+    borderColor: '#E94E1B',
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
   },
   optionLabel: {
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   optionLabelAllergen: {
-    color: '#EF4444',
+    color: '#E94E1B',
     fontWeight: '600',
   },
   checkmark: {

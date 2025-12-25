@@ -142,10 +142,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     try {
       setIsLoading(true);
-      // TODO: Implement Google OAuth with Firebase
-      Alert.alert('Info', 'Google Sign-In is configured but needs backend implementation.');
-      setIsLoading(false);
-    } catch (error) {
+
+      // Get ID token from the response authentication object
+      const idToken = response?.authentication?.idToken;
+      if (!idToken) {
+        throw new Error('No ID token received from Google');
+      }
+
+      // Use Firebase auth to sign in with Google
+      const { user: userData, token } = await firebaseAuth.signInWithGoogle(idToken, accessToken);
+      await AsyncStorage.setItem('authToken', token);
+
+      // Convert to app User type
+      const appUser: User = {
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        role: userData.role,
+        gymId: userData.gymId || 'gym_1',
+        coachId: userData.coachId,
+        units: userData.units || { weight: 'kg' as 'kg' | 'lb', height: 'cm' as 'cm' | 'in' },
+        notificationPreferences: userData.notificationPreferences || {
+          workoutReminders: true,
+          mealReminders: true,
+          announcements: true,
+          progressUpdates: true,
+        },
+        lastActiveAt: new Date(),
+        createdAt: userData.createdAt,
+        isActive: true,
+      };
+
+      setUser(appUser);
+    } catch (error: any) {
       Alert.alert('Error', 'Failed to authenticate with Google. Please try again.');
       console.error('Google auth error:', error);
       throw error;

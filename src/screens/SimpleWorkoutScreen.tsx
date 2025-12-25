@@ -194,7 +194,7 @@ const SimpleWorkoutScreen: React.FC = () => {
             onPress={() => (navigation as any).navigate('WorkoutLog')}
           >
             <View style={[styles.actionIcon, { backgroundColor: '#E8F5E9' }]}>
-              <MaterialCommunityIcons name="pencil" size={24} color="#4CAF50" />
+              <MaterialCommunityIcons name="pencil" size={24} color="#E94E1B" />
             </View>
             <Text style={styles.actionText}>Log Workout</Text>
           </TouchableOpacity>
@@ -204,7 +204,7 @@ const SimpleWorkoutScreen: React.FC = () => {
             onPress={() => (navigation as any).navigate('PersonalRecords')}
           >
             <View style={[styles.actionIcon, { backgroundColor: '#FFF3E0' }]}>
-              <MaterialCommunityIcons name="trophy" size={24} color="#FF9800" />
+              <MaterialCommunityIcons name="trophy" size={24} color="#E94E1B" />
             </View>
             <Text style={styles.actionText}>Personal Records</Text>
           </TouchableOpacity>
@@ -214,7 +214,7 @@ const SimpleWorkoutScreen: React.FC = () => {
             onPress={() => (navigation as any).navigate('ExerciseLibrary')}
           >
             <View style={[styles.actionIcon, { backgroundColor: '#E3F2FD' }]}>
-              <MaterialCommunityIcons name="book-open-variant" size={24} color="#2196F3" />
+              <MaterialCommunityIcons name="book-open-variant" size={24} color="#3B82F6" />
             </View>
             <Text style={styles.actionText}>Exercise Library</Text>
           </TouchableOpacity>
@@ -236,7 +236,7 @@ const SimpleWorkoutScreen: React.FC = () => {
         <Text style={styles.sectionTitle}>Recent Activity</Text>
         <View style={styles.activityCard}>
           <View style={styles.activityIcon}>
-            <MaterialCommunityIcons name="check-circle" size={24} color="#4CAF50" />
+            <MaterialCommunityIcons name="check-circle" size={24} color="#E94E1B" />
           </View>
           <View style={styles.activityContent}>
             <Text style={styles.activityTitle}>Great job!</Text>
@@ -252,7 +252,7 @@ const SimpleWorkoutScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFBFD',
+    backgroundColor: '#2A2A2A',
   },
   header: {
     paddingHorizontal: 20,

@@ -196,8 +196,8 @@ const AnnouncementsScreen: React.FC = () => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return '#F44336';
-      case 'medium': return '#FF9800';
-      case 'low': return '#4CAF50';
+      case 'medium': return '#E94E1B';
+      case 'low': return '#E94E1B';
       default: return '#9E9E9E';
     }
   };
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   expiryText: {
-    color: '#FF9800',
+    color: '#E94E1B',
   },
   actionMenu: {
     flexDirection: 'row',

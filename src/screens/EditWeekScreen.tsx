@@ -162,7 +162,7 @@ const EditWeekScreen = () => {
     const nameLower = name.toLowerCase();
     if (nameLower.includes('rest')) return '#9CA3AF';
     if (nameLower.includes('chest') || nameLower.includes('push')) return '#FF6B35';
-    if (nameLower.includes('back') || nameLower.includes('pull')) return '#4ECDC4';
+    if (nameLower.includes('back') || nameLower.includes('pull')) return '#E94E1B';
     if (nameLower.includes('leg')) return '#95E77E';
     if (nameLower.includes('shoulder')) return '#FFD700';
     if (nameLower.includes('arm')) return '#FF69B4';
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   selectedCard: {
-    borderColor: '#4ECDC4',
+    borderColor: '#E94E1B',
   },
   swapCard: {
     borderColor: '#FF6B35',

@@ -81,7 +81,7 @@ const OnboardingFitnessLevelScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -130,7 +130,7 @@ const OnboardingFitnessLevelScreen = () => {
                           left: i * (SLIDER_WIDTH / 50),
                           width: 2,
                           height: height,
-                          backgroundColor: '#4a5a6a',
+                          backgroundColor: '#4E4E50',
                           borderRadius: 1,
                           opacity: 0.4 + (progress * 0.4),
                         }
@@ -211,7 +211,7 @@ const OnboardingFitnessLevelScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {

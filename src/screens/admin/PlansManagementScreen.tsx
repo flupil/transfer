@@ -235,8 +235,8 @@ const PlansManagementScreen: React.FC = () => {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'beginner': return '#4CAF50';
-      case 'intermediate': return '#FF9800';
+      case 'beginner': return '#E94E1B';
+      case 'intermediate': return '#E94E1B';
       case 'advanced': return '#F44336';
       default: return '#9E9E9E';
     }
@@ -275,7 +275,7 @@ const PlansManagementScreen: React.FC = () => {
                   <MaterialCommunityIcons
                     name={getPlanIcon(planType)}
                     size={24}
-                    color="#4CAF50"
+                    color="#E94E1B"
                     style={styles.planIcon}
                   />
                   <View style={styles.titleContainer}>
@@ -291,7 +291,7 @@ const PlansManagementScreen: React.FC = () => {
                       onPress={() => handleEditPlan(plan)}
                       style={styles.actionButton}
                     >
-                      <MaterialCommunityIcons name="pencil" size={20} color="#2196F3" />
+                      <MaterialCommunityIcons name="pencil" size={20} color="#3B82F6" />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => handleDeletePlan(plan)}
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   assignedText: {
-    color: '#4CAF50',
+    color: '#E94E1B',
   },
   emptyState: {
     alignItems: 'center',

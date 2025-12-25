@@ -40,6 +40,10 @@ const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
   const [customAmount, setCustomAmount] = useState('1');
   const [isCustom, setIsCustom] = useState(false);
 
+  // For smart serving (eggs, pizza slices, etc.)
+  const [quantity, setQuantity] = useState(1);
+  const [size, setSize] = useState<'small' | 'medium' | 'large'>('medium');
+
   // Extract emoji from imageUrl if it's a data URL with emoji
   const getEmojiFromUrl = (url?: string): string | null => {
     if (!url || !url.startsWith('data:image/svg+xml')) return null;
@@ -61,8 +65,43 @@ const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
     { amount: 100, unit: 'g', label: '100g', gramsEquivalent: 100 }
   ];
 
+  // Determine if this food uses smart serving (has quantity + size)
+  const useSmartServing = food.id?.includes('eggs_') ||
+                          food.id?.includes('potato_baked') ||
+                          food.id?.includes('chicken_') ||
+                          food.id?.includes('burger_');
+
+  // Calculate grams based on quantity and size for smart serving
+  const getGramsForSmartServing = (): number => {
+    if (!useSmartServing) return 0;
+
+    // Size multipliers
+    const sizeMap: { [key: string]: number } = {
+      small: 0.8,
+      medium: 1.0,
+      large: 1.2
+    };
+
+    // Base grams for different food types
+    let baseGrams = 50; // Default: 1 medium egg
+
+    if (food.id?.includes('eggs_')) {
+      baseGrams = 50; // 1 medium egg = 50g
+    } else if (food.id?.includes('potato_baked')) {
+      baseGrams = 173; // 1 medium potato = 173g
+    } else if (food.id?.includes('chicken_')) {
+      baseGrams = 174; // 1 medium chicken breast = 174g
+    } else if (food.id?.includes('burger_')) {
+      baseGrams = 150; // 1 medium patty = 150g
+    }
+
+    return quantity * baseGrams * sizeMap[size];
+  };
+
   const selectedServing = isCustom
     ? { amount: parseFloat(customAmount) || 1, unit: 'g', gramsEquivalent: parseFloat(customAmount) || 1 }
+    : useSmartServing
+    ? { amount: quantity, unit: food.id?.includes('eggs_') ? 'eggs' : 'piece', gramsEquivalent: getGramsForSmartServing() }
     : servingSizes[selectedServingIndex];
 
   // Calculate nutrition for selected serving
@@ -174,47 +213,136 @@ const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Serving Size</Text>
 
-            {/* Predefined Servings */}
-            <View style={styles.servingsGrid}>
-              {servingSizes.map((serving, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.servingButton,
-                    !isCustom && selectedServingIndex === index && styles.servingButtonActive
-                  ]}
-                  onPress={() => {
-                    setIsCustom(false);
-                    setSelectedServingIndex(index);
-                  }}
-                >
-                  <Text style={[
-                    styles.servingText,
-                    !isCustom && selectedServingIndex === index && styles.servingTextActive
-                  ]}>
-                    {serving.label || `${serving.amount}${serving.unit}`}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {useSmartServing ? (
+              <>
+                {/* Smart Serving: Quantity + Size */}
+                <View style={styles.smartServingContainer}>
+                  {/* Quantity */}
+                  <View style={styles.smartServingRow}>
+                    <Text style={styles.smartServingLabel}>
+                      {food.id?.includes('eggs_') ? 'How many eggs?' :
+                       food.id?.includes('potato_') ? 'How many potatoes?' :
+                       food.id?.includes('burger_') ? 'How many burgers?' :
+                       'How many pieces?'}
+                    </Text>
+                    <View style={styles.quantityControls}>
+                      <TouchableOpacity
+                        style={styles.quantityButton}
+                        onPress={() => setQuantity(Math.max(1, quantity - 1))}
+                      >
+                        <Ionicons name="remove" size={24} color="#FF6B35" />
+                      </TouchableOpacity>
+                      <TextInput
+                        style={styles.quantityInput}
+                        value={quantity.toString()}
+                        onChangeText={(text) => {
+                          const num = parseInt(text) || 1;
+                          setQuantity(Math.max(1, Math.min(20, num)));
+                        }}
+                        keyboardType="number-pad"
+                      />
+                      <TouchableOpacity
+                        style={styles.quantityButton}
+                        onPress={() => setQuantity(Math.min(20, quantity + 1))}
+                      >
+                        <Ionicons name="add" size={24} color="#FF6B35" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
 
-            {/* Custom Amount */}
-            <TouchableOpacity
-              style={[styles.customServingButton, isCustom && styles.customServingButtonActive]}
-              onPress={() => setIsCustom(true)}
-            >
-              <Text style={styles.customServingLabel}>Custom Amount (grams):</Text>
-              <TextInput
-                style={styles.customInput}
-                value={customAmount}
-                onChangeText={setCustomAmount}
-                keyboardType="decimal-pad"
-                placeholder="100"
-                placeholderTextColor="#8e9bab"
-                onFocus={() => setIsCustom(true)}
-              />
-              <Text style={styles.customUnit}>g</Text>
-            </TouchableOpacity>
+                  {/* Size */}
+                  <View style={styles.smartServingRow}>
+                    <Text style={styles.smartServingLabel}>Size:</Text>
+                    <View style={styles.sizeButtons}>
+                      {(['small', 'medium', 'large'] as const).map((s) => (
+                        <TouchableOpacity
+                          key={s}
+                          style={[
+                            styles.sizeButton,
+                            size === s && styles.sizeButtonActive
+                          ]}
+                          onPress={() => setSize(s)}
+                        >
+                          <Text style={[
+                            styles.sizeButtonText,
+                            size === s && styles.sizeButtonTextActive
+                          ]}>
+                            {s.charAt(0).toUpperCase() + s.slice(1)}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  {/* Show calculated weight */}
+                  <Text style={styles.calculatedWeight}>
+                    ≈ {Math.round(getGramsForSmartServing())}g total
+                  </Text>
+                </View>
+
+                {/* Custom Amount Option */}
+                <TouchableOpacity
+                  style={[styles.customServingButton, isCustom && styles.customServingButtonActive]}
+                  onPress={() => setIsCustom(true)}
+                >
+                  <Text style={styles.customServingLabel}>Or enter custom amount:</Text>
+                  <TextInput
+                    style={styles.customInput}
+                    value={customAmount}
+                    onChangeText={setCustomAmount}
+                    keyboardType="decimal-pad"
+                    placeholder="100"
+                    placeholderTextColor="#8e9bab"
+                    onFocus={() => setIsCustom(true)}
+                  />
+                  <Text style={styles.customUnit}>g</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                {/* Traditional Predefined Servings */}
+                <View style={styles.servingsGrid}>
+                  {servingSizes.map((serving, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.servingButton,
+                        !isCustom && selectedServingIndex === index && styles.servingButtonActive
+                      ]}
+                      onPress={() => {
+                        setIsCustom(false);
+                        setSelectedServingIndex(index);
+                      }}
+                    >
+                      <Text style={[
+                        styles.servingText,
+                        !isCustom && selectedServingIndex === index && styles.servingTextActive
+                      ]}>
+                        {serving.label || `${serving.amount}${serving.unit}`}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* Custom Amount */}
+                <TouchableOpacity
+                  style={[styles.customServingButton, isCustom && styles.customServingButtonActive]}
+                  onPress={() => setIsCustom(true)}
+                >
+                  <Text style={styles.customServingLabel}>Custom Amount (grams):</Text>
+                  <TextInput
+                    style={styles.customInput}
+                    value={customAmount}
+                    onChangeText={setCustomAmount}
+                    keyboardType="decimal-pad"
+                    placeholder="100"
+                    placeholderTextColor="#8e9bab"
+                    onFocus={() => setIsCustom(true)}
+                  />
+                  <Text style={styles.customUnit}>g</Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
 
           {/* Nutrition Facts */}
@@ -300,7 +428,7 @@ const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
               <View style={styles.allergensCard}>
                 {food.allergens.map((allergen, index) => (
                   <View key={index} style={styles.allergenTag}>
-                    <MaterialCommunityIcons name="alert" size={16} color="#EF4444" />
+                    <MaterialCommunityIcons name="alert" size={16} color="#E94E1B" />
                     <Text style={styles.allergenText}>{allergen}</Text>
                   </View>
                 ))}
@@ -328,7 +456,7 @@ const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#202124',
   },
   header: {
     flexDirection: 'row',
@@ -336,7 +464,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2C2C2E',
   },
   closeButton: {
     width: 40,
@@ -356,7 +484,7 @@ const styles = StyleSheet.create({
   foodHeader: {
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2C2C2E',
   },
   foodImage: {
     width: 120,
@@ -365,12 +493,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   placeholderImage: {
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#3C3C3E',
     alignItems: 'center',
     justifyContent: 'center',
   },
   emojiContainer: {
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#3C3C3E',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -422,7 +550,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   servingButton: {
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2C2C2E',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 12,
@@ -430,8 +558,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   servingButtonActive: {
-    borderColor: '#3b9eff',
-    backgroundColor: 'rgba(59, 158, 255, 0.1)',
+    borderColor: '#FF6B35',
+    backgroundColor: 'rgba(255, 107, 53, 0.1)',
   },
   servingText: {
     fontSize: 14,
@@ -439,19 +567,19 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   servingTextActive: {
-    color: '#3b9eff',
+    color: '#FF6B35',
   },
   customServingButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2C2C2E',
     padding: 15,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: 'transparent',
   },
   customServingButtonActive: {
-    borderColor: '#3b9eff',
+    borderColor: '#FF6B35',
   },
   customServingLabel: {
     fontSize: 14,
@@ -460,7 +588,7 @@ const styles = StyleSheet.create({
   },
   customInput: {
     flex: 1,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#3C3C3E',
     color: '#fff',
     fontSize: 16,
     paddingVertical: 8,
@@ -473,8 +601,80 @@ const styles = StyleSheet.create({
     color: '#8e9bab',
     marginLeft: 10,
   },
+  smartServingContainer: {
+    backgroundColor: '#2C2C2E',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 15,
+  },
+  smartServingRow: {
+    marginBottom: 16,
+  },
+  smartServingLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 10,
+  },
+  quantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 15,
+  },
+  quantityButton: {
+    width: 44,
+    height: 44,
+    backgroundColor: '#3C3C3E',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityInput: {
+    backgroundColor: '#3C3C3E',
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    textAlign: 'center',
+    minWidth: 60,
+  },
+  sizeButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  sizeButton: {
+    flex: 1,
+    backgroundColor: '#3C3C3E',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  sizeButtonActive: {
+    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+    borderColor: '#FF6B35',
+  },
+  sizeButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#8e9bab',
+  },
+  sizeButtonTextActive: {
+    color: '#FF6B35',
+  },
+  calculatedWeight: {
+    fontSize: 13,
+    color: '#8e9bab',
+    textAlign: 'center',
+    marginTop: 8,
+  },
   nutritionCard: {
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2C2C2E',
     borderRadius: 16,
     padding: 20,
   },
@@ -492,11 +692,11 @@ const styles = StyleSheet.create({
   calorieValue: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#3b9eff',
+    color: '#FF6B35',
   },
   divider: {
     height: 1,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#3C3C3E',
     marginVertical: 15,
   },
   macroRow: {
@@ -533,7 +733,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   ingredientsCard: {
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2C2C2E',
     borderRadius: 16,
     padding: 15,
   },
@@ -553,22 +753,22 @@ const styles = StyleSheet.create({
     gap: 6,
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
     borderWidth: 1,
-    borderColor: '#EF4444',
+    borderColor: '#E94E1B',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 12,
   },
   allergenText: {
     fontSize: 13,
-    color: '#EF4444',
+    color: '#E94E1B',
     fontWeight: '600',
   },
   footer: {
     padding: 20,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2C2C2E',
   },
   addButton: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#FF6B35',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

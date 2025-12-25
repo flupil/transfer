@@ -27,6 +27,7 @@ import firebaseWorkoutService, {
   EXERCISE_LIBRARY
 } from '../../services/firebaseWorkoutService';
 import CustomHeader from '../../components/CustomHeader';
+import WorkoutTimer from '../../components/WorkoutTimer';
 
 const { width } = Dimensions.get('window');
 
@@ -43,6 +44,7 @@ const WorkoutScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedExercises, setSelectedExercises] = useState<WorkoutExercise[]>([]);
+  const [showTimer, setShowTimer] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -204,23 +206,23 @@ const WorkoutScreen: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={[styles.container, styles.centerContent, { backgroundColor: '#1A1A1A' }]}>
-        <ActivityIndicator size="large" color="#FF6B35" />
+      <View style={[styles.container, styles.centerContent, { backgroundColor: '#2A2A2A' }]}>
+        <ActivityIndicator size="large" color={BRAND_COLORS.accentLight} />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
       <CustomHeader />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Active Workout Section */}
         {activeWorkout ? (
-          <Card style={[styles.card, { backgroundColor: '#2C2C2E' }]}>
+          <Card style={[styles.card, { backgroundColor: '#4E4E50' }]}>
             <Card.Content>
               <View style={styles.header}>
-                <Text style={[styles.title, { color: colors.text }]}>{t('workouts.activeWorkout')}</Text>
+                <Text style={[styles.title, { color: '#F4F1EF' }]}>{t('workouts.activeWorkout')}</Text>
                 <Button mode="contained" onPress={completeWorkout}>
                   {t('workouts.finishWorkout')}
                 </Button>
@@ -228,20 +230,20 @@ const WorkoutScreen: React.FC = () => {
 
               {activeWorkout.exercises.map((exercise, exIndex) => (
                 <View key={exIndex} style={styles.exerciseSection}>
-                  <Text style={[styles.exerciseName, { color: colors.text }]}>
+                  <Text style={[styles.exerciseName, { color: '#F4F1EF' }]}>
                     {exercise.exerciseName}
                   </Text>
 
                   {exercise.sets.map((set, setIndex) => (
                     <View key={setIndex} style={styles.setRow}>
-                      <Text style={[styles.setNumber, { color: colors.textSecondary }]}>
+                      <Text style={[styles.setNumber, { color: '#C5C2BF' }]}>
                         {t('workout.set')} {set.setNumber}
                       </Text>
 
                       <TextInput
                         style={[styles.input, {
                           backgroundColor: 'rgba(255,255,255,0.1)',
-                          color: colors.text
+                          color: '#F4F1EF'
                         }]}
                         placeholder={t('placeholder.weight')}
                         placeholderTextColor={colors.textSecondary}
@@ -253,7 +255,7 @@ const WorkoutScreen: React.FC = () => {
                       <TextInput
                         style={[styles.input, {
                           backgroundColor: 'rgba(255,255,255,0.1)',
-                          color: colors.text
+                          color: '#F4F1EF'
                         }]}
                         placeholder={t('placeholder.reps')}
                         placeholderTextColor={colors.textSecondary}
@@ -269,7 +271,7 @@ const WorkoutScreen: React.FC = () => {
                         <MaterialCommunityIcons
                           name={set.completed ? "check-circle" : "circle-outline"}
                           size={24}
-                          color={set.completed ? "#4CAF50" : colors.textSecondary}
+                          color={set.completed ? BRAND_COLORS.accent : colors.textSecondary}
                         />
                       </TouchableOpacity>
                     </View>
@@ -280,10 +282,10 @@ const WorkoutScreen: React.FC = () => {
           </Card>
         ) : (
           /* Start Workout Section */
-          <Card style={[styles.card, { backgroundColor: '#2C2C2E' }]}>
+          <Card style={[styles.card, { backgroundColor: '#4E4E50' }]}>
             <Card.Content>
-              <Text style={[styles.title, { color: colors.text }]}>{t('workouts.readyToWorkout')}</Text>
-              <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+              <Text style={[styles.title, { color: '#F4F1EF' }]}>{t('workouts.readyToWorkout')}</Text>
+              <Text style={[styles.subtitle, { color: '#C5C2BF' }]}>
                 {t('workouts.startQuick')}
               </Text>
 
@@ -310,11 +312,11 @@ const WorkoutScreen: React.FC = () => {
         )}
 
         {/* Weekly Progress */}
-        <Card style={[styles.card, { backgroundColor: '#2C2C2E' }]}>
+        <Card style={[styles.card, { backgroundColor: '#4E4E50' }]}>
           <Card.Content>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('workouts.weeklyProgress')}</Text>
+            <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>{t('workouts.weeklyProgress')}</Text>
             <View style={styles.progressContainer}>
-              <Text style={[styles.progressText, { color: colors.text }]}>
+              <Text style={[styles.progressText, { color: '#F4F1EF' }]}>
                 {weeklyStats.completed} / {weeklyStats.target} {t('workouts.workouts')}
               </Text>
               <View style={styles.progressBar}>
@@ -331,10 +333,10 @@ const WorkoutScreen: React.FC = () => {
 
         {/* Recent Workouts */}
         {recentWorkouts.length > 0 && (
-          <Card style={[styles.card, { backgroundColor: '#2C2C2E' }]}>
+          <Card style={[styles.card, { backgroundColor: '#4E4E50' }]}>
             <Card.Content>
               <View style={styles.header}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('workouts.recentWorkouts')}</Text>
+                <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>{t('workouts.recentWorkouts')}</Text>
                 <Button mode="text" onPress={() => navigation.navigate('WorkoutHistory' as never)}>
                   {t('workouts.viewAll')}
                 </Button>
@@ -347,10 +349,10 @@ const WorkoutScreen: React.FC = () => {
                   onPress={() => (navigation as any).navigate('WorkoutDetail', { workoutId: workout.id })}
                 >
                   <View style={styles.workoutInfo}>
-                    <Text style={[styles.workoutName, { color: colors.text }]}>
+                    <Text style={[styles.workoutName, { color: '#F4F1EF' }]}>
                       {workout.name}
                     </Text>
-                    <Text style={[styles.workoutDate, { color: colors.textSecondary }]}>
+                    <Text style={[styles.workoutDate, { color: '#C5C2BF' }]}>
                       {format(new Date(workout.date), 'MMM dd')} • {workout.exercises.length} {t('common.exercises')}
                       {workout.duration && ` • ${workout.duration} ${t('common.mins')}`}
                     </Text>
@@ -363,16 +365,16 @@ const WorkoutScreen: React.FC = () => {
         )}
 
         {/* Quick Actions */}
-        <Card style={[styles.card, { backgroundColor: '#2C2C2E' }]}>
+        <Card style={[styles.card, { backgroundColor: '#4E4E50' }]}>
           <Card.Content>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('workouts.quickActions')}</Text>
+            <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>{t('workouts.quickActions')}</Text>
             <View style={styles.quickActions}>
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={() => navigation.navigate('ExerciseLibrary' as never)}
               >
-                <MaterialCommunityIcons name="dumbbell" size={24} color="#FF6B35" />
-                <Text style={[styles.actionText, { color: colors.text }]}>{t('workouts.exercises')}</Text>
+                <MaterialCommunityIcons name="dumbbell" size={24} color={BRAND_COLORS.accentLight} />
+                <Text style={[styles.actionText, { color: '#F4F1EF' }]}>{t('workouts.exercises')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -380,15 +382,15 @@ const WorkoutScreen: React.FC = () => {
                 onPress={() => navigation.navigate('PersonalRecords' as never)}
               >
                 <MaterialCommunityIcons name="trophy" size={24} color="#FFD700" />
-                <Text style={[styles.actionText, { color: colors.text }]}>{t('workouts.records')}</Text>
+                <Text style={[styles.actionText, { color: '#F4F1EF' }]}>{t('workouts.records')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.actionButton}
-                onPress={() => navigation.navigate('WorkoutTimer' as never)}
+                onPress={() => setShowTimer(true)}
               >
-                <MaterialCommunityIcons name="timer" size={24} color="#4CAF50" />
-                <Text style={[styles.actionText, { color: colors.text }]}>{t('workouts.timer')}</Text>
+                <MaterialCommunityIcons name="timer" size={24} color={BRAND_COLORS.accent} />
+                <Text style={[styles.actionText, { color: '#F4F1EF' }]}>{t('workouts.timer')}</Text>
               </TouchableOpacity>
             </View>
           </Card.Content>
@@ -403,9 +405,9 @@ const WorkoutScreen: React.FC = () => {
         onRequestClose={() => setShowExerciseModal(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={[styles.modalContent, { backgroundColor: '#2C2C2E' }]}>
+          <View style={[styles.modalContent, { backgroundColor: '#4E4E50' }]}>
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.text }]}>{t('workouts.selectExercises')}</Text>
+              <Text style={[styles.modalTitle, { color: '#F4F1EF' }]}>{t('workouts.selectExercises')}</Text>
               <IconButton
                 icon="close"
                 onPress={() => setShowExerciseModal(false)}
@@ -434,7 +436,7 @@ const WorkoutScreen: React.FC = () => {
 
             {selectedExercises.length > 0 && (
               <View style={styles.selectedContainer}>
-                <Text style={[styles.selectedTitle, { color: colors.text }]}>
+                <Text style={[styles.selectedTitle, { color: '#F4F1EF' }]}>
                   {t('workouts.selected')} ({selectedExercises.length})
                 </Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -460,15 +462,15 @@ const WorkoutScreen: React.FC = () => {
                   onPress={() => addExerciseToWorkout(item)}
                 >
                   <View style={styles.exerciseInfo}>
-                    <Text style={[styles.exerciseName, { color: colors.text }]}>
+                    <Text style={[styles.exerciseName, { color: '#F4F1EF' }]}>
                       {item.name}
                     </Text>
-                    <Text style={[styles.exerciseMuscles, { color: colors.textSecondary }]}>
+                    <Text style={[styles.exerciseMuscles, { color: '#C5C2BF' }]}>
                       {item.primaryMuscles.join(', ')}
                       {item.equipment && ` • ${item.equipment}`}
                     </Text>
                   </View>
-                  <MaterialCommunityIcons name="plus-circle" size={24} color="#FF6B35" />
+                  <MaterialCommunityIcons name="plus-circle" size={24} color={BRAND_COLORS.accentLight} />
                 </TouchableOpacity>
               )}
             />
@@ -484,6 +486,13 @@ const WorkoutScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Workout Timer Modal */}
+      <WorkoutTimer
+        visible={showTimer}
+        onClose={() => setShowTimer(false)}
+        initialSeconds={90}
+      />
     </SafeAreaView>
   );
 };
@@ -528,11 +537,11 @@ const styles = StyleSheet.create({
   },
   mainButton: {
     flex: 1,
-    backgroundColor: '#FF6B35',
+    backgroundColor: BRAND_COLORS.accentLight,
   },
   secondaryButton: {
     flex: 1,
-    borderColor: '#FF6B35',
+    borderColor: BRAND_COLORS.accentLight,
   },
   progressContainer: {
     gap: 8,
@@ -549,7 +558,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: BRAND_COLORS.accentLight,
   },
   workoutItem: {
     flexDirection: 'row',
@@ -675,7 +684,7 @@ const styles = StyleSheet.create({
   },
   startButton: {
     marginTop: 16,
-    backgroundColor: '#FF6B35',
+    backgroundColor: BRAND_COLORS.accentLight,
   },
 });
 

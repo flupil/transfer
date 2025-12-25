@@ -72,7 +72,7 @@ const getSubscriptionTiers = (t: (key: string) => string): SubscriptionTier[] =>
       t('subscription.feature.noAds'),
       t('subscription.feature.prioritySupport'),
     ],
-    color: ['#4CAF50', '#45a049'],
+    color: ['#E94E1B', '#45a049'],
     icon: 'star',
   },
   {
@@ -285,14 +285,14 @@ export const SubscriptionScreen: React.FC = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.title, { color: colors.text }]}>
+          <Text style={[styles.title, { color: '#F4F1EF' }]}>
             Choose Your Plan
           </Text>
-          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+          <Text style={[styles.subtitle, { color: '#C5C2BF' }]}>
             Unlock premium features and take your fitness to the next level
           </Text>
         </View>
@@ -305,7 +305,7 @@ export const SubscriptionScreen: React.FC = () => {
                 <MaterialCommunityIcons
                   name="check-decagram"
                   size={24}
-                  color="#4CAF50"
+                  color="#E94E1B"
                 />
                 <Text style={styles.currentPlanText}>
                   Current Plan: {subscriptionTiers.find(t => t.id === currentPlan)?.name}
@@ -340,7 +340,7 @@ export const SubscriptionScreen: React.FC = () => {
                   <MaterialCommunityIcons
                     name={benefit.icon as any}
                     size={24}
-                    color="#4CAF50"
+                    color="#E94E1B"
                   />
                   <Text style={styles.benefitText}>{benefit.text}</Text>
                 </View>
@@ -388,7 +388,7 @@ export const SubscriptionScreen: React.FC = () => {
           onDismiss={() => setShowPaymentModal(false)}
           contentContainerStyle={[
             styles.modalContent,
-            { backgroundColor: colors.cardBackground },
+            { backgroundColor: '#4A4A4A' },
           ]}
         >
           <Text style={styles.modalTitle}>Complete Your Purchase</Text>
@@ -427,14 +427,14 @@ export const SubscriptionScreen: React.FC = () => {
                     : 'apple'
                 }
                 size={24}
-                color={paymentMethod === method ? '#4CAF50' : '#666'}
+                color={paymentMethod === method ? '#E94E1B' : '#666'}
               />
               <Text style={styles.paymentMethodText}>{method}</Text>
               {paymentMethod === method && (
                 <MaterialCommunityIcons
                   name="check-circle"
                   size={24}
-                  color="#4CAF50"
+                  color="#E94E1B"
                 />
               )}
             </TouchableOpacity>
@@ -453,7 +453,7 @@ export const SubscriptionScreen: React.FC = () => {
               onPress={handlePayment}
               loading={loading}
               disabled={!paymentMethod || loading}
-              buttonColor="#4CAF50"
+              buttonColor="#E94E1B"
             >
               {loading ? t('subscription.processing') : t('subscription.confirmPayment')}
             </Button>
@@ -534,7 +534,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     left: 10,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#E94E1B',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -645,7 +645,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     padding: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2A2A2A',
     borderRadius: 12,
   },
   selectedPlanName: {
@@ -656,7 +656,7 @@ const styles = StyleSheet.create({
   selectedPlanPrice: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#E94E1B',
   },
   paymentMethodTitle: {
     fontSize: 16,
@@ -673,7 +673,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   selectedPaymentMethod: {
-    borderColor: '#4CAF50',
+    borderColor: '#E94E1B',
     backgroundColor: '#E8F5E9',
   },
   paymentMethodText: {

@@ -207,8 +207,8 @@ const AnalyticsScreen: React.FC = () => {
       } else {
         // Demo data
         setUserDistribution([
-          { name: 'Users', count: 85, color: '#4CAF50', legendFontColor: '#333', legendFontSize: 14 },
-          { name: 'Coaches', count: 8, color: '#FF9800', legendFontColor: '#333', legendFontSize: 14 },
+          { name: 'Users', count: 85, color: '#E94E1B', legendFontColor: '#333', legendFontSize: 14 },
+          { name: 'Coaches', count: 8, color: '#E94E1B', legendFontColor: '#333', legendFontSize: 14 },
           { name: 'Admins', count: 2, color: '#F44336', legendFontColor: '#333', legendFontSize: 14 },
         ]);
       }
@@ -286,8 +286,8 @@ const AnalyticsScreen: React.FC = () => {
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'admin': return '#F44336';
-      case 'coach': return '#FF9800';
-      case 'user': return '#4CAF50';
+      case 'coach': return '#E94E1B';
+      case 'user': return '#E94E1B';
       default: return '#9E9E9E';
     }
   };
@@ -304,7 +304,7 @@ const AnalyticsScreen: React.FC = () => {
     propsForDots: {
       r: '6',
       strokeWidth: '2',
-      stroke: '#4CAF50',
+      stroke: '#E94E1B',
     },
   };
 
@@ -332,17 +332,17 @@ const AnalyticsScreen: React.FC = () => {
             </Text>
             <View style={styles.metricsGrid}>
               <View style={styles.metricItem}>
-                <MaterialCommunityIcons name="account-group" size={24} color="#4CAF50" />
+                <MaterialCommunityIcons name="account-group" size={24} color="#E94E1B" />
                 <Text variant="headlineSmall">{keyMetrics.totalUsers}</Text>
                 <Text variant="bodySmall">Total Users</Text>
               </View>
               <View style={styles.metricItem}>
-                <MaterialCommunityIcons name="account-check" size={24} color="#2196F3" />
+                <MaterialCommunityIcons name="account-check" size={24} color="#3B82F6" />
                 <Text variant="headlineSmall">{keyMetrics.activeUsers}</Text>
                 <Text variant="bodySmall">Active Users</Text>
               </View>
               <View style={styles.metricItem}>
-                <MaterialCommunityIcons name="dumbbell" size={24} color="#FF9800" />
+                <MaterialCommunityIcons name="dumbbell" size={24} color="#E94E1B" />
                 <Text variant="headlineSmall">{keyMetrics.totalWorkouts}</Text>
                 <Text variant="bodySmall">Total Workouts</Text>
               </View>
@@ -356,7 +356,7 @@ const AnalyticsScreen: React.FC = () => {
             <List.Item
               title="Attendance Rate"
               description={`${keyMetrics.attendanceRate}% of users attended in the last 30 days`}
-              left={(props) => <List.Icon {...props} icon="check-circle" color="#4CAF50" />}
+              left={(props) => <List.Icon {...props} icon="check-circle" color="#E94E1B" />}
             />
             <List.Item
               title="Most Popular Exercise"

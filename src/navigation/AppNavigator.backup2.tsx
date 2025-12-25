@@ -379,7 +379,7 @@ const ProfileButton = () => {
       <Avatar.Text
         size={36}
         label={user?.name?.charAt(0) || 'U'}
-        style={{ backgroundColor: '#4CAF50' }}
+        style={{ backgroundColor: '#E94E1B' }}
       />
     </TouchableOpacity>
   );

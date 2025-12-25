@@ -50,7 +50,7 @@ export class ErrorBoundary extends Component<Props, State> {
       // Default error UI
       return (
         <View style={styles.container}>
-          <Ionicons name="alert-circle-outline" size={48} color="#FF6B6B" />
+          <Ionicons name="alert-circle-outline" size={48} color="#E94E1B" />
           <Text style={styles.title}>{translate('error.somethingWrong')}</Text>
           <Text style={styles.message}>
             {this.state.error?.message || translate('error.unexpectedError')}
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     borderRadius: 12,
     minHeight: 150,
   },

@@ -12,6 +12,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-paper';
 import { freeAIService } from '../services/freeAIService';
 import { aiService } from '../services/aiService';
+import calorieTrackingService from '../services/calorieTrackingService';
+import deviceCalendarSyncService from '../services/deviceCalendarSyncService';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 export const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -42,12 +45,19 @@ export const SettingsScreen: React.FC = () => {
   const [hasAnthropicKey, setHasAnthropicKey] = useState(false);
   const [appPurpose, setAppPurpose] = useState<'gym' | 'football'>('gym');
   const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [addBurnedToGoal, setAddBurnedToGoal] = useState(false);
+  const [calendarSyncEnabled, setCalendarSyncEnabled] = useState(false);
+  const [lastSyncDate, setLastSyncDate] = useState<string | null>(null);
+  const [weeksToSync, setWeeksToSync] = useState(4);
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     loadSettings();
     checkApiKey();
     checkAnthropicKey();
     loadAppPurpose();
+    loadCalorieSettings();
+    loadCalendarSyncSettings();
   }, []);
 
   const checkApiKey = async () => {
@@ -124,6 +134,85 @@ export const SettingsScreen: React.FC = () => {
       console.error('Failed to save app purpose:', error);
       Alert.alert(t('alert.error'), t('settings.trainingModeUpdateFailed'));
     }
+  };
+
+  const loadCalorieSettings = async () => {
+    try {
+      const settings = await calorieTrackingService.getSettings();
+      setAddBurnedToGoal(settings.addBurnedToGoal);
+    } catch (error) {
+      console.error('Failed to load calorie settings:', error);
+    }
+  };
+
+  const handleCalorieSettingToggle = async (value: boolean) => {
+    try {
+      await calorieTrackingService.updateSettings({ addBurnedToGoal: value });
+      setAddBurnedToGoal(value);
+      Alert.alert(
+        t('alert.success'),
+        value
+          ? t('settings.burnedCaloriesAddedToGoal')
+          : t('settings.burnedCaloriesNotAddedToGoal')
+      );
+    } catch (error) {
+      console.error('Failed to update calorie settings:', error);
+      Alert.alert(t('alert.error'), t('settings.calorieSettingsUpdateFailed'));
+    }
+  };
+
+  const loadCalendarSyncSettings = async () => {
+    try {
+      const settings = await deviceCalendarSyncService.getSyncSettings();
+      setCalendarSyncEnabled(settings.enabled);
+      setLastSyncDate(settings.lastSyncDate);
+      setWeeksToSync(settings.weeksToSync);
+    } catch (error) {
+      console.error('Failed to load calendar sync settings:', error);
+    }
+  };
+
+  const handleSyncWorkouts = async () => {
+    setSyncing(true);
+    try {
+      const success = await deviceCalendarSyncService.syncWorkoutPlan(weeksToSync);
+      if (success) {
+        await loadCalendarSyncSettings();
+      }
+    } catch (error) {
+      console.error('Error syncing workouts:', error);
+      Alert.alert(t('alert.error'), t('settings.calendarSyncFailed'));
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const handleUnsyncWorkouts = async () => {
+    Alert.alert(
+      t('settings.unsyncWorkouts'),
+      t('settings.unsyncWorkoutsConfirmation'),
+      [
+        { text: t('alert.cancel'), style: 'cancel' },
+        {
+          text: t('settings.unsync'),
+          style: 'destructive',
+          onPress: async () => {
+            setSyncing(true);
+            try {
+              const success = await deviceCalendarSyncService.unsyncWorkouts();
+              if (success) {
+                await loadCalendarSyncSettings();
+              }
+            } catch (error) {
+              console.error('Error unsyncing workouts:', error);
+              Alert.alert(t('alert.error'), t('settings.calendarUnsyncFailed'));
+            } finally {
+              setSyncing(false);
+            }
+          }
+        }
+      ]
+    );
   };
 
   // Dark mode is now handled by ThemeContext
@@ -258,7 +347,7 @@ export const SettingsScreen: React.FC = () => {
 
   return (
     <Provider>
-      <ScrollView style={[styles.container, { backgroundColor: '#1A1A1A' }]} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[styles.container, { backgroundColor: '#2A2A2A' }]} showsVerticalScrollIndicator={false}>
         {/* User Info */}
         <Card style={styles.userCard}>
           <Card.Content>
@@ -308,7 +397,7 @@ export const SettingsScreen: React.FC = () => {
                   value={isDark}
                   onValueChange={toggleTheme}
                   trackColor={{ false: '#767577', true: '#81b0ff' }}
-                  thumbColor={isDark ? '#4CAF50' : '#f4f3f4'}
+                  thumbColor={isDark ? BRAND_COLORS.accent : '#f4f3f4'}
                 />
               )}
             />
@@ -437,6 +526,71 @@ export const SettingsScreen: React.FC = () => {
           </Card.Content>
         </Card>
 
+        {/* Nutrition & Calories */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text variant="titleMedium" style={styles.sectionTitle}>
+              {t('settings.nutritionCalories')}
+            </Text>
+
+            <List.Item
+              title={t('settings.addExerciseToGoal')}
+              description={t('settings.addExerciseToGoalDescription')}
+              left={props => <List.Icon {...props} icon="fire" />}
+              right={() => (
+                <Switch
+                  value={addBurnedToGoal}
+                  onValueChange={handleCalorieSettingToggle}
+                  trackColor={{ false: '#767577', true: '#81b0ff' }}
+                  thumbColor={addBurnedToGoal ? BRAND_COLORS.accent : '#f4f3f4'}
+                />
+              )}
+            />
+          </Card.Content>
+        </Card>
+
+        {/* Calendar Sync */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text variant="titleMedium" style={styles.sectionTitle}>
+              {t('settings.calendarSync')}
+            </Text>
+
+            {calendarSyncEnabled && lastSyncDate && (
+              <Text style={styles.syncInfoText}>
+                {t('settings.lastSynced')}: {new Date(lastSyncDate).toLocaleDateString()}
+              </Text>
+            )}
+
+            <List.Item
+              title={t('settings.syncToDeviceCalendar')}
+              description={t('settings.syncToDeviceCalendarDescription')}
+              left={props => <List.Icon {...props} icon="calendar-sync" />}
+              right={props => <List.Icon {...props} icon="chevron-right" />}
+              onPress={handleSyncWorkouts}
+              disabled={syncing}
+            />
+
+            {calendarSyncEnabled && (
+              <List.Item
+                title={t('settings.removeFromCalendar')}
+                description={t('settings.removeFromCalendarDescription')}
+                left={props => <List.Icon {...props} icon="calendar-remove" color="#f44336" />}
+                right={props => <List.Icon {...props} icon="chevron-right" />}
+                onPress={handleUnsyncWorkouts}
+                disabled={syncing}
+                titleStyle={{ color: '#f44336' }}
+              />
+            )}
+
+            {syncing && (
+              <View style={styles.syncingContainer}>
+                <Text style={styles.syncingText}>{t('settings.syncing')}</Text>
+              </View>
+            )}
+          </Card.Content>
+        </Card>
+
         {/* Notifications */}
         <Card style={styles.card}>
           <Card.Content>
@@ -453,7 +607,7 @@ export const SettingsScreen: React.FC = () => {
                   value={notifications.workouts}
                   onValueChange={(value) => updateNotificationSetting('workouts', value)}
                   trackColor={{ false: '#767577', true: '#81b0ff' }}
-                  thumbColor={notifications.workouts ? '#4CAF50' : '#f4f3f4'}
+                  thumbColor={notifications.workouts ? BRAND_COLORS.accent : '#f4f3f4'}
                 />
               )}
             />
@@ -467,7 +621,7 @@ export const SettingsScreen: React.FC = () => {
                   value={notifications.meals}
                   onValueChange={(value) => updateNotificationSetting('meals', value)}
                   trackColor={{ false: '#767577', true: '#81b0ff' }}
-                  thumbColor={notifications.meals ? '#4CAF50' : '#f4f3f4'}
+                  thumbColor={notifications.meals ? BRAND_COLORS.accent : '#f4f3f4'}
                 />
               )}
             />
@@ -481,7 +635,7 @@ export const SettingsScreen: React.FC = () => {
                   value={notifications.water}
                   onValueChange={(value) => updateNotificationSetting('water', value)}
                   trackColor={{ false: '#767577', true: '#81b0ff' }}
-                  thumbColor={notifications.water ? '#4CAF50' : '#f4f3f4'}
+                  thumbColor={notifications.water ? BRAND_COLORS.accent : '#f4f3f4'}
                 />
               )}
             />
@@ -495,7 +649,7 @@ export const SettingsScreen: React.FC = () => {
                   value={notifications.progress}
                   onValueChange={(value) => updateNotificationSetting('progress', value)}
                   trackColor={{ false: '#767577', true: '#81b0ff' }}
-                  thumbColor={notifications.progress ? '#4CAF50' : '#f4f3f4'}
+                  thumbColor={notifications.progress ? BRAND_COLORS.accent : '#f4f3f4'}
                 />
               )}
             />
@@ -518,7 +672,7 @@ export const SettingsScreen: React.FC = () => {
                   value={biometricEnabled}
                   onValueChange={handleBiometricToggle}
                   trackColor={{ false: '#767577', true: '#81b0ff' }}
-                  thumbColor={biometricEnabled ? '#4CAF50' : '#f4f3f4'}
+                  thumbColor={biometricEnabled ? BRAND_COLORS.accent : '#f4f3f4'}
                 />
               )}
             />
@@ -550,7 +704,7 @@ export const SettingsScreen: React.FC = () => {
             <List.Item
               title={t('settings.resetOnboarding')}
               description={t('settings.resetOnboardingDescription')}
-              left={props => <List.Icon {...props} icon="refresh" color="#FF6B35" />}
+              left={props => <List.Icon {...props} icon="refresh" color={BRAND_COLORS.accent} />}
               right={props => <List.Icon {...props} icon="chevron-right" />}
               onPress={() => {
                 Alert.alert(
@@ -578,7 +732,7 @@ export const SettingsScreen: React.FC = () => {
             <List.Item
               title={t('settings.resetTours')}
               description={t('settings.resetToursDescription')}
-              left={props => <List.Icon {...props} icon="map-marker-path" color="#4ECDC4" />}
+              left={props => <List.Icon {...props} icon="map-marker-path" color={BRAND_COLORS.accent} />}
               right={props => <List.Icon {...props} icon="chevron-right" />}
               onPress={handleResetTours}
             />
@@ -620,7 +774,7 @@ export const SettingsScreen: React.FC = () => {
             <List.Item
               title={t('settings.showTour')}
               description={t('settings.showTourDesc')}
-              left={props => <List.Icon {...props} icon="map-marker-path" color="#4285F4" />}
+              left={props => <List.Icon {...props} icon="map-marker-path" color="#3B82F6" />}
               right={props => <List.Icon {...props} icon="chevron-right" />}
               onPress={handleResetTours}
             />
@@ -757,8 +911,8 @@ export const SettingsScreen: React.FC = () => {
                 placeholder="sk-..."
                 style={styles.apiKeyInput}
                 mode="outlined"
-                outlineColor="#FF6B35"
-                activeOutlineColor="#FF6B35"
+                outlineColor={BRAND_COLORS.accent}
+                activeOutlineColor={BRAND_COLORS.accent}
               />
               <Text style={styles.apiKeyNote}>
                 {t('settings.getApiKeyFrom')}
@@ -767,7 +921,7 @@ export const SettingsScreen: React.FC = () => {
             <Dialog.Actions>
               <Button onPress={() => setShowApiKeyDialog(false)}>{t('alert.cancel')}</Button>
               <Button onPress={() => { setApiKey(''); saveApiKey(); }} textColor="#f44336">{t('settings.remove')}</Button>
-              <Button onPress={saveApiKey} textColor="#FF6B35">{t('general.save')}</Button>
+              <Button onPress={saveApiKey} textColor={BRAND_COLORS.accent}>{t('general.save')}</Button>
             </Dialog.Actions>
           </Dialog>
 
@@ -786,8 +940,8 @@ export const SettingsScreen: React.FC = () => {
                 placeholder="sk-ant-api03-..."
                 style={styles.apiKeyInput}
                 mode="outlined"
-                outlineColor="#4ECDC4"
-                activeOutlineColor="#4ECDC4"
+                outlineColor={BRAND_COLORS.accent}
+                activeOutlineColor={BRAND_COLORS.accent}
               />
               <Text style={styles.apiKeyNote}>
                 {t('settings.getAnthropicKeyFrom')}
@@ -796,7 +950,7 @@ export const SettingsScreen: React.FC = () => {
             <Dialog.Actions>
               <Button onPress={() => setShowAnthropicKeyDialog(false)}>{t('alert.cancel')}</Button>
               <Button onPress={() => { setAnthropicApiKey(''); saveAnthropicKey(); }} textColor="#f44336">{t('settings.remove')}</Button>
-              <Button onPress={saveAnthropicKey} textColor="#4ECDC4">{t('general.save')}</Button>
+              <Button onPress={saveAnthropicKey} textColor={BRAND_COLORS.accent}>{t('general.save')}</Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -813,7 +967,7 @@ const styles = StyleSheet.create({
   userCard: {
     margin: 16,
     marginBottom: 8,
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
   },
   userInfo: {
     flexDirection: 'row',
@@ -857,7 +1011,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginBottom: 8,
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
     fontWeight: 'bold',
   },
   modeDescription: {
@@ -898,6 +1052,21 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 12,
     color: '#999',
+    fontStyle: 'italic',
+  },
+  syncInfoText: {
+    fontSize: 13,
+    color: '#666',
+    marginBottom: 8,
+    marginLeft: 16,
+  },
+  syncingContainer: {
+    padding: 12,
+    alignItems: 'center',
+  },
+  syncingText: {
+    fontSize: 14,
+    color: BRAND_COLORS.accent,
     fontStyle: 'italic',
   },
 });

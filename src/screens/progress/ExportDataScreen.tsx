@@ -98,7 +98,7 @@ const ExportDataScreen = () => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <Ionicons name="information-circle" size={24} color="#4ECDC4" />
+          <Ionicons name="information-circle" size={24} color="#E94E1B" />
           <Text style={styles.infoText}>
             Export your fitness data to backup or analyze in other apps
           </Text>
@@ -126,7 +126,7 @@ const ExportDataScreen = () => {
                   <Ionicons
                     name={option.icon as any}
                     size={28}
-                    color={isSelected ? '#4ECDC4' : isDisabled ? '#4A5568' : '#B0B0B0'}
+                    color={isSelected ? '#E94E1B' : isDisabled ? '#4A5568' : '#B0B0B0'}
                   />
                   <Text
                     style={[
@@ -139,7 +139,7 @@ const ExportDataScreen = () => {
                   </Text>
                   {isSelected && (
                     <View style={styles.checkmark}>
-                      <Ionicons name="checkmark-circle" size={20} color="#4ECDC4" />
+                      <Ionicons name="checkmark-circle" size={20} color="#E94E1B" />
                     </View>
                   )}
                 </TouchableOpacity>
@@ -159,7 +159,7 @@ const ExportDataScreen = () => {
               <Ionicons
                 name="code-slash"
                 size={24}
-                color={format === 'json' ? '#4ECDC4' : '#B0B0B0'}
+                color={format === 'json' ? '#E94E1B' : '#B0B0B0'}
               />
               <Text
                 style={[
@@ -181,7 +181,7 @@ const ExportDataScreen = () => {
               <Ionicons
                 name="document-text"
                 size={24}
-                color={format === 'csv' ? '#4ECDC4' : '#B0B0B0'}
+                color={format === 'csv' ? '#E94E1B' : '#B0B0B0'}
               />
               <Text
                 style={[
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
   },
   optionCard: {
     width: '47%',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   optionCardSelected: {
-    borderColor: '#4ECDC4',
+    borderColor: '#E94E1B',
     backgroundColor: 'rgba(78, 205, 196, 0.1)',
   },
   optionCardDisabled: {
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   optionLabelSelected: {
-    color: '#4ECDC4',
+    color: '#E94E1B',
     fontWeight: '600',
   },
   optionLabelDisabled: {
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
   },
   formatButton: {
     flex: 1,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   formatButtonSelected: {
-    borderColor: '#4ECDC4',
+    borderColor: '#E94E1B',
     backgroundColor: 'rgba(78, 205, 196, 0.1)',
   },
   formatText: {
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   formatTextSelected: {
-    color: '#4ECDC4',
+    color: '#E94E1B',
   },
   formatDescription: {
     fontSize: 12,
@@ -422,12 +422,12 @@ const styles = StyleSheet.create({
     width: 50,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 2,
     justifyContent: 'center',
   },
   toggleActive: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#E94E1B',
   },
   toggleKnob: {
     width: 24,
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     padding: 12,
     borderRadius: 8,
   },
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   exportButton: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#E94E1B',
     marginHorizontal: 16,
     marginTop: 32,
     paddingVertical: 16,

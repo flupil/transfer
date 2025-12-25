@@ -17,10 +17,9 @@ export const searchFoods = async (
   page: number = 1,
   pageSize: number = 20
 ): Promise<FoodSearchResult> => {
-  try {
-    // First, search local common foods
-    const rawLocalResults = searchCommonFoods(query);
-    const localResults: FoodItem[] = rawLocalResults.map((food: any) => ({
+  // First, search local common foods (declare outside try-catch for error handling)
+  const rawLocalResults = searchCommonFoods(query);
+  const convertedLocalResults: FoodItem[] = rawLocalResults.map((food: any) => ({
       id: food.id,
       name: food.name,
       brand: food.brand,
@@ -47,8 +46,12 @@ export const searchFoods = async (
       dietaryTags: []
     }));
 
+  try {
+    console.log(`🔍 Found ${convertedLocalResults.length} local results for "${query}"`);
+
     // If we have enough local results, return them
     if (convertedLocalResults.length >= pageSize) {
+      console.log('✅ Returning local results only (enough to fill page)');
       return {
         items: convertedLocalResults.slice(0, pageSize),
         totalCount: convertedLocalResults.length,
@@ -57,19 +60,22 @@ export const searchFoods = async (
       };
     }
 
+    console.log('🌐 Fetching from Open Food Facts API...');
+    const apiStartTime = Date.now();
+
     const params = new URLSearchParams({
       search_terms: query,
       search_simple: '1',
       action: 'process',
       json: '1',
       page: page.toString(),
-      page_size: '100',
+      page_size: '50', // Reduced from 100 to 50 for faster response
       fields: 'code,product_name,brands,image_url,image_small_url,nutriments,serving_size,serving_quantity,categories,allergens,ingredients_text,ingredients_tags'
     });
 
-    // Add 10 second timeout to prevent infinite loading
+    // Add 5 second timeout to prevent infinite loading (reduced from 10)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
 
     const response = await fetch(`${OFF_SEARCH_BASE}?${params.toString()}`, {
       headers: {
@@ -79,12 +85,15 @@ export const searchFoods = async (
     });
 
     clearTimeout(timeoutId);
+    const apiDuration = Date.now() - apiStartTime;
+    console.log(`✅ API responded in ${apiDuration}ms`);
 
     if (!response.ok) {
       throw new Error(`Open Food Facts API error: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log(`📦 Received ${data.products?.length || 0} products from API`);
 
     // Helper function to score products (simpler = higher score)
     const scoreProduct = (product: any): number => {
@@ -167,7 +176,7 @@ export const searchFoods = async (
   } catch (error: any) {
     // Handle abort errors more gracefully
     if (error.name === 'AbortError') {
-      console.log('Search request timed out, returning local results only');
+      console.log('⏱️ API request timed out after 5 seconds, returning local results only');
       // Don't show alert for timeout, just return local results
       return {
         items: convertedLocalResults,
@@ -177,7 +186,7 @@ export const searchFoods = async (
       };
     }
 
-    console.error('Error searching Open Food Facts:', error);
+    console.error('❌ Error searching Open Food Facts:', error);
 
     // Return local results if available, otherwise empty
     return {

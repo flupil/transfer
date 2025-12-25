@@ -22,6 +22,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useForm, Controller } from 'react-hook-form';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 interface SignUpFormData {
   name: string;
@@ -64,17 +65,7 @@ const SignUpScreen = ({ navigation }: any) => {
 
   const handleGoogleSignIn = async () => {
     try {
-      Alert.alert(
-        t('auth.demoMode'),
-        t('auth.googleDemoMessage'),
-        [{ text: t('button.continue'), onPress: async () => {
-          try {
-            await signInWithGoogle();
-          } catch (error: any) {
-            Alert.alert(t('auth.signInFailed'), error.message);
-          }
-        }}]
-      );
+      await signInWithGoogle();
     } catch (error: any) {
       Alert.alert(t('auth.googleSignInFailed'), error.message);
     }
@@ -110,7 +101,7 @@ const SignUpScreen = ({ navigation }: any) => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <MaterialCommunityIcons name="dumbbell" size={60} color="#4CAF50" />
+          <MaterialCommunityIcons name="dumbbell" size={60} color={BRAND_COLORS.accent} />
           <Text variant="headlineLarge" style={styles.title}>
             Join FitGym
           </Text>
@@ -284,7 +275,7 @@ const SignUpScreen = ({ navigation }: any) => {
               onPress={handleGoogleSignIn}
               style={styles.socialButton}
               icon={() => (
-                <MaterialCommunityIcons name="google" size={20} color="#4285F4" />
+                <MaterialCommunityIcons name="google" size={20} color="#3B82F6" />
               )}
             >
               Google
@@ -389,7 +380,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   link: {
-    color: '#4CAF50',
+    color: BRAND_COLORS.accent,
     fontWeight: '600',
   },
 });

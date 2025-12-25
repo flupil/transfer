@@ -8,9 +8,9 @@ import { useLanguage } from '../../contexts/LanguageContext';
 
 const OnboardingAppPurposeScreen = () => {
   const navigation = useNavigation();
-  const { updateOnboardingData } = useOnboarding();
+  const { onboardingData, updateOnboardingData } = useOnboarding();
   const { t } = useLanguage();
-  const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
+  const [selectedPurpose, setSelectedPurpose] = useState<string | null>(onboardingData.appPurpose || 'gym');
 
   const purposes = [
     {
@@ -18,27 +18,28 @@ const OnboardingAppPurposeScreen = () => {
       title: 'Gym & Fitness',
       description: 'Build muscle, lose weight, and track workouts',
       icon: 'dumbbell',
-      color: '#FF8C42',
+      color: '#E94E1B', // Primary color
     },
     {
       id: 'football',
       title: 'Football Training',
       description: 'Improve your skills and performance',
       icon: 'soccer',
-      color: '#22C55E',
+      color: '#FF8C42',
     },
   ];
 
   const handleNext = () => {
     if (selectedPurpose) {
       updateOnboardingData({ appPurpose: selectedPurpose });
-      navigation.navigate('OnboardingInterests' as never);
+      // Go to Gender screen (Interests screen is now before this)
+      navigation.navigate('OnboardingGender' as never);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <TouchableOpacity
@@ -111,7 +112,7 @@ const OnboardingAppPurposeScreen = () => {
         </View>
 
         <View style={styles.infoBox}>
-          <Ionicons name="information-circle" size={18} color="#3b9eff" />
+          <Ionicons name="information-circle" size={18} color="#3B82F6" />
           <Text style={styles.infoText}>
             You can switch modes anytime in settings
           </Text>
@@ -141,7 +142,7 @@ const OnboardingAppPurposeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     flexDirection: 'row',
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
@@ -199,10 +200,10 @@ const styles = StyleSheet.create({
   },
   optionCard: {
     padding: 20,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#2a3a4a',
+    borderColor: '#2A2A2A',
     alignItems: 'center',
     position: 'relative',
   },
@@ -247,10 +248,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: '#1e2e3e',
+    backgroundColor: '#2A2A2A',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#2a3a4a',
+    borderColor: '#2A2A2A',
   },
   infoText: {
     fontSize: 13,

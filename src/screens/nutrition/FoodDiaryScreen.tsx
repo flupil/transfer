@@ -16,10 +16,11 @@ import { useNutrition } from '../../contexts/NutritionContext';
 import { FoodIntake, MealType } from '../../types/nutrition.types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../contexts/AuthContext';
-import NutritionOnboardingScreen from './NutritionOnboardingScreen';
 import Svg, { Circle } from 'react-native-svg';
 import { getSelectedMealPlan } from '../../services/mealPlanService';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { BRAND_COLORS } from '../../constants/brandColors';
+import { generatePieChartColors } from '../../utils/colorUtils';
 
 const FoodDiaryScreen = () => {
   const navigation = useNavigation();
@@ -32,22 +33,21 @@ const FoodDiaryScreen = () => {
     getRemainingCalories,
   } = useNutrition();
 
-  const [showNutritionOnboarding, setShowNutritionOnboarding] = useState(false);
-  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [selectedMealPlan, setSelectedMealPlan] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const [nutritionData, setNutritionData] = useState<any>(null);
   const [targets, setTargets] = useState<any>({ calories: 2000, protein: 150, carbs: 200, fat: 67 });
 
+  // Generate dynamic pie chart colors
+  const pieColors = React.useMemo(() => generatePieChartColors(BRAND_COLORS.accent), []);
+
   useEffect(() => {
-    checkNutritionOnboarding();
     loadMealPlan();
     loadNutritionData();
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
-      checkNutritionOnboarding();
       loadMealPlan();
       loadNutritionData();
     }, [])
@@ -74,22 +74,6 @@ const FoodDiaryScreen = () => {
   const loadMealPlan = async () => {
     const plan = await getSelectedMealPlan();
     setSelectedMealPlan(plan);
-  };
-
-  const checkNutritionOnboarding = async () => {
-    try {
-      const nutritionOnboardingKey = `nutrition_onboarding_complete_${user?.id}`;
-      const completed = await AsyncStorage.getItem(nutritionOnboardingKey);
-      setShowNutritionOnboarding(completed !== 'true');
-    } catch (error) {
-      console.error('Error checking nutrition onboarding:', error);
-    } finally {
-      setCheckingOnboarding(false);
-    }
-  };
-
-  const handleNutritionOnboardingComplete = () => {
-    setShowNutritionOnboarding(false);
   };
 
   const handlePreviousDay = () => {
@@ -137,18 +121,6 @@ const FoodDiaryScreen = () => {
       }
     })
     .runOnJS(true);
-
-  if (checkingOnboarding) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </SafeAreaView>
-    );
-  }
-
-  if (showNutritionOnboarding) {
-    return <NutritionOnboardingScreen onComplete={handleNutritionOnboardingComplete} />;
-  }
 
   if (!currentDiary) {
     return (
@@ -229,7 +201,7 @@ const FoodDiaryScreen = () => {
                   cx={17.5}
                   cy={17.5}
                   r={14}
-                  stroke="#4ECDC4"
+                  stroke={BRAND_COLORS.accent}
                   strokeWidth={6}
                   fill="none"
                   strokeDasharray={`${2 * Math.PI * 14}`}
@@ -251,7 +223,7 @@ const FoodDiaryScreen = () => {
                   cx={17.5}
                   cy={17.5}
                   r={14}
-                  stroke="#FFD93D"
+                  stroke={BRAND_COLORS.accent}
                   strokeWidth={6}
                   fill="none"
                   strokeDasharray={`${2 * Math.PI * 14}`}
@@ -273,7 +245,7 @@ const FoodDiaryScreen = () => {
                   cx={17.5}
                   cy={17.5}
                   r={14}
-                  stroke="#FF6B6B"
+                  stroke={BRAND_COLORS.accent}
                   strokeWidth={6}
                   fill="none"
                   strokeDasharray={`${2 * Math.PI * 14}`}
@@ -340,13 +312,13 @@ const FoodDiaryScreen = () => {
           <View style={styles.pieChartContainer}>
             <Svg width={60} height={60}>
               {/* Pie chart showing macro distribution */}
-              <Circle cx={30} cy={30} r={25} fill="#FFA726" />
+              <Circle cx={30} cy={30} r={25} fill={pieColors.carbs} />
               <Circle
                 cx={30}
                 cy={30}
                 r={25}
                 fill="transparent"
-                stroke="#4285F4"
+                stroke={pieColors.protein}
                 strokeWidth={50}
                 strokeDasharray={`${Math.PI * 50 * 0.3} ${Math.PI * 50 * 0.7}`}
                 transform="rotate(-90 30 30)"
@@ -356,7 +328,7 @@ const FoodDiaryScreen = () => {
                 cy={30}
                 r={25}
                 fill="transparent"
-                stroke="#66BB6A"
+                stroke={pieColors.fat}
                 strokeWidth={50}
                 strokeDasharray={`${Math.PI * 50 * 0.25} ${Math.PI * 50 * 0.75}`}
                 transform="rotate(18 30 30)"
@@ -861,7 +833,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#4CAF50',
+    backgroundColor: BRAND_COLORS.accent,
     borderRadius: 3,
   },
   progressText: {

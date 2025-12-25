@@ -16,6 +16,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { getStreakData, getUserLevel, getWorkoutHistory } from '../services/progressTrackingService';
 import { getFriends, getFriendLeaderboard } from '../services/friendStreakService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BRAND_COLORS } from '../constants/brandColors';
 
 const { width } = Dimensions.get('window');
 
@@ -156,18 +157,18 @@ const StreakScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#1A1A1A' }]}>
-      <View style={[styles.header, { backgroundColor: colors.cardBackground, marginTop: 20 }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#2A2A2A' }]}>
+      <View style={[styles.header, { backgroundColor: '#4A4A4A', marginTop: 20 }]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="close" size={30} color={colors.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Streak</Text>
+        <Text style={[styles.headerTitle, { color: '#F4F1EF' }]}>Streak</Text>
         <TouchableOpacity>
           <Ionicons name="share-outline" size={28} color={colors.text} />
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.tabContainer, { backgroundColor: colors.cardBackground }]}>
+      <View style={[styles.tabContainer, { backgroundColor: '#4A4A4A' }]}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'personal' && styles.activeTab]}
           onPress={() => setActiveTab('personal')}
@@ -191,18 +192,18 @@ const StreakScreen: React.FC = () => {
           <>
             {/* Streak Society Card */}
             <View style={[styles.streakCard, {
-              backgroundColor: colors.cardBackground,
+              backgroundColor: '#4A4A4A',
               borderWidth: 2,
               borderColor: isDark ? '#2a2a2a' : '#e5e5e5'
             }]}>
               <View style={[styles.streakBadge, { backgroundColor: isDark ? '#3a3a3a' : '#f0f0f0' }]}>
-                <Text style={[styles.streakBadgeText, { color: colors.text }]}>STREAK SOCIETY</Text>
+                <Text style={[styles.streakBadgeText, { color: '#F4F1EF' }]}>STREAK SOCIETY</Text>
               </View>
               <View style={styles.streakInfo}>
-                <Text style={[styles.streakNumber, { color: colors.text }]}>{currentStreak}</Text>
-                <Text style={[styles.streakLabel, { color: colors.text }]}>day streak!</Text>
+                <Text style={[styles.streakNumber, { color: '#F4F1EF' }]}>{currentStreak}</Text>
+                <Text style={[styles.streakLabel, { color: '#F4F1EF' }]}>day streak!</Text>
                 <View style={styles.fireContainer}>
-                  <MaterialCommunityIcons name="fire" size={120} color="#FF6B35" />
+                  <MaterialCommunityIcons name="fire" size={120} color={BRAND_COLORS.accent} />
                 </View>
               </View>
 
@@ -211,7 +212,7 @@ const StreakScreen: React.FC = () => {
                   <View style={styles.clockIcon}>
                     <MaterialCommunityIcons name="clock-outline" size={40} color="#FF9500" />
                   </View>
-                  <Text style={[styles.lessonText, { color: colors.text }]}>
+                  <Text style={[styles.lessonText, { color: '#F4F1EF' }]}>
                     Do a workout today to extend your streak!
                   </Text>
                   <TouchableOpacity
@@ -226,9 +227,9 @@ const StreakScreen: React.FC = () => {
 
             {/* Streak Calendar */}
             <View style={styles.calendarSection}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Streak Calendar</Text>
+              <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Streak Calendar</Text>
               <View style={[styles.calendarCard, {
-                backgroundColor: colors.cardBackground,
+                backgroundColor: '#4A4A4A',
                 borderWidth: 2,
                 borderColor: isDark ? '#2a2a2a' : '#e5e5e5'
               }]}>
@@ -236,7 +237,7 @@ const StreakScreen: React.FC = () => {
                   <TouchableOpacity onPress={() => changeMonth('prev')}>
                     <Ionicons name="chevron-back" size={24} color={colors.text} />
                   </TouchableOpacity>
-                  <Text style={[styles.monthText, { color: colors.text }]}>
+                  <Text style={[styles.monthText, { color: '#F4F1EF' }]}>
                     {selectedMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </Text>
                   <TouchableOpacity onPress={() => changeMonth('next')}>
@@ -258,9 +259,9 @@ const StreakScreen: React.FC = () => {
 
             {/* Streak Goal */}
             <View style={styles.goalSection}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Streak Goal</Text>
+              <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Streak Goal</Text>
               <View style={[styles.goalCard, {
-                backgroundColor: colors.cardBackground,
+                backgroundColor: '#4A4A4A',
                 borderWidth: 2,
                 borderColor: isDark ? '#2a2a2a' : '#e5e5e5'
               }]}>
@@ -289,10 +290,10 @@ const StreakScreen: React.FC = () => {
 
             {/* Streak Society Benefits */}
             <View style={styles.societySection}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Streak Society</Text>
+              <Text style={[styles.sectionTitle, { color: '#F4F1EF' }]}>Streak Society</Text>
 
               <View style={[styles.benefitCard, {
-                backgroundColor: colors.cardBackground,
+                backgroundColor: '#4A4A4A',
                 borderWidth: 2,
                 borderColor: isDark ? '#2a2a2a' : '#e5e5e5'
               }]}>
@@ -300,10 +301,10 @@ const StreakScreen: React.FC = () => {
                   <MaterialCommunityIcons name="snowflake" size={40} color="#4FC3F7" />
                 </View>
                 <View style={styles.benefitInfo}>
-                  <Text style={[styles.benefitTitle, { color: colors.text }]}>
+                  <Text style={[styles.benefitTitle, { color: '#F4F1EF' }]}>
                     {availableFreezes} {availableFreezes === 1 ? 'Freeze' : 'Freezes'} Available
                   </Text>
-                  <Text style={[styles.benefitDescription, { color: colors.text }]}>
+                  <Text style={[styles.benefitDescription, { color: '#F4F1EF' }]}>
                     Automatically protects your streak if you miss a workout day.
                   </Text>
                   <Text style={styles.refillText}>
@@ -317,12 +318,12 @@ const StreakScreen: React.FC = () => {
           <View style={styles.friendsTab}>
             {friends.length > 0 ? (
               <>
-                <Text style={[styles.sectionTitle, { color: colors.text, marginBottom: 20 }]}>Friend Leaderboard</Text>
+                <Text style={[styles.sectionTitle, { color: '#F4F1EF', marginBottom: 20 }]}>Friend Leaderboard</Text>
                 {friends.map((friend, index) => (
                   <View
                     key={friend.id}
                     style={[styles.friendCard, {
-                      backgroundColor: colors.cardBackground,
+                      backgroundColor: '#4A4A4A',
                       borderWidth: 2,
                       borderColor: isDark ? '#2a2a2a' : '#e5e5e5'
                     }]}
@@ -336,15 +337,15 @@ const StreakScreen: React.FC = () => {
                       <Text style={styles.avatarEmoji}>{friend.avatar}</Text>
                     </View>
                     <View style={styles.friendInfo}>
-                      <Text style={[styles.friendName, { color: colors.text }]}>{friend.name}</Text>
+                      <Text style={[styles.friendName, { color: '#F4F1EF' }]}>{friend.name}</Text>
                       <View style={styles.friendStats}>
-                        <MaterialCommunityIcons name="fire" size={16} color="#FF6B35" />
-                        <Text style={[styles.friendStreak, { color: colors.text }]}>{friend.streak} day streak</Text>
+                        <MaterialCommunityIcons name="fire" size={16} color={BRAND_COLORS.accent} />
+                        <Text style={[styles.friendStreak, { color: '#F4F1EF' }]}>{friend.streak} day streak</Text>
                       </View>
                     </View>
                     <View style={styles.friendXP}>
                       <MaterialCommunityIcons name="diamond" size={20} color="#1CB0F6" />
-                      <Text style={[styles.xpText, { color: colors.text }]}>{friend.xp}</Text>
+                      <Text style={[styles.xpText, { color: '#F4F1EF' }]}>{friend.xp}</Text>
                     </View>
                   </View>
                 ))}
@@ -355,7 +356,7 @@ const StreakScreen: React.FC = () => {
             ) : (
               <>
                 <MaterialCommunityIcons name="account-group" size={100} color="#666" />
-                <Text style={[styles.noFriendsText, { color: colors.text }]}>Connect with friends to see their streaks!</Text>
+                <Text style={[styles.noFriendsText, { color: '#F4F1EF' }]}>Connect with friends to see their streaks!</Text>
                 <TouchableOpacity style={styles.inviteButton}>
                   <Text style={styles.inviteButtonText}>INVITE FRIENDS</Text>
                 </TouchableOpacity>

@@ -212,8 +212,8 @@ const TraineesScreen: React.FC = () => {
 
   const getActivityLevel = (stats: any) => {
     const workoutRate = (stats.workoutCount || 0) / 30;
-    if (workoutRate >= 0.8) return { level: 'High', color: '#4CAF50' };
-    if (workoutRate >= 0.5) return { level: 'Medium', color: '#FF9800' };
+    if (workoutRate >= 0.8) return { level: 'High', color: '#E94E1B' };
+    if (workoutRate >= 0.5) return { level: 'Medium', color: '#E94E1B' };
     return { level: 'Low', color: '#F44336' };
   };
 
@@ -249,7 +249,7 @@ const TraineesScreen: React.FC = () => {
                     <Avatar.Text
                       size={50}
                       label={trainee.name?.charAt(0) || 'T'}
-                      style={[{ backgroundColor: '#4CAF50' }]}
+                      style={[{ backgroundColor: '#E94E1B' }]}
                     />
                     <View style={styles.traineeDetails}>
                       <Text variant="titleMedium" style={styles.traineeName}>
@@ -280,7 +280,7 @@ const TraineesScreen: React.FC = () => {
 
                 <View style={styles.statsGrid}>
                   <View style={styles.statItem}>
-                    <MaterialCommunityIcons name="dumbbell" size={20} color="#4CAF50" />
+                    <MaterialCommunityIcons name="dumbbell" size={20} color="#E94E1B" />
                     <Text variant="bodySmall" style={styles.statValue}>
                       {stats.workoutCount || 0}
                     </Text>
@@ -289,7 +289,7 @@ const TraineesScreen: React.FC = () => {
                     </Text>
                   </View>
                   <View style={styles.statItem}>
-                    <MaterialCommunityIcons name="check-circle" size={20} color="#2196F3" />
+                    <MaterialCommunityIcons name="check-circle" size={20} color="#3B82F6" />
                     <Text variant="bodySmall" style={styles.statValue}>
                       {stats.attendanceRate || 0}%
                     </Text>
@@ -298,7 +298,7 @@ const TraineesScreen: React.FC = () => {
                     </Text>
                   </View>
                   <View style={styles.statItem}>
-                    <MaterialCommunityIcons name="clipboard-list" size={20} color="#FF9800" />
+                    <MaterialCommunityIcons name="clipboard-list" size={20} color="#E94E1B" />
                     <Text variant="bodySmall" style={styles.statValue}>
                       {stats.assignedPlans || 0}
                     </Text>
@@ -326,7 +326,7 @@ const TraineesScreen: React.FC = () => {
                       </Text>
                       <ProgressBar
                         progress={Math.min(stats.avgDuration / 60, 1)}
-                        color="#4CAF50"
+                        color="#E94E1B"
                         style={styles.progressBar}
                       />
                     </View>

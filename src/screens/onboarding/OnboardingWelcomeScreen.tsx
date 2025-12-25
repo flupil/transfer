@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '../../contexts/LanguageContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OnboardingWelcomeScreen = () => {
   const navigation = useNavigation();
   const { t } = useLanguage();
+
+  useEffect(() => {
+    // Clear any existing meal plan selection when starting onboarding
+    // This ensures the new custom plan from onboarding will be used
+    const clearOldPlan = async () => {
+      try {
+        await AsyncStorage.removeItem('selectedMealPlan');
+        console.log('🗑️ Cleared old meal plan selection for fresh onboarding');
+      } catch (error) {
+        console.error('Error clearing old meal plan:', error);
+      }
+    };
+    clearOldPlan();
+  }, []);
 
   const steps = [
     {
@@ -29,7 +44,7 @@ const OnboardingWelcomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a2a3a" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
 
       <View style={styles.header}>
         <View style={styles.progressContainer}>
@@ -55,7 +70,7 @@ const OnboardingWelcomeScreen = () => {
           {steps.map((step, index) => (
             <View key={index} style={styles.stepItem}>
               <View style={styles.stepIconContainer}>
-                <Ionicons name={step.icon as any} size={24} color="#3b9eff" />
+                <Ionicons name={step.icon as any} size={24} color="#3B82F6" />
                 <View style={styles.stepLine} />
               </View>
               <View style={styles.stepContent}>
@@ -70,7 +85,7 @@ const OnboardingWelcomeScreen = () => {
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('OnboardingAppPurpose' as never)}
+          onPress={() => navigation.navigate('OnboardingInterests' as never)}
         >
           <Text style={styles.buttonText}>{t('onboarding.startSetup')}</Text>
           <Ionicons name="arrow-forward" size={20} color="#fff" />
@@ -83,7 +98,7 @@ const OnboardingWelcomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: '#1A1A1A',
   },
   header: {
     paddingHorizontal: 20,
@@ -97,12 +112,12 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 4,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
     borderRadius: 2,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     borderRadius: 2,
   },
   progressText: {
@@ -152,7 +167,7 @@ const styles = StyleSheet.create({
     top: 35,
     width: 1,
     height: 50,
-    backgroundColor: '#2a3a4a',
+    backgroundColor: '#2A2A2A',
   },
   stepContent: {
     flex: 1,
@@ -170,7 +185,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    backgroundColor: '#3b9eff',
+    backgroundColor: '#3B82F6',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 30,

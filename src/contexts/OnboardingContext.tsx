@@ -84,15 +84,14 @@ export const OnboardingProvider: React.FC<{ children: ReactNode }> = ({ children
     const activityMultiplier = activityMultipliers[activityLevel || 'moderately-active'] || 1.55;
     const tdee = bmr * activityMultiplier;
 
-    // Calculate all calorie scenarios (matching calculator.net exactly)
-    // Based on the formula: 1 kg fat = ~7700 calories
-    // Percentages from calculator.net results
+    // Calculate all calorie scenarios using proper fixed deficits
+    // Based on: 1 kg fat = ~7700 calories, so 250 cal deficit = 0.25 kg/week loss
     const maintainCalories = Math.round(tdee);
-    const mildWeightLoss = Math.round(tdee * 0.90);      // 0.25 kg/week loss (90% of TDEE)
-    const weightLoss = Math.round(tdee * 0.79);          // 0.5 kg/week loss (79% of TDEE)
-    const extremeWeightLoss = Math.round(tdee * 0.59);   // 1 kg/week loss (59% of TDEE)
-    const mildWeightGain = Math.round(tdee * 1.10);      // 0.25 kg/week gain (110% of TDEE)
-    const weightGain = Math.round(tdee * 1.21);          // 0.5 kg/week gain (121% of TDEE)
+    const mildWeightLoss = Math.round(tdee - 250);      // 0.25 kg/week loss (250 cal deficit)
+    const weightLoss = Math.round(tdee - 500);          // 0.5 kg/week loss (500 cal deficit)
+    const extremeWeightLoss = Math.round(tdee - 1000);  // 1 kg/week loss (1000 cal deficit)
+    const mildWeightGain = Math.round(tdee + 250);      // 0.25 kg/week gain (250 cal surplus)
+    const weightGain = Math.round(tdee + 500);          // 0.5 kg/week gain (500 cal surplus)
 
     // Determine which calorie target to use based on goals and weight difference
     const weightDiff = weightKg - targetWeightKg;

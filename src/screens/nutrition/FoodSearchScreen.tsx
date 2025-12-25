@@ -20,8 +20,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNutrition } from '../../contexts/NutritionContext';
 import { FoodItem as FoodItemType, MealType as MealTypeEnum } from '../../types/nutrition.types';
 import FoodDetailModal from '../../components/FoodDetailModal';
+import FoodVariationModal from '../../components/FoodVariationModal';
 import { debounce } from 'lodash';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { findFoodWithVariations, FoodWithVariations, FoodVariation } from '../../data/foodVariations';
+import { FoodSource } from '../../types/nutrition.types';
+import { BRAND_COLORS } from '../../constants/brandColors';
 
 const FoodSearchScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -71,6 +75,8 @@ const FoodSearchScreen: React.FC = () => {
   const [showFoodDetail, setShowFoodDetail] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('Recently Added');
   const [recentSearches, setRecentSearches] = useState<string[]>(['Chicken breast', 'Banana', 'Oatmeal']);
+  const [showVariationModal, setShowVariationModal] = useState(false);
+  const [currentFoodWithVariations, setCurrentFoodWithVariations] = useState<FoodWithVariations | null>(null);
 
   // Debounced search function
   const debouncedSearch = useCallback(
@@ -98,7 +104,7 @@ const FoodSearchScreen: React.FC = () => {
       } finally {
         setLoading(false);
       }
-    }, 500),
+    }, 300), // Reduced from 500ms to 300ms for faster response
     []
   );
 
@@ -114,8 +120,256 @@ const FoodSearchScreen: React.FC = () => {
   };
 
   const handleFoodPress = (food: FoodItemType) => {
-    setSelectedFood(food);
+    // Check if this food has variations
+    const foodWithVariations = findFoodWithVariations(food.name);
+
+    if (foodWithVariations) {
+      console.log(`🍝 Found variations for: ${food.name}`);
+      setCurrentFoodWithVariations(foodWithVariations);
+      setShowVariationModal(true);
+    } else {
+      // No variations, go directly to detail modal
+      setSelectedFood(food);
+      setShowFoodDetail(true);
+    }
+  };
+
+  const handleSelectVariation = (variation: FoodVariation) => {
+    console.log(`✅ Selected variation: ${variation.name}`);
+
+    // Create realistic serving sizes based on food type
+    const getServingSizes = () => {
+      const id = variation.id;
+
+      // EGGS - count by eggs
+      if (id.startsWith('eggs_')) {
+        return [
+          { amount: 1, unit: 'egg', label: '1 egg', gramsEquivalent: 50 },
+          { amount: 2, unit: 'eggs', label: '2 eggs', gramsEquivalent: 100 },
+          { amount: 3, unit: 'eggs', label: '3 eggs', gramsEquivalent: 150 },
+          { amount: 4, unit: 'eggs', label: '4 eggs', gramsEquivalent: 200 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // PIZZA - by slices
+      if (id.startsWith('pizza_')) {
+        return [
+          { amount: 1, unit: 'slice', label: '1 slice', gramsEquivalent: 107 },
+          { amount: 2, unit: 'slices', label: '2 slices', gramsEquivalent: 214 },
+          { amount: 3, unit: 'slices', label: '3 slices', gramsEquivalent: 321 },
+          { amount: 4, unit: 'slices', label: '4 slices', gramsEquivalent: 428 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // BURGER - uses smart serving (quantity + size) in FoodDetailModal
+      // No predefined serving sizes needed
+
+      // SANDWICH - whole or half
+      if (id.startsWith('sandwich_')) {
+        return [
+          { amount: 0.5, unit: 'sandwich', label: '1/2 sandwich', gramsEquivalent: 75 },
+          { amount: 1, unit: 'sandwich', label: '1 sandwich', gramsEquivalent: 150 },
+          { amount: 1.5, unit: 'sandwiches', label: '1.5 sandwiches', gramsEquivalent: 225 },
+          { amount: 2, unit: 'sandwiches', label: '2 sandwiches', gramsEquivalent: 300 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // PANCAKES - by pancake
+      if (id.startsWith('pancakes_')) {
+        return [
+          { amount: 1, unit: 'pancake', label: '1 pancake', gramsEquivalent: 77 },
+          { amount: 2, unit: 'pancakes', label: '2 pancakes', gramsEquivalent: 154 },
+          { amount: 3, unit: 'pancakes', label: '3 pancakes', gramsEquivalent: 231 },
+          { amount: 4, unit: 'pancakes', label: '4 pancakes', gramsEquivalent: 308 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // TOAST - by slices
+      if (id.startsWith('toast_')) {
+        return [
+          { amount: 1, unit: 'slice', label: '1 slice', gramsEquivalent: 25 },
+          { amount: 2, unit: 'slices', label: '2 slices', gramsEquivalent: 50 },
+          { amount: 3, unit: 'slices', label: '3 slices', gramsEquivalent: 75 },
+          { amount: 4, unit: 'slices', label: '4 slices', gramsEquivalent: 100 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // CHICKEN - by breast size or portion
+      if (id.startsWith('chicken_')) {
+        return [
+          { amount: 1, unit: 'piece', label: 'Small piece (100g)', gramsEquivalent: 100 },
+          { amount: 1, unit: 'piece', label: 'Medium piece (150g)', gramsEquivalent: 150 },
+          { amount: 1, unit: 'piece', label: 'Large piece (200g)', gramsEquivalent: 200 },
+          { amount: 1, unit: 'breast', label: '1 chicken breast (174g)', gramsEquivalent: 174 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // RICE - by cup/bowl
+      if (id.startsWith('rice_')) {
+        return [
+          { amount: 0.5, unit: 'cup', label: '1/2 cup', gramsEquivalent: 90 },
+          { amount: 1, unit: 'cup', label: '1 cup', gramsEquivalent: 180 },
+          { amount: 1, unit: 'bowl', label: '1 bowl (small)', gramsEquivalent: 150 },
+          { amount: 1, unit: 'bowl', label: '1 bowl (large)', gramsEquivalent: 250 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // PASTA - by cup/plate
+      if (id.startsWith('pasta_')) {
+        return [
+          { amount: 0.5, unit: 'cup', label: '1/2 cup', gramsEquivalent: 70 },
+          { amount: 1, unit: 'cup', label: '1 cup', gramsEquivalent: 140 },
+          { amount: 1, unit: 'plate', label: '1 plate (small)', gramsEquivalent: 150 },
+          { amount: 1, unit: 'plate', label: '1 plate (large)', gramsEquivalent: 250 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // POTATO - depends on type
+      if (id === 'potato_baked') {
+        return [
+          { amount: 1, unit: 'potato', label: '1 small potato (138g)', gramsEquivalent: 138 },
+          { amount: 1, unit: 'potato', label: '1 medium potato (173g)', gramsEquivalent: 173 },
+          { amount: 1, unit: 'potato', label: '1 large potato (299g)', gramsEquivalent: 299 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+      if (id === 'potato_french_fries' || id === 'potato_hash_browns') {
+        return [
+          { amount: 1, unit: 'serving', label: 'Small (71g)', gramsEquivalent: 71 },
+          { amount: 1, unit: 'serving', label: 'Medium (117g)', gramsEquivalent: 117 },
+          { amount: 1, unit: 'serving', label: 'Large (154g)', gramsEquivalent: 154 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+      if (id.startsWith('potato_')) {
+        return [
+          { amount: 0.5, unit: 'cup', label: '1/2 cup', gramsEquivalent: 105 },
+          { amount: 1, unit: 'cup', label: '1 cup', gramsEquivalent: 210 },
+          { amount: 1, unit: 'serving', label: '1 serving (small)', gramsEquivalent: 100 },
+          { amount: 1, unit: 'serving', label: '1 serving (large)', gramsEquivalent: 200 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // OATMEAL - by cup/bowl
+      if (id.startsWith('oatmeal_')) {
+        return [
+          { amount: 0.5, unit: 'cup', label: '1/2 cup', gramsEquivalent: 120 },
+          { amount: 1, unit: 'cup', label: '1 cup', gramsEquivalent: 240 },
+          { amount: 1, unit: 'bowl', label: '1 bowl', gramsEquivalent: 240 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // SALAD - by cup/bowl
+      if (id.startsWith('salad_')) {
+        return [
+          { amount: 1, unit: 'cup', label: '1 cup', gramsEquivalent: 85 },
+          { amount: 1, unit: 'bowl', label: '1 side salad', gramsEquivalent: 150 },
+          { amount: 1, unit: 'bowl', label: '1 meal salad', gramsEquivalent: 300 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // COFFEE - already in ml, which is good
+      if (id.startsWith('coffee_')) {
+        return [
+          { amount: 240, unit: 'ml', label: '1 cup (8 oz)', gramsEquivalent: 240 },
+          { amount: 355, unit: 'ml', label: '1 mug (12 oz)', gramsEquivalent: 355 },
+          { amount: 473, unit: 'ml', label: 'Large (16 oz)', gramsEquivalent: 473 },
+          { amount: 100, unit: 'ml', label: '100ml (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // YOGURT - by container/cup
+      if (id.startsWith('yogurt_')) {
+        return [
+          { amount: 1, unit: 'container', label: '1 container (150g)', gramsEquivalent: 150 },
+          { amount: 1, unit: 'container', label: '1 large container (200g)', gramsEquivalent: 200 },
+          { amount: 0.5, unit: 'cup', label: '1/2 cup', gramsEquivalent: 120 },
+          { amount: 1, unit: 'cup', label: '1 cup', gramsEquivalent: 240 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // BEEF - by portion
+      if (id.startsWith('beef_')) {
+        return [
+          { amount: 1, unit: 'serving', label: 'Small (85g / 3 oz)', gramsEquivalent: 85 },
+          { amount: 1, unit: 'serving', label: 'Medium (113g / 4 oz)', gramsEquivalent: 113 },
+          { amount: 1, unit: 'serving', label: 'Large (170g / 6 oz)', gramsEquivalent: 170 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // FISH - by fillet or portion
+      if (id.startsWith('fish_')) {
+        return [
+          { amount: 1, unit: 'fillet', label: 'Small fillet (85g)', gramsEquivalent: 85 },
+          { amount: 1, unit: 'fillet', label: 'Medium fillet (113g)', gramsEquivalent: 113 },
+          { amount: 1, unit: 'fillet', label: 'Large fillet (170g)', gramsEquivalent: 170 },
+          { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // SOUP - by cup/bowl (already in ml)
+      if (id.startsWith('soup_')) {
+        return [
+          { amount: 245, unit: 'ml', label: '1 cup', gramsEquivalent: 245 },
+          { amount: 360, unit: 'ml', label: '1 bowl', gramsEquivalent: 360 },
+          { amount: 500, unit: 'ml', label: '1 large bowl', gramsEquivalent: 500 },
+          { amount: 100, unit: 'ml', label: '100ml (custom)', gramsEquivalent: 100 }
+        ];
+      }
+
+      // DEFAULT - generic portions + grams
+      return [
+        { amount: 1, unit: 'serving', label: 'Small serving (100g)', gramsEquivalent: 100 },
+        { amount: 1, unit: 'serving', label: 'Medium serving (150g)', gramsEquivalent: 150 },
+        { amount: 1, unit: 'serving', label: 'Large serving (200g)', gramsEquivalent: 200 },
+        { amount: 100, unit: 'g', label: '100g (custom)', gramsEquivalent: 100 }
+      ];
+    };
+
+    // Convert variation to FoodItem with realistic serving sizes
+    const foodItem: FoodItemType = {
+      id: variation.id,
+      name: variation.name,
+      imageUrl: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" font-size="60" text-anchor="middle" dominant-baseline="middle">${variation.emoji}</text></svg>`)}`,
+      thumbnailUrl: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="50" font-size="60" text-anchor="middle" dominant-baseline="middle">${variation.emoji}</text></svg>`)}`,
+      nutritionPer100g: {
+        calories: variation.calories,
+        protein: variation.protein,
+        carbs: variation.carbs,
+        fat: variation.fat,
+        fiber: variation.fiber,
+        sugar: variation.sugar
+      },
+      servingSizes: getServingSizes(),
+      source: FoodSource.CUSTOM,
+      ingredients: [],
+      allergens: [],
+      dietaryTags: []
+    };
+
+    // Close variation modal and open detail modal
+    setShowVariationModal(false);
+    setCurrentFoodWithVariations(null);
+    setSelectedFood(foodItem);
     setShowFoodDetail(true);
+  };
+
+  const handleCloseVariationModal = () => {
+    setShowVariationModal(false);
+    setCurrentFoodWithVariations(null);
   };
 
   const handleCloseFoodDetail = () => {
@@ -345,7 +599,7 @@ const FoodSearchScreen: React.FC = () => {
           </>
         ) : loading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#4ECDC4" />
+            <ActivityIndicator size="large" color={BRAND_COLORS.accent} />
             <Text style={styles.loadingText}>{t('common.loading')}</Text>
           </View>
         ) : hasSearched && searchResults.length > 0 ? (
@@ -382,6 +636,14 @@ const FoodSearchScreen: React.FC = () => {
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
 
+      {/* Food Variation Modal */}
+      <FoodVariationModal
+        visible={showVariationModal}
+        foodWithVariations={currentFoodWithVariations}
+        onSelectVariation={handleSelectVariation}
+        onClose={handleCloseVariationModal}
+      />
+
       {/* Food Detail Modal */}
       <FoodDetailModal
         visible={showFoodDetail}
@@ -399,7 +661,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#202124',
   },
   header: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     paddingBottom: 15,
   },
   headerContent: {
@@ -433,7 +695,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   filtersBlock: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 12,
@@ -451,7 +713,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   filterChip: {
-    backgroundColor: '#3C3C3E',
+    backgroundColor: '#4E4E50',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 16,
@@ -459,7 +721,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   filterChipActive: {
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
   },
   filterChipText: {
     fontSize: 12,
@@ -471,7 +733,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   recentSearchesBlock: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 12,
@@ -485,7 +747,7 @@ const styles = StyleSheet.create({
   },
   clearAllText: {
     fontSize: 14,
-    color: '#4ECDC4',
+    color: BRAND_COLORS.accent,
     fontWeight: '500',
   },
   recentSearchesList: {
@@ -511,7 +773,7 @@ const styles = StyleSheet.create({
   foodCard: {
     marginBottom: 10,
     elevation: 2,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: '#4E4E50',
   },
   foodRow: {
     flexDirection: 'row',
@@ -609,7 +871,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#4ECDC4',
+    backgroundColor: BRAND_COLORS.accent,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 8,

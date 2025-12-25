@@ -266,8 +266,8 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
     },
     inputCompleted: {
       backgroundColor: isDark ? 'rgba(76, 175, 80, 0.2)' : '#F0F8FF',
-      borderColor: '#4CAF50',
-      color: '#4CAF50',
+      borderColor: '#E94E1B',
+      color: '#E94E1B',
     },
     checkButton: {
       alignItems: 'center',
@@ -392,7 +392,7 @@ const WorkoutExerciseCard: React.FC<WorkoutExerciseCardProps> = ({
                   <MaterialCommunityIcons
                     name={set.completed ? 'checkbox-marked' : 'checkbox-blank-outline'}
                     size={24}
-                    color={set.completed ? '#4CAF50' : '#999'}
+                    color={set.completed ? '#E94E1B' : '#999'}
                   />
                 </TouchableOpacity>
               </View>

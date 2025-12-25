@@ -150,10 +150,10 @@ const HealthTracker: React.FC<HealthTrackerProps> = ({ type, compact = false }) 
 
   const getColor = () => {
     switch (type) {
-      case 'steps': return '#4CAF50';
+      case 'steps': return '#E94E1B';
       case 'sleep': return '#673AB7';
-      case 'rest': return '#FF9800';
-      default: return '#2196F3';
+      case 'rest': return '#E94E1B';
+      default: return '#3B82F6';
     }
   };
 
@@ -554,7 +554,7 @@ const styles = StyleSheet.create({
   calculatedHours: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: '#E94E1B',
     textAlign: 'center',
     marginBottom: 20,
   },
