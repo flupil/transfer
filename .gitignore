@@ -34,6 +34,7 @@ yarn-error.*
 .env*.local
 .env.development
 .env.production
+.env.backup
 
 # typescript
 *.tsbuildinfo
@@ -48,3 +49,11 @@ yarn-error.*
 /ios
 /android
 nul
+
+# white-label gym configurations (keep private)
+/gyms/*
+!/gyms/_template
+app.json.original
+
+# gym-specific branding assets (now tracked for white-label builds)
+# /assets/gym-branding/
