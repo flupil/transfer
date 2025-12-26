@@ -14,7 +14,7 @@ export const GYM_BRANDING = {
   "splash": "./assets/splash.png",
   "colors": {
     "primary": "#E94E1B",
-    "secondary": "#192892",
+    "secondary": "#4A90E2",
     "accent": "#FF6B35",
     "background": "#2A2A2A",
     "text": "#F4F1EF",
