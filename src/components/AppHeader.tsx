@@ -171,8 +171,8 @@ const AppHeader = () => {
       marginHorizontal: 4,
     },
     logo: {
-      width: 80,
-      height: 80,
+      width: 100,
+      height: 100,
     },
     logoPlaceholder: {
       width: 80,
@@ -350,9 +350,11 @@ const AppHeader = () => {
           onPress={() => navigation.navigate('Settings' as never)}
           activeOpacity={0.7}
         >
-          <View style={styles.logoPlaceholder}>
-            <Text style={styles.logoPlaceholderText}>LOGO</Text>
-          </View>
+          <Image
+            source={require('../../assets/gym-branding/logo-new.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </TouchableOpacity>
 
         {/* Right Side - XP */}
