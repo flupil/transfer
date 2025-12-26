@@ -985,7 +985,7 @@ const TryScreen = ({ navigation }: any) => {
             <View style={styles.logoContainer}>
               {/* Background Logo (grayscale/faded) */}
               <Image
-                source={require('../../assets/gym-branding/logo.png')}
+                source={require('../../assets/gym-branding/logo-new.png')}
                 style={[styles.circleLogo, { opacity: 0.3 }]}
                 resizeMode="contain"
               />
@@ -998,7 +998,7 @@ const TryScreen = ({ navigation }: any) => {
                 }
               ]}>
                 <Image
-                  source={require('../../assets/gym-branding/logo.png')}
+                  source={require('../../assets/gym-branding/logo-new.png')}
                   style={[styles.circleLogo, { position: 'absolute', bottom: 0 }]}
                   resizeMode="contain"
                 />
