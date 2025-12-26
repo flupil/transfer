@@ -146,7 +146,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({ onFriendStreakPress }) => {
             </>
           ) : (
             <Image
-              source={require('../../assets/gym-branding/logo-new.png')}
+              source={require('../../assets/gym-branding/logo.png')}
               style={styles.topBarLogo}
               resizeMode="contain"
             />

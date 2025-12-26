@@ -351,7 +351,7 @@ const AppHeader = () => {
           activeOpacity={0.7}
         >
           <Image
-            source={require('../../assets/gym-branding/logo-new.png')}
+            source={require('../../assets/gym-branding/logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />

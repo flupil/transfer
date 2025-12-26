@@ -985,7 +985,7 @@ const TryScreen = ({ navigation }: any) => {
             <View style={styles.logoContainer}>
               {/* Background Logo (grayscale/faded) */}
               <Image
-                source={require('../../assets/gym-branding/logo-new.png')}
+                source={require('../../assets/gym-branding/logo.png')}
                 style={[styles.circleLogo, { opacity: 0.3 }]}
                 resizeMode="contain"
               />
@@ -998,7 +998,7 @@ const TryScreen = ({ navigation }: any) => {
                 }
               ]}>
                 <Image
-                  source={require('../../assets/gym-branding/logo-new.png')}
+                  source={require('../../assets/gym-branding/logo.png')}
                   style={[styles.circleLogo, { position: 'absolute', bottom: 0 }]}
                   resizeMode="contain"
                 />
@@ -1208,13 +1208,17 @@ const TryScreen = ({ navigation }: any) => {
 
         {/* Session Label */}
         <Text style={[styles.sessionLabel, { color: isDark ? '#B0B0B0' : '#999' }]}>
-          {t('home.todaysWorkout')}
+          TODAY'S WORKOUT
         </Text>
 
         {/* Workout Title with Completion Status */}
         <View style={styles.workoutTitleSection}>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.workoutMainTitle, { color: isDark ? 'white' : '#1a1a1a' }]}>
+          <View style={{ flex: 1, marginRight: hasWorkedOutToday ? 8 : 0, minWidth: 0 }}>
+            <Text
+              style={[styles.workoutMainTitle, { color: isDark ? 'white' : '#1a1a1a' }]}
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
               {translateWorkoutName(todayWorkout?.name || todayWorkout?.day || '') || t('home.restDay')}
             </Text>
           </View>
@@ -1222,14 +1226,15 @@ const TryScreen = ({ navigation }: any) => {
             <View style={{
               backgroundColor: '#34C759',
               borderRadius: 20,
-              paddingHorizontal: 12,
-              paddingVertical: 6,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
               flexDirection: 'row',
               alignItems: 'center',
-              gap: 4
+              gap: 3,
+              flexShrink: 0
             }}>
-              <Ionicons name="checkmark-circle" size={16} color="white" />
-              <Text style={{ color: 'white', fontSize: 12, fontWeight: '600' }}>
+              <Ionicons name="checkmark-circle" size={14} color="white" />
+              <Text style={{ color: 'white', fontSize: 11, fontWeight: '600' }}>
                 {t('home.completed')}
               </Text>
             </View>
@@ -1237,15 +1242,15 @@ const TryScreen = ({ navigation }: any) => {
         </View>
 
         {/* Workout Info Summary */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, marginTop: 4 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Text style={[styles.workoutCategory, { color: isDark ? '#B0B0B0' : '#666', fontSize: 12 }]}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginTop: 4 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, flexWrap: 'wrap' }}>
+            <Text style={[styles.workoutCategory, { color: isDark ? '#B0B0B0' : '#666', fontSize: 11 }]} numberOfLines={1}>
               {selectedWorkoutPlan?.difficulty?.toUpperCase() || t('home.strength').toUpperCase()}
             </Text>
             {todayWorkout?.exercises && (
               <>
-                <Text style={{ color: isDark ? '#666' : '#999', fontSize: 12 }}>•</Text>
-                <Text style={[styles.workoutCategory, { color: isDark ? '#B0B0B0' : '#666', fontSize: 12 }]}>
+                <Text style={{ color: isDark ? '#666' : '#999', fontSize: 11 }}>•</Text>
+                <Text style={[styles.workoutCategory, { color: isDark ? '#B0B0B0' : '#666', fontSize: 11 }]} numberOfLines={1}>
                   {todayWorkout.exercises.length} {t('home.exercises')}
                 </Text>
               </>
@@ -1255,17 +1260,17 @@ const TryScreen = ({ navigation }: any) => {
 
         {/* Workout Info Pills */}
         <View style={styles.workoutInfoRow}>
-          <View style={styles.infoPill}>
-            <Ionicons name="time-outline" size={16} color={BRAND_COLORS.secondaryMuted} />
-            <Text style={[styles.infoPillText, { color: isDark ? 'white' : '#333' }]} numberOfLines={1}>
+          <View style={[styles.infoPill, { flexShrink: 0 }]}>
+            <Ionicons name="time-outline" size={14} color={BRAND_COLORS.secondaryMuted} />
+            <Text style={[styles.infoPillText, { color: isDark ? 'white' : '#333', fontSize: 12 }]} numberOfLines={1}>
               {todayWorkout?.duration || '35-45 min'}
             </Text>
           </View>
           {todayWorkout?.exercises && todayWorkout.exercises.length > 0 && (
-            <View style={[styles.infoPill, { flex: 1 }]}>
-              <Ionicons name="barbell-outline" size={16} color={BRAND_COLORS.accent} />
+            <View style={[styles.infoPill, { flex: 1, minWidth: 0 }]}>
+              <Ionicons name="barbell-outline" size={14} color={BRAND_COLORS.accent} />
               <Text
-                style={[styles.infoPillText, { color: isDark ? 'white' : '#333', flex: 1 }]}
+                style={[styles.infoPillText, { color: isDark ? 'white' : '#333', flex: 1, fontSize: 12 }]}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -2338,13 +2343,14 @@ const styles = StyleSheet.create({
   workoutTitleSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 20,
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 20,
   },
   workoutMainTitle: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: '700',
-    marginBottom: 4,
+    lineHeight: 28,
   },
   workoutCategory: {
     fontSize: 16,
@@ -2356,18 +2362,18 @@ const styles = StyleSheet.create({
   },
   workoutInfoRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 8,
     marginBottom: 12,
     paddingHorizontal: 20,
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
   },
   infoPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   infoPillText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
   },
   equipmentBadge: {
