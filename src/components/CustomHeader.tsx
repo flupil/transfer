@@ -240,8 +240,8 @@ const getStyles = (colors: any) => StyleSheet.create({
     justifyContent: 'center',
   },
   topBarLogo: {
-    width: 80,
-    height: 80,
+    width: 150,
+    height: 60,
   },
   logoPlaceholder: {
     width: 80,
