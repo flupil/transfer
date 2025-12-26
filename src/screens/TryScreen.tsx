@@ -2060,8 +2060,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 120,
-    height: 120,
+    width: 70,
+    height: 70,
   },
   logoFillMask: {
     position: 'absolute',
@@ -2090,8 +2090,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   circleLogo: {
-    width: 120,
-    height: 120,
+    width: 70,
+    height: 70,
   },
   progressDot: {
     position: 'absolute',
