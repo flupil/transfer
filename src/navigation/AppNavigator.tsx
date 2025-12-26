@@ -782,9 +782,11 @@ const UserTabNavigator = () => {
           activeOpacity={0.7}
           accessibilityLabel="Open settings"
         >
-          <View style={styles.logoPlaceholder}>
-            <Text style={styles.logoPlaceholderText}>LOGO</Text>
-          </View>
+          <Image
+            source={require('../../assets/gym-branding/logo-new.png')}
+            style={styles.headerLogo}
+            resizeMode="contain"
+          />
         </TouchableOpacity>
 
         {/* Right Side - Account */}
@@ -956,18 +958,9 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-  logoPlaceholder: {
-    width: 80,
-    height: 80,
-    backgroundColor: '#CCCCCC',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-  },
-  logoPlaceholderText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#666666',
+  headerLogo: {
+    width: 100,
+    height: 100,
   },
   headerIcon: {
     width: 45,
